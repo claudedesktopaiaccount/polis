@@ -1,0 +1,47 @@
+@import "tailwindcss";
+
+@theme inline {
+  /* Primary palette — progresivne.sk purple/violet */
+  --color-primary-50: #FAF5FF;
+  --color-primary-100: #F3E8FF;
+  --color-primary-200: #E9D5FF;
+  --color-primary-300: #D8B4FE;
+  --color-primary-400: #C084FC;
+  --color-primary-500: #A855F7;
+  --color-primary-600: #9333EA;
+  --color-primary-700: #7C3AED;
+  --color-primary-800: #6B21A8;
+  --color-primary-900: #581C87;
+  --color-primary-950: #3B0764;
+
+  /* Semantic */
+  --color-success: #10B981;
+  --color-danger: #EF4444;
+  --color-warning: #F59E0B;
+  --color-info: #3B82F6;
+
+  /* Party brand colors (Wikipedia-verified, March 2026) */
+  --color-party-ps: #00BDFF;
+  --color-party-smer: #D82222;
+  --color-party-hlas: #FA0F18;
+  --color-party-republika: #174194;
+  --color-party-sas: #9BC31C;
+  --color-party-kdh: #173A70;
+  --color-party-sns: #252E70;
+  --color-party-demokrati: #FC0C5D;
+  --color-party-aliancia: #F48B24;
+  --color-party-slovensko: #42B5C2;
+
+  /* Typography */
+  --font-sans: var(--font-inter);
+}
+
+:root {
+  --background: #FAFAFA;
+  --foreground: #171717;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+}
