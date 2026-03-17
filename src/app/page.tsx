@@ -1,65 +1,142 @@
-import Image from "next/image";
+import HeroBanner from "@/components/HeroBanner";
+import PartyCard from "@/components/PartyCard";
+import NewsHeadlines from "@/components/NewsHeadlines";
+import SectionHeading from "@/components/ui/SectionHeading";
+import { getLatestPolls } from "@/lib/poll-data";
+import { MOCK_NEWS } from "@/lib/mock-data";
+import Link from "next/link";
 
-export default function Home() {
+// Revalidate every 6 hours (match cron schedule)
+export const revalidate = 21600;
+
+export default async function Home() {
+  const pollData = await getLatestPolls();
+  const ps = pollData.parties.find((p) => p.partyId === "ps");
+  const smer = pollData.parties.find((p) => p.partyId === "smer-sd");
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <>
+      {/* Hero: Šimečka vs Fico */}
+      {ps && smer && (
+        <HeroBanner
+          left={{
+            name: "Michal Šimečka",
+            party: "Progresívne Slovensko",
+            percentage: ps.percentage,
+            trend: ps.trend,
+            portraitUrl: ps.portraitUrl ?? "/portraits/ps-simecka.jpg",
+            color: ps.color,
+          }}
+          right={{
+            name: "Robert Fico",
+            party: "Smer – sociálna demokracia",
+            percentage: smer.percentage,
+            trend: smer.trend,
+            portraitUrl: smer.portraitUrl ?? "/portraits/smer-fico.jpg",
+            color: smer.color,
+          }}
+          lastPollAgency={pollData.latestAgency}
+          lastPollDate={pollData.latestDate}
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+      )}
+
+      {/* Party cards */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-12">
+        <SectionHeading
+          title="Aktuálne prieskumy"
+          subtitle={`Prehľad preferencií podľa najnovšieho prieskumu (${pollData.latestAgency})`}
+        />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+          {pollData.parties.map((party) => (
+            <PartyCard
+              key={party.partyId}
+              name={party.name}
+              abbreviation={party.abbreviation}
+              leader={party.leader}
+              color={party.color}
+              percentage={party.percentage}
+              trend={party.trend}
+              portraitUrl={party.portraitUrl}
+              lastAgency={party.agency}
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+          ))}
         </div>
-      </main>
-    </div>
+      </section>
+
+      {/* News */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+        <SectionHeading title="Správy" subtitle="Najnovšie politické správy zo Slovenska" />
+        <NewsHeadlines items={MOCK_NEWS} />
+      </section>
+
+      {/* CTA Cards */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <CTACard
+            href="/predikcia"
+            title="Predikcia volieb"
+            description="Monte Carlo simulácia predpovedá výsledky ďalších volieb"
+            gradient="from-primary-700 to-primary-500"
+          />
+          <CTACard
+            href="/koalicny-simulator"
+            title="Koaličný simulátor"
+            description="Poskladajte si vlastnú koalíciu a zistite, či má väčšinu"
+            gradient="from-primary-600 to-primary-400"
+          />
+          <CTACard
+            href="/tipovanie"
+            title="Tipovanie"
+            description="Tipnite si, kto vyhrá voľby — hlas ľudu vs. prieskumy"
+            gradient="from-primary-800 to-primary-600"
+          />
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-primary-950 text-primary-200 py-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <p className="text-sm">
+            Progressive Tracker — Agregátor prieskumov a predikcie slovenských volieb
+          </p>
+          <p className="mt-2 text-xs text-primary-300/60">
+            Dáta z verejne dostupných prieskumov. Neoficiálna stránka.
+          </p>
+          {pollData.pollCount > 0 && (
+            <p className="mt-1 text-xs text-primary-300/40">
+              Spracovaných {pollData.pollCount} prieskumov z Wikipedie
+            </p>
+          )}
+        </div>
+      </footer>
+    </>
+  );
+}
+
+function CTACard({
+  href,
+  title,
+  description,
+  gradient,
+}: {
+  href: string;
+  title: string;
+  description: string;
+  gradient: string;
+}) {
+  return (
+    <Link
+      href={href}
+      className={`block rounded-2xl bg-gradient-to-br ${gradient} p-6 text-white hover:shadow-lg transition-shadow duration-200`}
+    >
+      <h3 className="text-lg font-semibold">{title}</h3>
+      <p className="mt-2 text-sm text-white/80">{description}</p>
+      <span className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-white/90">
+        Zobraziť
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+        </svg>
+      </span>
+    </Link>
   );
 }

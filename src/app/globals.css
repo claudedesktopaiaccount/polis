@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-@theme inline {
+@theme {
   /* Primary palette — progresivne.sk purple/violet */
   --color-primary-50: #FAF5FF;
   --color-primary-100: #F3E8FF;

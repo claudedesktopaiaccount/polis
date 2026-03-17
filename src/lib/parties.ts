@@ -33,7 +33,7 @@ export const PARTIES: Record<string, Party> = {
     ],
     seats: 33,
     ideology: "Liberalizmus, sociálny liberalizmus, proeurópskosť",
-    portraitUrl: "/portraits/ps-simecka.webp",
+    portraitUrl: "/portraits/ps-simecka.jpg",
   },
   "smer-sd": {
     id: "smer-sd",
@@ -44,7 +44,7 @@ export const PARTIES: Record<string, Party> = {
     deputyLeaders: [],
     seats: 42,
     ideology: "Sociálna demokracia, populizmus, euroskepticizmus",
-    portraitUrl: "/portraits/smer-fico.webp",
+    portraitUrl: "/portraits/smer-fico.jpg",
   },
   "hlas-sd": {
     id: "hlas-sd",
@@ -56,7 +56,7 @@ export const PARTIES: Record<string, Party> = {
     deputyLeaders: ["Peter Pellegrini (čestný predseda)"],
     seats: 26,
     ideology: "Sociálna demokracia",
-    portraitUrl: "/portraits/hlas-sutaj-estok.webp",
+    portraitUrl: "/portraits/hlas-sutaj-estok.jpg",
   },
   republika: {
     id: "republika",
@@ -68,7 +68,7 @@ export const PARTIES: Record<string, Party> = {
     deputyLeaders: [],
     seats: 0,
     ideology: "Národný konzervativizmus, euroskepticizmus",
-    portraitUrl: "/portraits/republika-uhrik.webp",
+    portraitUrl: "/portraits/republika-uhrik.jpg",
   },
   sas: {
     id: "sas",
@@ -80,7 +80,7 @@ export const PARTIES: Record<string, Party> = {
     deputyLeaders: [],
     seats: 11,
     ideology: "Klasický liberalizmus, ekonomický liberalizmus",
-    portraitUrl: "/portraits/sas-grohling.webp",
+    portraitUrl: "/portraits/sas-grohling.jpg",
   },
   kdh: {
     id: "kdh",
@@ -92,7 +92,7 @@ export const PARTIES: Record<string, Party> = {
     deputyLeaders: [],
     seats: 11,
     ideology: "Kresťanská demokracia, konzervativizmus",
-    portraitUrl: "/portraits/kdh-majersky.webp",
+    portraitUrl: "/portraits/kdh-majersky.jpg",
   },
   sns: {
     id: "sns",
@@ -104,7 +104,7 @@ export const PARTIES: Record<string, Party> = {
     deputyLeaders: [],
     seats: 6,
     ideology: "Národný konzervativizmus, populizmus",
-    portraitUrl: "/portraits/sns-danko.webp",
+    portraitUrl: "/portraits/sns-danko.jpg",
   },
   demokrati: {
     id: "demokrati",
@@ -116,7 +116,7 @@ export const PARTIES: Record<string, Party> = {
     deputyLeaders: [],
     seats: 1,
     ideology: "Liberálny konzervativizmus, proeurópskosť",
-    portraitUrl: "/portraits/demokrati-nad.webp",
+    portraitUrl: "/portraits/demokrati-nad.jpg",
   },
   aliancia: {
     id: "aliancia",
@@ -127,7 +127,7 @@ export const PARTIES: Record<string, Party> = {
     deputyLeaders: [],
     seats: 0,
     ideology: "Regionalizmus, menšinové práva",
-    portraitUrl: "/portraits/aliancia-gubik.webp",
+    portraitUrl: "/portraits/aliancia-gubik.jpg",
   },
   slovensko: {
     id: "slovensko",
@@ -139,7 +139,7 @@ export const PARTIES: Record<string, Party> = {
     deputyLeaders: [],
     seats: 10,
     ideology: "Populizmus, kresťanská demokracia",
-    portraitUrl: "/portraits/slovensko-matovic.webp",
+    portraitUrl: "/portraits/slovensko-matovic.jpg",
   },
 };
 

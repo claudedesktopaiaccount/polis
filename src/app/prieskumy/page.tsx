@@ -1,0 +1,76 @@
+import SectionHeading from "@/components/ui/SectionHeading";
+import { getAllPolls } from "@/lib/poll-data";
+import { PARTY_LIST } from "@/lib/parties";
+import PrieskumyClient from "./PrieskumyClient";
+
+export const revalidate = 21600;
+
+export default async function PrieskumyPage() {
+  const polls = await getAllPolls();
+
+  // Build chart data: each poll → { date, partyId: percentage, agency }
+  const chartData = polls
+    .slice(0, 60)
+    .reverse()
+    .map((poll) => {
+      const entry: Record<string, string | number> = {
+        date: poll.publishedDate,
+        agency: poll.agency,
+      };
+      for (const [partyId, pct] of Object.entries(poll.results)) {
+        entry[partyId] = pct;
+      }
+      return entry;
+    });
+
+  // Build agency comparison: group latest poll per agency
+  const agencyMap = new Map<string, Record<string, number>>();
+  for (const poll of polls) {
+    if (!agencyMap.has(poll.agency)) {
+      agencyMap.set(poll.agency, poll.results);
+    }
+  }
+  const agencies = Array.from(agencyMap.entries()).map(([name, results]) => ({
+    name,
+    results,
+  }));
+
+  // Latest poll data for bar chart
+  const latest = polls[0];
+  const previous = polls.length > 1 ? polls[1] : null;
+
+  const partyBars = PARTY_LIST
+    .map((party) => ({
+      id: party.id,
+      abbreviation: party.abbreviation,
+      color: party.color,
+      percentage: latest?.results[party.id] ?? 0,
+      trend: latest && previous
+        ? Math.round(((latest.results[party.id] ?? 0) - (previous.results[party.id] ?? 0)) * 10) / 10
+        : 0,
+    }))
+    .filter((p) => p.percentage > 0)
+    .sort((a, b) => b.percentage - a.percentage);
+
+  const partyMeta = PARTY_LIST.map((p) => ({
+    id: p.id,
+    abbreviation: p.abbreviation,
+    color: p.color,
+  }));
+
+  return (
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <SectionHeading
+        title="Prieskumy verejnej mienky"
+        subtitle={`${polls.length} prieskumov zo Wikipedie — posledný: ${latest?.agency ?? "N/A"}, ${latest?.publishedDate ?? ""}`}
+      />
+
+      <PrieskumyClient
+        chartData={chartData}
+        partyBars={partyBars}
+        agencies={agencies}
+        partyMeta={partyMeta}
+      />
+    </div>
+  );
+}
