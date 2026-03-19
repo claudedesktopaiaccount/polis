@@ -32,7 +32,15 @@
       "Read(//Users/dotmiracle/.claude/plugins/cache/context-mode/context-mode/1.0.22/**)",
       "Bash(npm rebuild:*)",
       "mcp__plugin_context-mode_context-mode__ctx_search",
-      "Bash(file /Users/dotmiracle/Downloads/progresivny-tracker/public/portraits/*.webp)"
+      "Bash(file /Users/dotmiracle/Downloads/progresivny-tracker/public/portraits/*.webp)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(xargs kill:*)",
+      "mcp__plugin_context-mode_context-mode__ctx_execute_file",
+      "Bash(find /Users/dotmiracle/Downloads/progresivny-tracker -type f \\\\\\(-name *schema* -o -name *migrations* -o -name *.sql -o -name drizzle* \\\\\\))",
+      "Bash(npx wrangler:*)",
+      "Bash(npx drizzle-kit:*)",
+      "Bash(ls /Users/dotmiracle/Downloads/progresivny-tracker/wrangler.*)"
     ]
   }
 }
