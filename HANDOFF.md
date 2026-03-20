@@ -24,36 +24,20 @@ Slovak political survey analysis website. Next.js 16 + Tailwind CSS v4 + Cloudfl
 
 ---
 
+## DONE
+
+### ✅ Wikipedia scraper colspan fix
+**File:** `src/lib/scraper/wikipedia.ts`
+**Problem:** Wikipedia table had "OĽaNO and Friends" with `colspan=3` (sub-columns: Slovakia, ZĽ, KÚ). Old scraper used DOM index which shifted all subsequent columns by +2.
+**Fix:** Rewrote `buildColumnMap()` with 2D grid approach that properly expands colspan/rowspan. Sub-columns are summed into one party value (lines 257-259).
+
+---
+
 ## TO-DO LIST (Priority Order)
 
-### 🔴 CRITICAL — Test Wikipedia scraper fix
-**File:** `src/lib/scraper/wikipedia.ts`
-**Problem:** Wikipedia table has "OĽaNO and Friends" with `colspan=3` (sub-columns: Slovakia, ZĽ, KÚ). Old scraper used DOM index which shifted all subsequent columns by +2. Demokrati showed 13.5% instead of ~5%.
-**Fix applied (NOT YET TESTED):** Rewrote `buildColumnMap()` with 2D grid approach that properly expands colspan/rowspan.
-**How to test:** Start dev server (`npx next dev`), visit `http://localhost:3000/api/scrape`, verify:
-- Demokrati ≈ 5% (was incorrectly showing 13.5%)
-- KDH ≈ 5-6%
-- SaS ≈ 5-6%
-- Smer ≈ 22-24%, PS ≈ 20-22%
-
-Expected column mapping after fix:
-- 0=Polling firm, 1=Date, 2=Sample, 3=Smer, 4=PS, 5=Hlas, 6=Slovakia, 7=ZĽ, 8=KÚ, 9=KDH, 10=SaS, 11=SNS, 12=Republika, 13=Hungarian Alliance, 14=Democrats, 15=We Are Family, 16=ĽSNS, 17=Others, 18=Lead
-
-### 🟡 MEDIUM — Cloudflare D1 Setup + Deployment
-**Purpose:** Persist `/tipovanie` crowd predictions across visitors
-**Steps needed:**
-1. `npm run cf-typegen` to generate D1 types
-2. Create D1 database via Cloudflare dashboard or `wrangler d1 create progresivny-tracker`
-3. Add to `wrangler.toml`:
-   ```toml
-   [[d1_databases]]
-   binding = "DB"
-   database_name = "progresivny-tracker"
-   database_id = "YOUR_ID_HERE"
-   ```
-4. Create schema: `predictions` table (party_id, percentage, visitor_id, created_at)
-5. Wire up `/tipovanie` page to use D1 via server actions
-6. Deploy: `npm run deploy` (uses `@opennextjs/cloudflare`)
+### ✅ Cloudflare D1 Setup
+**Done:** D1 database created (`3988aa54-...`), wrangler.jsonc configured, Drizzle schema + migrations in place, `/tipovanie` uses `getDb(env.DB)`.
+**Note:** `workers/scraper/wrangler.toml` still has `database_id = "TO_BE_CREATED"` — needs real ID if cron scraper worker is deployed separately.
 
 ### 🟢 LOW — Real news data
 `src/app/page.tsx` NewsHeadlines section still uses mock data. Could scrape SME.sk or Denník N RSS.

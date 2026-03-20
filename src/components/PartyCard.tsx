@@ -13,6 +13,7 @@ interface PartyCardProps {
 
 export default function PartyCard({
   name,
+  abbreviation,
   leader,
   color,
   percentage,

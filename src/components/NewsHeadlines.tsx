@@ -1,14 +1,14 @@
 interface NewsItem {
   title: string;
   url: string;
-  source: "SME" | "TASR" | "Pravda";
+  source: string;
   publishedAt: string;
 }
 
 const SOURCE_COLORS: Record<string, string> = {
+  Aktuality: "bg-orange-50 text-orange-700",
+  "Denník N": "bg-yellow-50 text-yellow-700",
   SME: "bg-blue-50 text-blue-700",
-  TASR: "bg-neutral-100 text-neutral-600",
-  Pravda: "bg-red-50 text-red-700",
 };
 
 interface NewsHeadlinesProps {

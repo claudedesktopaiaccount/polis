@@ -89,7 +89,8 @@ function parsePercentage(text: string): number | null {
  */
 function buildColumnMap(
   $: cheerio.CheerioAPI,
-  table: cheerio.Cheerio<cheerio.Element>
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  table: cheerio.Cheerio<any>
 ): {
   columnMap: Map<number, string>;
   agencyCol: number;

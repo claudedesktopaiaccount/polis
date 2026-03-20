@@ -3,14 +3,17 @@ import PartyCard from "@/components/PartyCard";
 import NewsHeadlines from "@/components/NewsHeadlines";
 import SectionHeading from "@/components/ui/SectionHeading";
 import { getLatestPolls } from "@/lib/poll-data";
-import { MOCK_NEWS } from "@/lib/mock-data";
+import { scrapeNews } from "@/lib/scraper/news";
 import Link from "next/link";
 
 // Revalidate every 6 hours (match cron schedule)
 export const revalidate = 21600;
 
 export default async function Home() {
-  const pollData = await getLatestPolls();
+  const [pollData, newsItems] = await Promise.all([
+    getLatestPolls(),
+    scrapeNews().catch(() => []),
+  ]);
   const ps = pollData.parties.find((p) => p.partyId === "ps");
   const smer = pollData.parties.find((p) => p.partyId === "smer-sd");
 
@@ -66,7 +69,7 @@ export default async function Home() {
       {/* News */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
         <SectionHeading title="Správy" subtitle="Najnovšie politické správy zo Slovenska" />
-        <NewsHeadlines items={MOCK_NEWS} />
+        <NewsHeadlines items={newsItems} />
       </section>
 
       {/* CTA Cards */}

@@ -81,16 +81,16 @@ export default function TipovanieClient({ initialCrowd, initialTotalBets }: Prop
         body: JSON.stringify({ selectedWinner, fingerprint }),
       });
 
-      const data = await res.json();
+      const data = await res.json() as { error?: string; partyId?: string };
 
       if (res.status === 409 && data.error === "already_voted") {
-        setAlreadyVotedParty(data.partyId);
-        setSelectedWinner(data.partyId);
+        setAlreadyVotedParty(data.partyId ?? null);
+        setSelectedWinner(data.partyId ?? null);
         setSubmitted(true);
         // Still fetch fresh crowd data
         const crowdRes = await fetch("/api/tipovanie");
         if (crowdRes.ok) {
-          const crowd = await crowdRes.json();
+          const crowd = await crowdRes.json() as { aggregates: CrowdData[]; totalBets: number };
           setCrowdData(crowd.aggregates);
           setTotalBets(crowd.totalBets);
         }
@@ -101,7 +101,7 @@ export default function TipovanieClient({ initialCrowd, initialTotalBets }: Prop
 
       const crowdRes = await fetch("/api/tipovanie");
       if (crowdRes.ok) {
-        const crowd = await crowdRes.json();
+        const crowd = await crowdRes.json() as { aggregates: CrowdData[]; totalBets: number };
         setCrowdData(crowd.aggregates);
         setTotalBets(crowd.totalBets);
       }
@@ -144,7 +144,7 @@ export default function TipovanieClient({ initialCrowd, initialTotalBets }: Prop
           </div>
         </div>
 
-        <CrowdResults data={crowdData} totalBets={totalBets} winnerId={selectedWinner} />
+        <CrowdResults data={crowdData} totalBets={totalBets} winnerId={selectedWinner ?? undefined} />
       </>
     );
   }
@@ -314,7 +314,6 @@ export default function TipovanieClient({ initialCrowd, initialTotalBets }: Prop
                     ? {
                         borderColor: party.color,
                         backgroundColor: party.color + "15",
-                        ringColor: party.color,
                         ["--tw-ring-color" as string]: party.color + "60",
                       }
                     : undefined
