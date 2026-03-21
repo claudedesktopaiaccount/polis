@@ -1,8 +1,18 @@
+import type { Metadata } from "next";
 import SectionHeading from "@/components/ui/SectionHeading";
 import { getLatestPolls } from "@/lib/poll-data";
 import { runSimulation, estimateStdDev, type PartyInput } from "@/lib/prediction/monte-carlo";
 import { allocateSeats } from "@/lib/prediction/dhondt";
 import PredikciaClient from "./PredikciaClient";
+
+export const metadata: Metadata = {
+  title: "Predikcia | Progressive Tracker",
+  description: "Monte Carlo predikcia výsledkov slovenských parlamentných volieb. Simulácia rozdelenia mandátov metódou D'Hondt.",
+  openGraph: {
+    title: "Predikcia | Progressive Tracker",
+    description: "Monte Carlo predikcia výsledkov slovenských parlamentných volieb.",
+  },
+};
 
 export const revalidate = 21600;
 

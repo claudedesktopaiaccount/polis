@@ -3,6 +3,7 @@ import { scrapeNews } from "../../src/lib/scraper/news";
 
 interface Env {
   DB: D1Database;
+  SCRAPER_SECRET: string;
 }
 
 export default {
@@ -13,6 +14,10 @@ export default {
   async fetch(request: Request, env: Env) {
     const url = new URL(request.url);
     if (url.pathname === "/run" && request.method === "POST") {
+      const authHeader = request.headers.get("Authorization");
+      if (!env.SCRAPER_SECRET || authHeader !== `Bearer ${env.SCRAPER_SECRET}`) {
+        return new Response("Unauthorized", { status: 401 });
+      }
       await runScrape(env);
       return new Response("Scrape completed", { status: 200 });
     }

@@ -201,6 +201,7 @@ function buildColumnMap(
 
 export async function scrapeWikipediaPolls(): Promise<RawPollRow[]> {
   const response = await fetch(WIKI_URL, {
+    signal: AbortSignal.timeout(10_000),
     headers: {
       "User-Agent":
         "ProgressiveTracker/1.0 (Slovak poll aggregator; educational project)",
@@ -278,3 +279,6 @@ export async function scrapeWikipediaPolls(): Promise<RawPollRow[]> {
   polls.sort((a, b) => b.publishedDate.localeCompare(a.publishedDate));
   return polls;
 }
+
+// Exported for testing
+export { buildColumnMap, resolvePartyId, parsePercentage, parseWikiDate };

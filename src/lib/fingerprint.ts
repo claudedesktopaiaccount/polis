@@ -1,9 +1,13 @@
+import { hasConsent } from "@/lib/consent";
+
 /**
  * Lightweight browser fingerprint — standard signals only.
  * Canvas + screen + timezone + platform + languages + hardware.
- * Returns a hex hash string.
+ * Returns a hex hash string, or empty string if no GDPR consent.
  */
 export async function getFingerprint(): Promise<string> {
+  if (!hasConsent()) return "";
+
   const signals: string[] = [];
 
   // Screen

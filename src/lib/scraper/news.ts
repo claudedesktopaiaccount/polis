@@ -137,6 +137,7 @@ function parseRssItems(
 /** Scrape Aktuality.sk via RSS */
 async function scrapeAktuality(): Promise<ScrapedNewsItem[]> {
   const res = await fetch("https://www.aktuality.sk/rss/", {
+    signal: AbortSignal.timeout(10_000),
     headers: { "User-Agent": USER_AGENT },
   });
   if (!res.ok) return [];
@@ -147,6 +148,7 @@ async function scrapeAktuality(): Promise<ScrapedNewsItem[]> {
 /** Scrape Denník N via RSS */
 async function scrapeDennikN(): Promise<ScrapedNewsItem[]> {
   const res = await fetch("https://dennikn.sk/feed/", {
+    signal: AbortSignal.timeout(10_000),
     headers: { "User-Agent": USER_AGENT },
   });
   if (!res.ok) return [];
@@ -157,6 +159,7 @@ async function scrapeDennikN(): Promise<ScrapedNewsItem[]> {
 /** Scrape SME.sk politics section via HTML */
 async function scrapeSme(): Promise<ScrapedNewsItem[]> {
   const res = await fetch("https://domov.sme.sk/", {
+    signal: AbortSignal.timeout(10_000),
     headers: { "User-Agent": USER_AGENT },
   });
   if (!res.ok) return [];

@@ -63,7 +63,7 @@ export default function KoalicnyClient({ pollResults }: KoalicnyClientProps) {
       </div>
 
       {/* Party selector grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-8">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-8" role="group" aria-label="Výber strán pre koalíciu">
         {PARTY_LIST.map((party) => {
           const seats = seatMap[party.id] ?? 0;
           const isSelected = selected.has(party.id);
@@ -74,6 +74,8 @@ export default function KoalicnyClient({ pollResults }: KoalicnyClientProps) {
               key={party.id}
               onClick={() => isInParliament && toggleParty(party.id)}
               disabled={!isInParliament}
+              aria-pressed={isSelected}
+              aria-label={`${party.name}, ${seats} mandátov`}
               className={`relative rounded-xl p-4 border-2 transition-all duration-200 text-left ${
                 !isInParliament
                   ? "opacity-40 cursor-not-allowed border-neutral-200 bg-neutral-50"

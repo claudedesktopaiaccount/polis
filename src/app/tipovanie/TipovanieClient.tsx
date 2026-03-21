@@ -75,9 +75,19 @@ export default function TipovanieClient({ initialCrowd, initialTotalBets }: Prop
 
     try {
       const fingerprint = await getFingerprint();
+
+      // Read CSRF token from cookie
+      const csrfToken = document.cookie
+        .split("; ")
+        .find((c) => c.startsWith("pt_csrf="))
+        ?.split("=")[1] ?? "";
+
       const res = await fetch("/api/tipovanie", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRF-Token": csrfToken,
+        },
         body: JSON.stringify({ selectedWinner, fingerprint }),
       });
 
@@ -216,7 +226,7 @@ export default function TipovanieClient({ initialCrowd, initialTotalBets }: Prop
                 <Image
                   key={selectedWinner}
                   src={selectedParty.portraitUrl}
-                  alt={selectedParty.leader}
+                  alt={`Portrét ${selectedParty.leader}, líder ${selectedParty.name}`}
                   fill
                   className="object-cover object-top animate-reveal-portrait"
                   sizes="160px"
@@ -302,6 +312,8 @@ export default function TipovanieClient({ initialCrowd, initialTotalBets }: Prop
               <button
                 key={party.id}
                 onClick={() => setSelectedWinner(party.id)}
+                aria-pressed={isSelected}
+                aria-label={`Tipovať ${party.name}`}
                 className={`group rounded-xl p-3 border-2 transition-all duration-300 text-center ${
                   isSelected
                     ? "shadow-lg scale-[1.05] ring-2 ring-offset-2"

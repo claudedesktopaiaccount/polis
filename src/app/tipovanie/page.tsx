@@ -1,8 +1,18 @@
+import type { Metadata } from "next";
 import SectionHeading from "@/components/ui/SectionHeading";
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { getDb } from "@/lib/db";
 import { crowdAggregates } from "@/lib/db/schema";
 import TipovanieClient from "./TipovanieClient";
+
+export const metadata: Metadata = {
+  title: "Tipovanie | Progressive Tracker",
+  description: "Tipnite si víťaza slovenských parlamentných volieb a porovnajte sa s ostatnými.",
+  openGraph: {
+    title: "Tipovanie | Progressive Tracker",
+    description: "Tipnite si víťaza slovenských parlamentných volieb.",
+  },
+};
 
 export const revalidate = 0; // always fresh crowd data
 

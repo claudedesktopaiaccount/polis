@@ -1,6 +1,16 @@
+import type { Metadata } from "next";
 import SectionHeading from "@/components/ui/SectionHeading";
 import { getLatestPolls } from "@/lib/poll-data";
 import KoalicnyClient from "./KoalicnyClient";
+
+export const metadata: Metadata = {
+  title: "Koaličný simulátor | Progressive Tracker",
+  description: "Simulácia koaličných scenárov pre slovenské parlamentné voľby. Metóda D'Hondt, 150 mandátov, 5% kvórum.",
+  openGraph: {
+    title: "Koaličný simulátor | Progressive Tracker",
+    description: "Simulácia koaličných scenárov pre slovenské parlamentné voľby.",
+  },
+};
 
 export const revalidate = 21600;
 

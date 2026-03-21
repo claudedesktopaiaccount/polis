@@ -26,7 +26,6 @@ export default function PredikciaClient({
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
         {simulation
           .sort((a, b) => b.winProbability - a.winProbability)
-          .slice(0, 5)
           .map((result) => {
             const party = PARTIES[result.partyId];
             return (

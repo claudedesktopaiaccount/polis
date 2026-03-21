@@ -1,7 +1,17 @@
+import type { Metadata } from "next";
 import SectionHeading from "@/components/ui/SectionHeading";
 import { getAllPolls } from "@/lib/poll-data";
 import { PARTY_LIST } from "@/lib/parties";
 import PrieskumyClient from "./PrieskumyClient";
+
+export const metadata: Metadata = {
+  title: "Prieskumy | Progressive Tracker",
+  description: "Aktuálne volebné prieskumy a trendy pre slovenské parlamentné voľby. Agregátor dát od Focus, AKO, Median a ďalších agentúr.",
+  openGraph: {
+    title: "Prieskumy | Progressive Tracker",
+    description: "Aktuálne volebné prieskumy a trendy pre slovenské parlamentné voľby.",
+  },
+};
 
 export const revalidate = 21600;
 

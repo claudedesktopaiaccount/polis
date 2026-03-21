@@ -9,4 +9,4 @@ crons = ["0 */6 * * *"]
 [[d1_databases]]
 binding = "DB"
 database_name = "progressive-tracker-db"
-database_id = "TO_BE_CREATED"
+database_id = "3988aa54-17b6-4286-b815-eac8ff6ab636"

@@ -1,4 +1,19 @@
-import { sqliteTable, text, integer, real, uniqueIndex, index } from "drizzle-orm/sqlite-core";
+import { sqliteTable, text, integer, real, uniqueIndex, index, unique } from "drizzle-orm/sqlite-core";
+
+// ─── Rate Limits ────────────────────────────────────────
+
+export const rateLimits = sqliteTable(
+  "rate_limits",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    ipHash: text("ip_hash").notNull(),
+    createdAt: integer("created_at").notNull(),
+  },
+  (table) => [
+    index("rate_limits_ip_hash_idx").on(table.ipHash),
+    index("rate_limits_created_at_idx").on(table.createdAt),
+  ]
+);
 
 // ─── Parties ─────────────────────────────────────────────
 
@@ -138,17 +153,26 @@ export const userPredictions = sqliteTable(
     predictedPct: real("predicted_pct"),
     coalitionPick: text("coalition_pick"), // JSON array
     createdAt: text("created_at").notNull(),
-    region: text("region"),
+    fingerprint: text("fingerprint"),
   },
-  (table) => [index("user_predictions_visitor_idx").on(table.visitorId)]
+  (table) => [
+    uniqueIndex("user_predictions_visitor_unique").on(table.visitorId),
+    index("user_predictions_fingerprint_idx").on(table.fingerprint),
+  ]
 );
 
-export const crowdAggregates = sqliteTable("crowd_aggregates", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
-  partyId: text("party_id")
-    .notNull()
-    .references(() => parties.id),
-  totalBets: integer("total_bets").notNull().default(0),
-  avgPredictedPct: real("avg_predicted_pct"),
-  computedAt: text("computed_at").notNull(),
-});
+export const crowdAggregates = sqliteTable(
+  "crowd_aggregates",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    partyId: text("party_id")
+      .notNull()
+      .references(() => parties.id),
+    totalBets: integer("total_bets").notNull().default(0),
+    avgPredictedPct: real("avg_predicted_pct"),
+    computedAt: text("computed_at").notNull(),
+  },
+  (table) => [
+    uniqueIndex("crowd_aggregates_party_id_unique").on(table.partyId),
+  ]
+);

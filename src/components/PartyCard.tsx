@@ -31,7 +31,7 @@ export default function PartyCard({
         {portraitUrl ? (
           <Image
             src={portraitUrl}
-            alt={leader}
+            alt={`Portrét ${leader}, líder ${name}`}
             fill
             className="object-cover object-top grayscale opacity-90 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500 ease-out"
             sizes="(max-width: 640px) 100vw, 280px"
