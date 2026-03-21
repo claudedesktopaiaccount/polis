@@ -176,3 +176,20 @@ export const crowdAggregates = sqliteTable(
     uniqueIndex("crowd_aggregates_party_id_unique").on(table.partyId),
   ]
 );
+
+// ─── GDPR Audit Log ────────────────────────────────────
+
+export const gdprAuditLog = sqliteTable(
+  "gdpr_audit_log",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    action: text("action").notNull(), // 'delete' | 'export'
+    visitorIdHash: text("visitor_id_hash").notNull(),
+    timestamp: text("timestamp").notNull(),
+    recordsAffected: integer("records_affected").notNull().default(0),
+  },
+  (table) => [
+    index("gdpr_audit_log_action_idx").on(table.action),
+    index("gdpr_audit_log_timestamp_idx").on(table.timestamp),
+  ]
+);

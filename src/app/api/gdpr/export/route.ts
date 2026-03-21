@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { getDb } from "@/lib/db";
-import { userPredictions } from "@/lib/db/schema";
+import { userPredictions, gdprAuditLog } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
+import { hashString } from "@/lib/hash";
+import { createSentry, captureException } from "@/lib/sentry";
 
 export const runtime = "edge";
 
@@ -33,6 +35,14 @@ export async function POST(request: NextRequest) {
       .from(userPredictions)
       .where(eq(userPredictions.visitorId, visitorId));
 
+    // Audit log (GDPR Article 15 access request)
+    await db.insert(gdprAuditLog).values({
+      action: "export",
+      visitorIdHash: await hashString(visitorId),
+      timestamp: new Date().toISOString(),
+      recordsAffected: votes.length,
+    });
+
     return NextResponse.json({
       visitorId,
       exportedAt: new Date().toISOString(),
@@ -45,6 +55,8 @@ export async function POST(request: NextRequest) {
     });
   } catch (e) {
     console.error("GDPR export error:", e);
+    const { env } = await getCloudflareContext({ async: true }).catch(() => ({ env: {} as Record<string, unknown> }));
+    captureException(createSentry(request, env as { SENTRY_DSN?: string }), e);
     return NextResponse.json({ error: "Export failed" }, { status: 500 });
   }
 }

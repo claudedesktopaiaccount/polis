@@ -5,6 +5,8 @@ import { parties, userPredictions, crowdAggregates, rateLimits } from "@/lib/db/
 import { eq, or, count, sql, lt, and, gte } from "drizzle-orm";
 import { seedParties } from "@/lib/db/seed";
 import { PARTY_LIST } from "@/lib/parties";
+import { hashString } from "@/lib/hash";
+import { createSentry, captureException } from "@/lib/sentry";
 
 export const runtime = "edge";
 
@@ -13,18 +15,10 @@ const VALID_PARTY_IDS = new Set(PARTY_LIST.map((p) => p.id));
 const RATE_LIMIT = 10;
 const RATE_WINDOW_S = 60;
 
-async function hashIp(ip: string): Promise<string> {
-  const encoder = new TextEncoder();
-  const hashBuffer = await crypto.subtle.digest("SHA-256", encoder.encode(ip));
-  return Array.from(new Uint8Array(hashBuffer))
-    .map((b) => b.toString(16).padStart(2, "0"))
-    .join("");
-}
-
 async function isRateLimited(db: Database, ip: string): Promise<boolean> {
   const now = Math.floor(Date.now() / 1000);
   const cutoff = now - RATE_WINDOW_S;
-  const ipHash = await hashIp(ip);
+  const ipHash = await hashString(ip);
 
   // Insert first to avoid race where concurrent requests all pass the count
   await db.insert(rateLimits).values({ ipHash, createdAt: now });
@@ -159,11 +153,13 @@ export async function POST(request: NextRequest) {
     return response;
   } catch (e) {
     console.error("POST /api/tipovanie error:", e);
+    const { env } = await getCloudflareContext({ async: true }).catch(() => ({ env: {} as Record<string, unknown> }));
+    captureException(createSentry(request, env as { SENTRY_DSN?: string }), e);
     return NextResponse.json({ error: "Invalid request" }, { status: 400 });
   }
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
     const { env } = await getCloudflareContext({ async: true });
     const db = getDb(env.DB);
@@ -180,6 +176,8 @@ export async function GET() {
     });
   } catch (e) {
     console.error("GET /api/tipovanie error:", e);
+    const { env } = await getCloudflareContext({ async: true }).catch(() => ({ env: {} as Record<string, unknown> }));
+    captureException(createSentry(request, env as { SENTRY_DSN?: string }), e);
     return NextResponse.json({ aggregates: [], totalBets: 0 });
   }
 }

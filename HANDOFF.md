@@ -127,23 +127,31 @@ Already had `Authorization: Bearer <SCRAPER_SECRET>` header check.
 
 ---
 
-### 🟡 Phase 1: Reliability & Observability
+### ✅ Phase 1: Reliability & Observability (All Done)
 
-#### 1.1 Error monitoring (Sentry)
-- Integrate `@sentry/nextjs` — wire into `error.tsx` and API routes
-- All `catch` blocks currently `console.error` which vanishes on Cloudflare
+#### ✅ 1.1 Error monitoring (Sentry)
+- Installed `toucan-js` (Sentry client for Cloudflare Workers — `@sentry/nextjs` incompatible with Workers runtime)
+- Created `src/lib/sentry.ts` — `createSentry()`, `createSentryWithoutRequest()`, `captureException()` wrappers
+- Wired into all 4 API routes (`tipovanie`, `gdpr/delete`, `gdpr/export`, `scrape`) + `tipovanie/page.tsx` server component
+- Created `src/app/api/report-error/route.ts` — client-side error forwarding endpoint
+- Updated `src/app/error.tsx` — POSTs errors to `/api/report-error` via `useEffect`
+- `SENTRY_DSN` configured as Cloudflare secret (added to `.env.example`)
 
-#### 1.2 CI/CD pipeline (GitHub Actions)
-- `.github/workflows/ci.yml`: lint → type-check (`tsc --noEmit`) → unit tests → build
-- Deploy job: `npx opennextjs-cloudflare deploy` on push to main
+#### ✅ 1.2 CI/CD pipeline (GitHub Actions)
+- Created `.github/workflows/ci.yml` with 4 jobs: lint+typecheck, test, build, deploy
+- Deploy job runs only on push to main, uses `CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_API_TOKEN` secrets
 
-#### 1.3 GDPR audit logging
-- Add `gdpr_audit_log` table (action, visitorId hash, timestamp, records_affected)
-- Insert row on each delete/export for GDPR Article 5(2) accountability
+#### ✅ 1.3 GDPR audit logging
+- Added `gdprAuditLog` table to `src/lib/db/schema.ts` (action, visitorIdHash SHA-256, timestamp, recordsAffected)
+- Migration: `drizzle/0003_gdpr_audit_log.sql`
+- Extracted shared `hashString()` utility to `src/lib/hash.ts` (replaces inline `hashIp` in tipovanie route)
+- Audit rows inserted in `gdpr/delete` and `gdpr/export` routes
 
-#### 1.4 Stale fallback data
-- `src/lib/poll-data.ts` has hardcoded fallback numbers that become increasingly wrong
-- Pull last successful scrape from D1 as fallback instead
+#### ✅ 1.4 Stale fallback data
+- Added `getFallbackFromDb(db)` to `src/lib/poll-data.ts` — queries latest poll+results from D1
+- `getLatestPolls(db?)` now accepts optional DB parameter
+- Fallback chain: scrape Wikipedia → D1 → hardcoded (last resort)
+- Homepage (`src/app/page.tsx`) passes DB instance to `getLatestPolls()`
 
 ---
 
@@ -195,9 +203,9 @@ Daily scheduled test fetching real Wikipedia page, validating ≥5 polls with re
 | BLOCKER | Fix rate limiter for Cloudflare | Rate limiting non-functional |
 | BLOCKER | Auth on scraper /run endpoint | Abuse vector |
 | BLOCKER | Fix region/fingerprint column | Schema integrity + GDPR export incomplete |
-| HIGH | Sentry error monitoring | Silent production failures |
-| HIGH | CI/CD pipeline | Bad deploys |
-| HIGH | GDPR audit log | Compliance gap |
+| ~~HIGH~~ | ~~Sentry error monitoring~~ | ✅ Done (toucan-js) |
+| ~~HIGH~~ | ~~CI/CD pipeline~~ | ✅ Done (GitHub Actions) |
+| ~~HIGH~~ | ~~GDPR audit log~~ | ✅ Done (gdpr_audit_log table) |
 | MEDIUM | Dynamic import Recharts | Slow page loads |
 | MEDIUM | News ISR to 1h | Stale news |
 | MEDIUM | E2E tests | Regression risk |

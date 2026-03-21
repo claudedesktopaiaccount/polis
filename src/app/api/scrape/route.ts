@@ -1,4 +1,6 @@
 import { scrapeWikipediaPolls } from "@/lib/scraper/wikipedia";
+import { getCloudflareContext } from "@opennextjs/cloudflare";
+import { createSentry, captureException } from "@/lib/sentry";
 
 export const runtime = "edge";
 
@@ -17,6 +19,9 @@ export async function GET() {
       parties: polls.length > 0 ? Object.keys(polls[0].results) : [],
     });
   } catch (error) {
+    const { env } = await getCloudflareContext({ async: true }).catch(() => ({ env: {} as Record<string, unknown> }));
+    const sentry = createSentry(new Request("https://localhost/api/scrape"), env as { SENTRY_DSN?: string });
+    captureException(sentry, error);
     return Response.json(
       {
         success: false,

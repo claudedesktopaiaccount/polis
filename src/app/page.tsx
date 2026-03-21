@@ -4,14 +4,18 @@ import NewsHeadlines from "@/components/NewsHeadlines";
 import SectionHeading from "@/components/ui/SectionHeading";
 import { getLatestPolls } from "@/lib/poll-data";
 import { scrapeNews } from "@/lib/scraper/news";
+import { getCloudflareContext } from "@opennextjs/cloudflare";
+import { getDb } from "@/lib/db";
 import Link from "next/link";
 
 // Revalidate every 6 hours (match cron schedule)
 export const revalidate = 21600;
 
 export default async function Home() {
+  const { env } = await getCloudflareContext({ async: true });
+  const db = getDb(env.DB);
   const [pollData, newsItems] = await Promise.all([
-    getLatestPolls(),
+    getLatestPolls(db),
     scrapeNews().catch(() => []),
   ]);
   const ps = pollData.parties.find((p) => p.partyId === "ps");

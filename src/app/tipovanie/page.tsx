@@ -3,6 +3,7 @@ import SectionHeading from "@/components/ui/SectionHeading";
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { getDb } from "@/lib/db";
 import { crowdAggregates } from "@/lib/db/schema";
+import { createSentryWithoutRequest, captureException } from "@/lib/sentry";
 import TipovanieClient from "./TipovanieClient";
 
 export const metadata: Metadata = {
@@ -32,6 +33,10 @@ export default async function TipovaniePage() {
     initialTotalBets = aggregates.reduce((s, a) => s + a.totalBets, 0);
   } catch (e) {
     console.error("Failed to load crowd data:", e);
+    try {
+      const { env } = await getCloudflareContext({ async: true });
+      captureException(createSentryWithoutRequest(env as { SENTRY_DSN?: string }), e);
+    } catch { /* Sentry reporting best-effort */ }
   }
 
   return (

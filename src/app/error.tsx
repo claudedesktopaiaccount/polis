@@ -1,11 +1,25 @@
 "use client";
 
+import { useEffect } from "react";
+
 export default function Error({
+  error,
   reset,
 }: {
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  useEffect(() => {
+    fetch("/api/report-error", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        message: error.message,
+        stack: error.stack,
+        digest: error.digest,
+      }),
+    }).catch(() => {});
+  }, [error]);
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 text-center">
       <p className="text-6xl font-bold text-red-500">Chyba</p>
