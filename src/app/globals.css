@@ -1,18 +1,13 @@
 @import "tailwindcss";
 
-@theme {
-  /* Primary palette — progresivne.sk purple/violet */
-  --color-primary-50: #FAF5FF;
-  --color-primary-100: #F3E8FF;
-  --color-primary-200: #E9D5FF;
-  --color-primary-300: #D8B4FE;
-  --color-primary-400: #C084FC;
-  --color-primary-500: #A855F7;
-  --color-primary-600: #9333EA;
-  --color-primary-700: #7C3AED;
-  --color-primary-800: #6B21A8;
-  --color-primary-900: #581C87;
-  --color-primary-950: #3B0764;
+@theme inline {
+  /* Editorial palette */
+  --color-ink: var(--ink);
+  --color-paper: var(--paper);
+  --color-surface: var(--surface);
+  --color-divider: var(--divider);
+  --color-hover: var(--hover);
+  --color-text: var(--text);
 
   /* Semantic */
   --color-success: #10B981;
@@ -34,14 +29,55 @@
 
   /* Typography */
   --font-sans: var(--font-inter);
+  --font-serif: var(--font-newsreader);
 }
 
 :root {
-  --background: #FAFAFA;
-  --foreground: #171717;
+  --ink: #111110;
+  --paper: #F4F3EE;
+  --surface: #FFFFFF;
+  --text: #2C2C2A;
+  --divider: #D6D5CF;
+  --hover: #EBEBE6;
+}
+
+.dark {
+  --ink: #E8E8E3;
+  --paper: #101622;
+  --surface: #1A1F2E;
+  --text: #E8E8E3;
+  --divider: #2A2F3E;
+  --hover: #252A38;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--paper);
+  color: var(--text);
+}
+
+/* Editorial typography — serif headings */
+h1, h2, h3 {
+  font-family: var(--font-serif), Georgia, serif;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+/* Remove all rounded corners globally */
+*, *::before, *::after {
+  border-radius: 0 !important;
+}
+
+/* Tabular numbers for data */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* 3px thick border utility */
+.border-b-3 {
+  border-bottom-width: 3px;
+}
+
+/* Parliament grid: 15 columns */
+.grid-cols-15 {
+  grid-template-columns: repeat(15, minmax(0, 1fr));
 }

@@ -42,12 +42,12 @@ export default function ExportDataButton() {
       <button
         onClick={handleExport}
         disabled={status === "loading"}
-        className="px-6 py-3 bg-violet-600 text-white font-semibold rounded-xl hover:bg-violet-700 transition-colors disabled:opacity-50"
+        className="px-6 py-3 bg-ink text-paper font-semibold text-sm border border-ink hover:bg-transparent hover:text-ink transition-colors disabled:opacity-50"
       >
         {status === "loading" ? "Exportujem..." : "Stiahnuť moje údaje (JSON)"}
       </button>
       {status === "error" && (
-        <p className="text-red-600 text-sm mt-2">Nastala chyba. Skúste to znova neskôr.</p>
+        <p className="text-danger text-sm mt-2">Nastala chyba. Skúste to znova neskôr.</p>
       )}
     </div>
   );

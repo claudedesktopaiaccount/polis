@@ -84,6 +84,8 @@ export default function PovolebnePlanyClient() {
     ? promises.filter((p) => p.category === activeCategory)
     : promises;
 
+  const activePartyData = PARTY_LIST.find((p) => p.id === activeParty);
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
       <SectionHeading
@@ -92,36 +94,41 @@ export default function PovolebnePlanyClient() {
       />
 
       {/* Party tabs */}
-      <div className="flex flex-wrap gap-2 mb-6">
-        {PARTY_LIST.map((party) => (
-          <button
-            key={party.id}
-            onClick={() => {
-              setActiveParty(party.id);
-              setActiveCategory(null);
-            }}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-              activeParty === party.id
-                ? "text-white shadow-md"
-                : "bg-neutral-100 text-neutral-600 hover:bg-neutral-200"
-            }`}
-            style={
-              activeParty === party.id
-                ? { backgroundColor: party.color }
-                : undefined
-            }
-          >
-            {party.abbreviation}
-          </button>
-        ))}
+      <div className="flex flex-wrap gap-1 mb-6 border-b border-divider pb-4">
+        {PARTY_LIST.map((party) => {
+          const isActive = activeParty === party.id;
+          return (
+            <button
+              key={party.id}
+              onClick={() => {
+                setActiveParty(party.id);
+                setActiveCategory(null);
+              }}
+              className={`px-3 py-2 text-xs font-medium transition-colors border ${
+                isActive
+                  ? "border-ink text-paper"
+                  : "border-divider text-text hover:bg-hover"
+              }`}
+              style={
+                isActive
+                  ? { backgroundColor: party.color, borderColor: party.color, color: "#fff" }
+                  : undefined
+              }
+            >
+              {party.abbreviation}
+            </button>
+          );
+        })}
       </div>
 
       {/* Category filter */}
       <div className="flex flex-wrap gap-2 mb-6">
         <button
           onClick={() => setActiveCategory(null)}
-          className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
-            !activeCategory ? "bg-primary-100 text-primary-700" : "bg-neutral-50 text-neutral-500 hover:bg-neutral-100"
+          className={`px-3 py-1.5 text-xs font-medium transition-colors border ${
+            !activeCategory
+              ? "bg-ink text-paper border-ink"
+              : "border-divider text-text/50 hover:bg-hover"
           }`}
         >
           Všetky
@@ -130,10 +137,10 @@ export default function PovolebnePlanyClient() {
           <button
             key={cat}
             onClick={() => setActiveCategory(cat)}
-            className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
+            className={`px-3 py-1.5 text-xs font-medium transition-colors border ${
               activeCategory === cat
-                ? "bg-primary-100 text-primary-700"
-                : "bg-neutral-50 text-neutral-500 hover:bg-neutral-100"
+                ? "bg-ink text-paper border-ink"
+                : "border-divider text-text/50 hover:bg-hover"
             }`}
           >
             {cat}
@@ -142,29 +149,28 @@ export default function PovolebnePlanyClient() {
       </div>
 
       {/* Promise cards */}
-      <div className="space-y-3">
+      <div className="divide-y divide-divider border border-divider bg-surface">
         {filtered.length === 0 ? (
-          <div className="text-center py-12 text-neutral-400">
-            <p className="text-lg">Žiadne sľuby v tejto kategórii</p>
-            <p className="text-sm mt-1">Dáta budú doplnené po spustení scrapera</p>
+          <div className="text-center py-12">
+            <p className="text-sm text-text/40">Žiadne sľuby v tejto kategórii</p>
+            <p className="text-xs text-text/30 mt-1">Dáta budú doplnené po spustení scrapera</p>
           </div>
         ) : (
           filtered.map((promise, i) => (
-            <div
-              key={i}
-              className="bg-white rounded-xl border border-neutral-100 p-4 hover:shadow-sm transition-shadow"
-            >
+            <div key={i} className="p-4 hover:bg-hover transition-colors">
               <div className="flex items-start gap-3">
                 <div
-                  className={`mt-0.5 w-6 h-6 rounded-full flex items-center justify-center text-white text-xs ${
-                    promise.isPro ? "bg-green-500" : "bg-red-500"
-                  }`}
+                  className="mt-0.5 w-5 h-5 shrink-0 flex items-center justify-center text-xs font-bold"
+                  style={{
+                    backgroundColor: activePartyData?.color ?? "var(--ink)",
+                    color: "#fff",
+                  }}
                 >
                   {promise.isPro ? "+" : "−"}
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-neutral-800">{promise.text}</p>
-                  <span className="mt-1 inline-block text-xs bg-neutral-100 text-neutral-500 rounded-full px-2 py-0.5">
+                  <p className="text-sm text-ink">{promise.text}</p>
+                  <span className="mt-1 inline-block text-xs text-text/40 uppercase tracking-wider">
                     {promise.category}
                   </span>
                 </div>

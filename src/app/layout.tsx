@@ -1,13 +1,22 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Newsreader } from "next/font/google";
+import { cookies } from "next/headers";
 import "./globals.css";
 import Navbar from "@/components/ui/Navbar";
 import Footer from "@/components/ui/Footer";
 import GdprBanner from "@/components/GdprBanner";
+import ThemeProvider from "@/components/ThemeProvider";
 
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin", "latin-ext"],
+});
+
+const newsreader = Newsreader({
+  variable: "--font-newsreader",
+  subsets: ["latin", "latin-ext"],
+  style: ["normal", "italic"],
+  weight: ["400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -24,18 +33,23 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const cookieStore = await cookies();
+  const theme = (cookieStore.get("theme")?.value as "light" | "dark") || "light";
+
   return (
-    <html lang="sk">
-      <body className={`${inter.variable} font-sans antialiased bg-[#FAFAFA] text-neutral-800`}>
-        <Navbar />
-        <main>{children}</main>
-        <Footer />
-        <GdprBanner />
+    <html lang="sk" className={theme}>
+      <body className={`${inter.variable} ${newsreader.variable} font-sans antialiased`}>
+        <ThemeProvider initialTheme={theme}>
+          <Navbar />
+          <main>{children}</main>
+          <Footer />
+          <GdprBanner />
+        </ThemeProvider>
       </body>
     </html>
   );

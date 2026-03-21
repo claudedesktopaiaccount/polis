@@ -262,32 +262,43 @@ export default function VolebnyKalkulatorClient() {
         <SectionHeading title="Váš výsledok" subtitle="Na základe vašich odpovedí vám najviac vyhovuje:" />
 
         {/* Top match */}
-        <div
-          className="rounded-2xl p-8 text-white text-center mb-8"
-          style={{ backgroundColor: top.party?.color ?? "#7c3aed" }}
-        >
-          <p className="text-6xl font-extrabold mb-2">{top.score}%</p>
-          <h2 className="text-2xl font-bold">{top.party?.name}</h2>
-          <p className="text-white/80 mt-1">{top.party?.leader}</p>
+        <div className="border border-divider bg-surface p-8 text-center mb-8">
+          <p
+            className="text-6xl font-extrabold mb-2"
+            style={{ color: top.party?.color ?? "var(--ink)" }}
+          >
+            {top.score}%
+          </p>
+          <h2 className="font-serif text-2xl font-bold text-ink">{top.party?.name}</h2>
+          <p className="text-sm text-text/60 mt-1">{top.party?.leader}</p>
         </div>
 
         {/* All results */}
-        <div className="space-y-3">
-          {results.map((r) => (
-            <div key={r.partyId} className="flex items-center gap-3">
-              <span className="w-16 text-sm font-medium text-neutral-700">{r.party?.abbreviation}</span>
-              <div className="flex-1 h-8 bg-neutral-100 rounded-full overflow-hidden">
-                <div
-                  className="h-full rounded-full transition-all duration-700 flex items-center justify-end pr-3"
-                  style={{ width: `${r.score}%`, backgroundColor: r.party?.color }}
-                >
-                  {r.score > 15 && (
-                    <span className="text-xs font-bold text-white">{r.score}%</span>
-                  )}
+        <div className="border border-divider bg-surface divide-y divide-divider">
+          {results.map((r) => {
+            const maxScore = results[0].score;
+            const barWidth = maxScore > 0 ? (r.score / maxScore) * 100 : 0;
+            return (
+              <div key={r.partyId} className="flex items-center gap-3 px-4 py-3">
+                <div className="flex items-center gap-2 w-20 shrink-0">
+                  <div className="w-2.5 h-2.5 shrink-0" style={{ backgroundColor: r.party?.color }} />
+                  <span className="text-xs font-medium text-ink">{r.party?.abbreviation}</span>
                 </div>
+                <div className="flex-1 h-6 bg-hover overflow-hidden">
+                  <div
+                    className="h-full transition-all duration-700"
+                    style={{ width: `${barWidth}%`, backgroundColor: r.party?.color }}
+                  />
+                </div>
+                <span
+                  className="text-xs font-bold tabular-nums w-10 text-right"
+                  style={{ color: r.party?.color }}
+                >
+                  {r.score}%
+                </span>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         <button
@@ -296,7 +307,7 @@ export default function VolebnyKalkulatorClient() {
             setAnswers({});
             setShowResults(false);
           }}
-          className="mt-8 w-full py-3 bg-primary-600 text-white rounded-xl font-medium hover:bg-primary-700 transition-colors"
+          className="mt-8 w-full py-3 bg-ink text-paper font-semibold text-sm border border-ink hover:bg-transparent hover:text-ink transition-colors"
         >
           Skúsiť znova
         </button>
@@ -316,28 +327,28 @@ export default function VolebnyKalkulatorClient() {
 
       {/* Progress bar */}
       <div className="mb-8">
-        <div className="flex justify-between text-xs text-neutral-400 mb-1">
+        <div className="flex justify-between text-xs text-text/40 mb-1">
           <span>Otázka {currentQ + 1} z {QUESTIONS.length}</span>
           <span>{Math.round(progress)}%</span>
         </div>
-        <div className="h-2 bg-neutral-100 rounded-full overflow-hidden" role="progressbar" aria-valuenow={Math.round(progress)} aria-valuemin={0} aria-valuemax={100} aria-label="Postup v dotazníku">
+        <div className="h-1.5 bg-hover overflow-hidden" role="progressbar" aria-valuenow={Math.round(progress)} aria-valuemin={0} aria-valuemax={100} aria-label="Postup v dotazníku">
           <div
-            className="h-full bg-primary-500 rounded-full transition-all duration-300"
+            className="h-full bg-ink transition-all duration-300"
             style={{ width: `${progress}%` }}
           />
         </div>
       </div>
 
       {/* Question */}
-      <div className="bg-white rounded-2xl shadow-sm border border-neutral-100 p-6 mb-4">
-        <h3 className="text-xl font-semibold text-neutral-800 mb-6">{question.text}</h3>
-        <div className="space-y-3">
+      <div className="border border-divider bg-surface p-6 mb-4">
+        <h3 className="font-serif text-xl font-bold text-ink mb-6">{question.text}</h3>
+        <div className="space-y-2">
           {question.answers.map((answer, i) => (
             <button
               key={i}
               onClick={() => selectAnswer(i)}
               aria-label={`Odpoveď: ${answer.label}`}
-              className="w-full text-left p-4 rounded-xl border-2 border-neutral-200 hover:border-primary-400 hover:bg-primary-50 transition-all duration-200 text-base font-medium text-neutral-700"
+              className="w-full text-left p-4 border border-divider text-sm font-medium text-text hover:bg-hover hover:border-ink transition-colors"
             >
               {answer.label}
             </button>
@@ -349,7 +360,7 @@ export default function VolebnyKalkulatorClient() {
       {currentQ > 0 && (
         <button
           onClick={() => setCurrentQ(currentQ - 1)}
-          className="text-sm text-neutral-500 hover:text-primary-600 transition-colors"
+          className="text-sm text-text/50 hover:text-ink transition-colors"
         >
           ← Predchádzajúca otázka
         </button>

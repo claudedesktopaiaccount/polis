@@ -187,7 +187,7 @@ Daily scheduled test fetching real Wikipedia page, validating ≥5 polls with re
 ### 🟢 Phase 4: Polish (Nice-to-Have)
 
 - **Analytics:** Umami (GDPR-compliant, self-hosted)
-- **Dark mode:** Tailwind v4 dark variant in `globals.css`
+- ~~**Dark mode:**~~ ✅ Done (cookie-based ThemeProvider + CSS custom properties)
 - **Data retention:** Scheduled purge of old `userPredictions` after electoral cycle
 - **README:** Replace default create-next-app with real documentation
 
@@ -340,12 +340,103 @@ Non-blocking, can ignore.
 
 ---
 
-## Design Rules
-- Purple/violet theme (`#7c3aed` primary)
-- Inter font
-- Party cards: `h-44` portrait area with party backgroundColor, grayscale→color hover, bottom gradient in party color
-- NO color overlays on faces — only background behind person
-- Match progresivne.sk aesthetic
+## Design Rules — Editorial Authority Redesign
+
+**Smer:** FiveThirtyEight / Financial Times / The Economist inšpirovaný editorial broadsheet.
+**Stitch zdroj:** `stitch/` priečinok — HTML mockupy + screenshoty + `editorial_authority_prd.html`
+
+### Design System
+
+| Token | Light | Dark |
+|-------|-------|------|
+| Background | `#F4F3EE` (newsprint off-white) | `#101622` |
+| Surface | `#FFFFFF` | `#1A1F2E` |
+| Ink (primary) | `#111110` | `#E8E8E3` |
+| Text | `#2C2C2A` | `#E8E8E3` |
+| Divider | `#D6D5CF` | `#2A2F3E` |
+| Hover | `#EBEBE6` | `#252A38` |
+
+- **Fonts:** Newsreader (serif, nadpisy), Inter (body/dáta), tabular-nums pre čísla
+- **Border radius:** 0px všade (ostré hrany)
+- **Borders:** Hairline 1px (`divider`), thick 3px (`ink`) pre navbar
+- **Shadows:** Žiadne — len borders
+- **Party colors:** Zachovať existujúce z `globals.css`
+
+---
+
+## 🔄 Redesign — Editorial Authority + Dark Mode
+
+### Fáza R0: Design System Foundation
+**Status:** ✅ DONE
+
+Nahradený @theme block editorial tokenmi (ink, paper, surface, divider, hover). Pridané `:root` a `.dark` CSS premenné. Newsreader font cez `next/font/google`. Globálne `border-radius: 0 !important`, žiadne shadows.
+
+---
+
+### Fáza R1: Zdieľané komponenty + Dark Mode infraštruktúra
+**Status:** ✅ DONE
+
+ThemeProvider (cookie-based dark/light). Navbar: 3px bottom border, 60px, sun/moon toggle. Footer: hardcoded dark bg. SectionHeading: serif + uppercase subtitle + hairline.
+
+---
+
+### Fáza R2: Homepage
+**Status:** ✅ DONE
+
+2-stĺpcový layout (content + news sidebar). HeroBanner: serif typografia, štvorcové portréty, vertikálna hairline. PartyCard: transparentné bg, bottom hairline. NewsHeadlines: vertikálny zoznam.
+
+---
+
+### Fáza R3: Prieskumy (Polls)
+**Status:** ✅ DONE
+
+AreaChart → LineChart 500px, 2px čiary, 5% dashed threshold. Filter sidebar (agency checkboxes + time range). Raw data tabuľka + CSV export. Theme-aware CSS variables pre Recharts.
+
+---
+
+### Fáza R4: Predikcia
+**Status:** ✅ DONE
+
+ParliamentGrid (10×15, 150 seats). 50/50 layout: win probability bars (32px) + seat grid. Editorial prediction tabuľka.
+
+---
+
+### Fáza R5: Koalícny simulátor
+**Status:** ✅ DONE
+
+SVG Hemicycle (5 riadkov: 20,25,30,35,40 dots), dashed majority line. Hemicycle hore, seat counter + "VÄČŠINA" stamp, party tabuľka s checkboxami, preset koalície.
+
+---
+
+### Fáza R6: Tipovanie
+**Status:** ✅ DONE
+
+2-stĺpcový layout na desktope (voting + crowd results). Editorial party list, leaderboard tabuľka s progress barmi. Slider model ODLOŽENÝ.
+
+---
+
+### Fáza R7: Polish + Dark Mode finalizácia
+**Status:** ✅ DONE
+
+Restyled: error.tsx, GdprBanner.tsx, sukromie (page + ExportDataButton + DeleteDataButton + ConsentManager), podmienky, VolebnyKalkulatorClient, PovolebnePlanyClient. Všetky komponenty používajú editorial tokeny. Dark mode funguje cez CSS custom properties. Build + lint + 39 testov OK.
+
+---
+
+### Čo zo stitch NEPREBERIEME
+
+| Návrh | Dôvod |
+|---|---|
+| 3-stĺpcový layout s ľavým sidebar nav | Duplikuje navbar |
+| Material Symbols ikony | +100KB, inline SVG je lepšie |
+| Slider model tipovanie | Vyžaduje DB migráciu |
+| Odlišné party farby z PRD | Zachovávame Wikipedia-verified |
+
+### Poradie implementácie
+```
+R0 (tokens) → R1 (shared + dark) → R2 (homepage) → R3 (prieskumy)
+→ R4 (predikcia) → R5 (simulátor) → R6 (tipovanie) → R7 (polish)
+```
+Fázy R0+R1 sú prerequisite. R3-R6 sú nezávislé (možno paralelizovať).
 
 ---
 

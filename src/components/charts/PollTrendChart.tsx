@@ -1,14 +1,15 @@
 "use client";
 
 import {
-  AreaChart,
-  Area,
+  LineChart,
+  Line,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
   ReferenceLine,
+  Legend,
 } from "recharts";
 
 interface Party {
@@ -23,63 +24,69 @@ interface PollTrendChartProps {
 }
 
 export default function PollTrendChart({ data, parties }: PollTrendChartProps) {
-  // Only show parties with data
   const visibleParties = parties.filter((p) =>
     data.some((d) => typeof d[p.id] === "number" && (d[p.id] as number) > 0)
   );
 
   return (
-    <div className="w-full h-[400px]">
+    <div className="w-full h-[500px]">
       <ResponsiveContainer width="100%" height="100%">
-        <AreaChart data={data} margin={{ top: 5, right: 10, left: -10, bottom: 5 }}>
-          <defs>
-            {visibleParties.map((party) => (
-              <linearGradient key={party.id} id={`gradient-${party.id}`} x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor={party.color} stopOpacity={0.3} />
-                <stop offset="95%" stopColor={party.color} stopOpacity={0.02} />
-              </linearGradient>
-            ))}
-          </defs>
-          <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-          <XAxis dataKey="month" tick={{ fontSize: 12, fill: "#9ca3af" }} />
+        <LineChart data={data} margin={{ top: 10, right: 20, left: -10, bottom: 5 }}>
+          <CartesianGrid strokeDasharray="3 3" stroke="var(--divider)" />
+          <XAxis
+            dataKey="date"
+            tick={{ fontSize: 11, fill: "var(--text)" }}
+            tickLine={{ stroke: "var(--divider)" }}
+            axisLine={{ stroke: "var(--divider)" }}
+          />
           <YAxis
-            tick={{ fontSize: 12, fill: "#9ca3af" }}
+            tick={{ fontSize: 11, fill: "var(--text)" }}
             tickFormatter={(v: number) => `${v}%`}
             domain={[0, "auto"]}
+            tickLine={{ stroke: "var(--divider)" }}
+            axisLine={{ stroke: "var(--divider)" }}
           />
           <Tooltip
             contentStyle={{
-              backgroundColor: "white",
-              border: "1px solid #e5e7eb",
-              borderRadius: "12px",
+              backgroundColor: "var(--surface)",
+              border: "1px solid var(--ink)",
+              borderRadius: "0",
               padding: "12px",
               fontSize: "13px",
+              color: "var(--text)",
             }}
             formatter={(value, name) => {
               const party = parties.find((p) => p.id === name);
               return [`${Number(value).toFixed(1)}%`, party?.abbreviation ?? String(name)];
             }}
+            labelStyle={{ fontWeight: 600, color: "var(--ink)" }}
+          />
+          <Legend
+            formatter={(value) => {
+              const party = parties.find((p) => p.id === value);
+              return party?.abbreviation ?? value;
+            }}
+            wrapperStyle={{ fontSize: "12px", color: "var(--text)" }}
           />
           <ReferenceLine
             y={5}
-            stroke="#ef4444"
+            stroke="var(--text)"
             strokeDasharray="6 3"
-            strokeOpacity={0.5}
-            label={{ value: "5% prah", position: "right", fill: "#ef4444", fontSize: 11 }}
+            strokeOpacity={0.4}
+            label={{ value: "5%", position: "right", fill: "var(--text)", fontSize: 11 }}
           />
           {visibleParties.map((party) => (
-            <Area
+            <Line
               key={party.id}
               type="monotone"
               dataKey={party.id}
               stroke={party.color}
               strokeWidth={2}
-              fill={`url(#gradient-${party.id})`}
               dot={false}
               activeDot={{ r: 4, strokeWidth: 2 }}
             />
           ))}
-        </AreaChart>
+        </LineChart>
       </ResponsiveContainer>
     </div>
   );

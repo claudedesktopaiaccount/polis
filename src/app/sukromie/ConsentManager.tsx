@@ -20,29 +20,29 @@ export default function ConsentManager() {
   if (!mounted) return null;
 
   return (
-    <div className="rounded-xl border border-neutral-200 p-4 space-y-3">
+    <div className="border border-divider bg-surface p-4 space-y-3">
       <div className="flex items-center justify-between">
-        <span className="text-sm font-medium text-neutral-800">Fingerprinting súhlas</span>
+        <span className="text-sm font-medium text-ink">Fingerprinting súhlas</span>
         <span
-          className={`text-xs font-medium px-2 py-1 rounded-full ${
+          className={`text-xs font-bold uppercase tracking-wider px-2 py-1 ${
             status === "accepted"
-              ? "bg-green-100 text-green-700"
+              ? "text-ink bg-hover"
               : status === "rejected"
-                ? "bg-red-100 text-red-700"
-                : "bg-neutral-100 text-neutral-500"
+                ? "text-danger bg-hover"
+                : "text-text/40 bg-hover"
           }`}
         >
           {status === "accepted" ? "Povolený" : status === "rejected" ? "Odmietnutý" : "Nerozhodnuté"}
         </span>
       </div>
-      <p className="text-sm text-neutral-600">
+      <p className="text-sm text-text">
         Fingerprinting sa používa výhradne na zabránenie duplicitným hlasom v sekcii Tipovanie.
       </p>
       <div className="flex gap-3">
         {status !== "rejected" && (
           <button
             onClick={() => handleChange("rejected")}
-            className="px-4 py-2 text-sm font-medium text-neutral-600 border border-neutral-300 rounded-lg hover:bg-neutral-50 transition-colors"
+            className="px-4 py-2 text-sm font-medium text-text border border-divider hover:bg-hover transition-colors"
           >
             Odmietnuť
           </button>
@@ -50,7 +50,7 @@ export default function ConsentManager() {
         {status !== "accepted" && (
           <button
             onClick={() => handleChange("accepted")}
-            className="px-4 py-2 text-sm font-medium text-white bg-violet-600 rounded-lg hover:bg-violet-700 transition-colors"
+            className="px-4 py-2 text-sm font-semibold bg-ink text-paper border border-ink hover:bg-transparent hover:text-ink transition-colors"
           >
             Povoliť
           </button>

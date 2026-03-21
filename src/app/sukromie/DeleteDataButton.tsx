@@ -33,7 +33,7 @@ export default function DeleteDataButton() {
 
   if (status === "done") {
     return (
-      <p className="text-green-700 font-medium">
+      <p className="text-ink font-medium">
         Vaše údaje boli úspešne vymazané.
       </p>
     );
@@ -44,12 +44,12 @@ export default function DeleteDataButton() {
       <button
         onClick={handleDelete}
         disabled={status === "loading"}
-        className="px-6 py-3 bg-red-600 text-white font-semibold rounded-xl hover:bg-red-700 transition-colors disabled:opacity-50"
+        className="px-6 py-3 bg-danger text-paper font-semibold text-sm border border-danger hover:bg-transparent hover:text-danger transition-colors disabled:opacity-50"
       >
         {status === "loading" ? "Mazanie..." : "Vymazať moje údaje"}
       </button>
       {status === "error" && (
-        <p className="text-red-600 text-sm mt-2">Nastala chyba. Skúste to znova neskôr.</p>
+        <p className="text-danger text-sm mt-2">Nastala chyba. Skúste to znova neskôr.</p>
       )}
     </div>
   );

@@ -5,9 +5,15 @@ interface SectionHeadingProps {
 
 export default function SectionHeading({ title, subtitle }: SectionHeadingProps) {
   return (
-    <div className="mb-6">
-      <h2 className="text-2xl font-semibold tracking-tight text-neutral-800">{title}</h2>
-      {subtitle && <p className="mt-1 text-sm text-neutral-500">{subtitle}</p>}
+    <div className="mb-8 border-b border-divider pb-4">
+      <h2 className="font-serif text-2xl font-bold tracking-tight text-ink sm:text-3xl">
+        {title}
+      </h2>
+      {subtitle && (
+        <p className="mt-1 text-xs font-medium uppercase tracking-widest text-text/60">
+          {subtitle}
+        </p>
+      )}
     </div>
   );
 }

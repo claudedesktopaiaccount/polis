@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { PARTIES, PARTY_LIST, COALITIONS } from "@/lib/parties";
 import { allocateSeats } from "@/lib/prediction/dhondt";
+import Hemicycle from "@/components/charts/Hemicycle";
 
 const MAJORITY = 76;
 
@@ -40,153 +41,130 @@ export default function KoalicnyClient({ pollResults }: KoalicnyClientProps) {
 
   return (
     <>
-      {/* Presets */}
-      <div className="flex flex-wrap gap-3 mb-6">
-        <button
-          onClick={() => applyPreset(COALITIONS.progressive)}
-          className="px-4 py-2 text-sm font-medium bg-primary-50 text-primary-700 rounded-lg hover:bg-primary-100 transition-colors"
-        >
-          Progresívna koalícia
-        </button>
-        <button
-          onClick={() => applyPreset(COALITIONS.fico)}
-          className="px-4 py-2 text-sm font-medium bg-red-50 text-red-700 rounded-lg hover:bg-red-100 transition-colors"
-        >
-          Koalícia Fico
-        </button>
-        <button
-          onClick={() => setSelected(new Set())}
-          className="px-4 py-2 text-sm font-medium bg-neutral-100 text-neutral-600 rounded-lg hover:bg-neutral-200 transition-colors"
-        >
-          Vymazať
-        </button>
-      </div>
-
-      {/* Party selector grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-8" role="group" aria-label="Výber strán pre koalíciu">
-        {PARTY_LIST.map((party) => {
-          const seats = seatMap[party.id] ?? 0;
-          const isSelected = selected.has(party.id);
-          const isInParliament = inParliament.includes(party.id);
-
-          return (
-            <button
-              key={party.id}
-              onClick={() => isInParliament && toggleParty(party.id)}
-              disabled={!isInParliament}
-              aria-pressed={isSelected}
-              aria-label={`${party.name}, ${seats} mandátov`}
-              className={`relative rounded-xl p-4 border-2 transition-all duration-200 text-left ${
-                !isInParliament
-                  ? "opacity-40 cursor-not-allowed border-neutral-200 bg-neutral-50"
-                  : isSelected
-                    ? "border-current shadow-md scale-[1.02]"
-                    : "border-neutral-200 bg-white hover:border-neutral-300 hover:shadow-sm"
-              }`}
-              style={
-                isSelected
-                  ? {
-                      borderColor: party.color,
-                      backgroundColor: party.color + "10",
-                    }
-                  : undefined
-              }
-            >
-              <div className="flex items-center gap-2 mb-2">
-                <div
-                  className="w-4 h-4 rounded-full"
-                  style={{ backgroundColor: party.color }}
-                />
-                <span className="font-semibold text-sm">{party.abbreviation}</span>
-              </div>
-              <p
-                className="text-2xl font-bold tabular-nums"
-                style={{
-                  color: isInParliament ? party.color : undefined,
-                }}
-              >
-                {seats}
-              </p>
-              <p className="text-xs text-neutral-500">mandátov</p>
-              {!isInParliament && (
-                <p className="text-xs text-red-500 mt-1">Pod 5% prahom</p>
-              )}
-            </button>
-          );
-        })}
-      </div>
-
-      {/* Coalition result */}
-      <div
-        className={`rounded-2xl p-6 border-2 transition-all duration-300 ${
-          selected.size === 0
-            ? "border-neutral-200 bg-neutral-50"
-            : hasMajority
-              ? "border-green-300 bg-green-50"
-              : "border-red-300 bg-red-50"
-        }`}
-      >
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div>
-            <h3 className="text-lg font-semibold">
-              {selected.size === 0
-                ? "Vyberte strany"
-                : hasMajority
-                  ? "Väčšinová koalícia"
-                  : "Menšinová koalícia"}
-            </h3>
-            <p className="text-sm text-neutral-600 mt-1">
-              {selected.size > 0 && (
-                <>
-                  {Array.from(selected)
-                    .map((id) => PARTIES[id]?.abbreviation)
-                    .join(" + ")}
-                </>
-              )}
+      {/* Top section: hemicycle + result */}
+      <div className="border border-divider bg-surface p-6 mb-8">
+        <div className="flex flex-col md:flex-row items-center gap-6">
+          {/* Seat count */}
+          <div className="text-center md:text-left shrink-0">
+            <p className="text-xs font-medium uppercase tracking-widest text-text/50 mb-1">
+              Zloženie parlamentu
             </p>
+            <p className="text-ink">
+              <span className="text-6xl font-bold tabular-nums">{coalitionSeats}</span>
+              <span className="text-2xl text-text/40">/{MAJORITY}</span>
+            </p>
+            {selected.size > 0 && hasMajority && (
+              <div className="mt-3 border-2 border-ink px-4 py-2 inline-block">
+                <span className="font-serif text-2xl font-bold text-ink tracking-tight">
+                  VÄČŠINA
+                </span>
+              </div>
+            )}
+            {selected.size > 0 && !hasMajority && (
+              <p className="mt-3 text-sm text-danger font-medium">
+                Chýba {MAJORITY - coalitionSeats} mandátov
+              </p>
+            )}
           </div>
 
-          <div className="text-center">
-            <p
-              className={`text-5xl font-extrabold tabular-nums ${
-                selected.size === 0
-                  ? "text-neutral-300"
-                  : hasMajority
-                    ? "text-green-600"
-                    : "text-red-600"
-              }`}
-            >
-              {coalitionSeats}
-            </p>
-            <p className="text-sm text-neutral-500">z {MAJORITY} potrebných</p>
+          {/* Hemicycle */}
+          <div className="flex-1 w-full max-w-md">
+            <Hemicycle seats={allSeats} selectedParties={selected} />
           </div>
         </div>
 
-        {/* Seat bar */}
-        {selected.size > 0 && (
-          <div className="mt-4">
-            <div className="h-6 bg-neutral-200 rounded-full overflow-hidden relative">
-              <div
-                className={`h-full rounded-full transition-all duration-500 ${
-                  hasMajority ? "bg-green-500" : "bg-red-400"
-                }`}
-                style={{
-                  width: `${Math.min(100, (coalitionSeats / 150) * 100)}%`,
-                }}
-              />
-              {/* Majority line */}
-              <div
-                className="absolute top-0 bottom-0 w-0.5 bg-neutral-800"
-                style={{ left: `${(MAJORITY / 150) * 100}%` }}
-              />
-            </div>
-            <div className="flex justify-between mt-1 text-xs text-neutral-500">
-              <span>0</span>
-              <span className="font-medium">76 (väčšina)</span>
-              <span>150</span>
-            </div>
-          </div>
-        )}
+        {/* Preset buttons */}
+        <div className="mt-6 flex flex-wrap gap-3 border-t border-divider pt-4">
+          <button
+            onClick={() => applyPreset(COALITIONS.progressive)}
+            className="px-4 py-2 text-sm font-medium border border-divider text-text hover:bg-hover transition-colors"
+          >
+            Progresívna koalícia
+          </button>
+          <button
+            onClick={() => applyPreset(COALITIONS.fico)}
+            className="px-4 py-2 text-sm font-medium border border-divider text-text hover:bg-hover transition-colors"
+          >
+            Koalícia Fico
+          </button>
+          <button
+            onClick={() => setSelected(new Set())}
+            className="px-4 py-2 text-sm font-medium border border-divider text-text/50 hover:bg-hover transition-colors"
+          >
+            Zmazať výber
+          </button>
+        </div>
+      </div>
+
+      {/* Party table with checkboxes */}
+      <div className="border border-divider bg-surface p-6" role="group" aria-label="Výber strán pre koalíciu">
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b-2 border-ink">
+                <th className="text-left py-2 px-2 w-10"></th>
+                <th className="text-left py-2 px-2 font-semibold text-ink text-xs uppercase tracking-wider">
+                  Strana
+                </th>
+                <th className="text-right py-2 px-2 font-semibold text-ink text-xs uppercase tracking-wider">
+                  %
+                </th>
+                <th className="text-right py-2 px-2 font-semibold text-ink text-xs uppercase tracking-wider">
+                  Mandáty
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {PARTY_LIST.map((party) => {
+                const seats = seatMap[party.id] ?? 0;
+                const isSelected = selected.has(party.id);
+                const isInParliament = inParliament.includes(party.id);
+                const pct = pollResults.find((p) => p.partyId === party.id)?.percentage ?? 0;
+
+                return (
+                  <tr
+                    key={party.id}
+                    className={`border-b border-divider transition-colors cursor-pointer ${
+                      !isInParliament
+                        ? "opacity-40"
+                        : isSelected
+                          ? "bg-hover"
+                          : "hover:bg-hover"
+                    }`}
+                    onClick={() => isInParliament && toggleParty(party.id)}
+                  >
+                    <td className="py-3 px-2">
+                      <input
+                        type="checkbox"
+                        checked={isSelected}
+                        disabled={!isInParliament}
+                        onChange={() => {}}
+                        aria-pressed={isSelected}
+                        aria-label={`${party.name}, ${seats} mandátov`}
+                        className="accent-ink w-4 h-4 cursor-pointer"
+                      />
+                    </td>
+                    <td className="py-3 px-2">
+                      <div className="flex items-center gap-2">
+                        <div
+                          className="w-3 h-3 shrink-0"
+                          style={{ backgroundColor: party.color }}
+                        />
+                        <span className="font-medium text-ink">{party.name}</span>
+                      </div>
+                    </td>
+                    <td className="text-right py-3 px-2 tabular-nums text-text/60">
+                      {pct.toFixed(1)}%
+                    </td>
+                    <td className="text-right py-3 px-2 tabular-nums font-bold text-ink">
+                      {seats}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       </div>
     </>
   );
