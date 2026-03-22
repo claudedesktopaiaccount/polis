@@ -29,18 +29,18 @@ export default function PartyCard({
       <div className="flex items-start gap-4">
         {/* Portrait */}
         {portraitUrl ? (
-          <div className="relative w-12 h-12 shrink-0 overflow-hidden border border-divider">
+          <div className="relative w-16 h-16 sm:w-20 sm:h-20 shrink-0 overflow-hidden border border-divider rounded-sm">
             <Image
               src={portraitUrl}
               alt={`Portrét ${leader}, líder ${name}`}
               fill
               className="object-cover object-top"
-              sizes="48px"
+              sizes="(min-width: 640px) 80px, 64px"
             />
           </div>
         ) : (
           <div
-            className="w-12 h-12 shrink-0 flex items-center justify-center text-white text-xs font-bold"
+            className="w-16 h-16 sm:w-20 sm:h-20 shrink-0 flex items-center justify-center text-white text-sm font-bold rounded-sm"
             style={{ backgroundColor: color }}
           >
             {abbreviation}

@@ -22,11 +22,11 @@ function TrendIndicator({ trend }: { trend: number }) {
   const isNeutral = trend === 0;
   return (
     <span
-      className={`text-sm font-medium tabular-nums ${
+      className={`text-sm sm:text-base font-semibold tabular-nums ${
         isNeutral ? "text-text/50" : isPositive ? "text-emerald-600" : "text-red-600"
       }`}
     >
-      {isPositive ? "▲" : isNeutral ? "" : "▼"} {isPositive ? "+" : ""}
+      {isPositive ? "▲" : isNeutral ? "—" : "▼"} {isPositive ? "+" : ""}
       {trend.toFixed(1)}%
     </span>
   );
@@ -34,52 +34,131 @@ function TrendIndicator({ trend }: { trend: number }) {
 
 function CandidateColumn({ data }: { data: CandidateData }) {
   const lastName = data.name.split(" ").pop() ?? data.name;
+
   return (
-    <div className="flex flex-col items-center text-center gap-2">
-      <div className="relative w-24 h-24 sm:w-28 sm:h-28 overflow-hidden border border-divider">
+    <div className="flex flex-col items-center text-center gap-3 sm:gap-4 flex-1">
+      {/* Portrait — big and prominent */}
+      <div
+        className="relative w-32 h-32 sm:w-44 sm:h-44 lg:w-52 lg:h-52 overflow-hidden border-3 rounded-md shadow-lg"
+        style={{ borderColor: data.color }}
+      >
         <Image
           src={data.portraitUrl}
           alt={data.name}
           fill
           className="object-cover object-top"
-          sizes="112px"
+          sizes="(min-width: 1024px) 208px, (min-width: 640px) 176px, 128px"
+          priority
         />
       </div>
-      <h2 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-ink">
-        {lastName}
-      </h2>
-      <p className="text-3xl sm:text-4xl font-bold tabular-nums text-ink">
+
+      {/* Name + party */}
+      <div>
+        <h2 className="font-serif text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-ink leading-none">
+          {lastName}
+        </h2>
+        <p className="mt-1.5 text-xs sm:text-sm text-text/50 font-medium">
+          {data.party}
+        </p>
+      </div>
+
+      {/* Percentage */}
+      <p className="text-4xl sm:text-5xl lg:text-6xl font-black tabular-nums text-ink leading-none">
         {data.percentage.toFixed(1)}%
       </p>
+
+      {/* Trend */}
       <TrendIndicator trend={data.trend} />
+    </div>
+  );
+}
+
+function StrengthBar({
+  leftPct,
+  rightPct,
+  leftColor,
+  rightColor,
+}: {
+  leftPct: number;
+  rightPct: number;
+  leftColor: string;
+  rightColor: string;
+}) {
+  const total = leftPct + rightPct;
+  const leftShare = (leftPct / total) * 100;
+  const diff = Math.abs(leftPct - rightPct).toFixed(1);
+  const leader = leftPct > rightPct ? "left" : "right";
+
+  return (
+    <div className="w-full max-w-md mx-auto mt-10 sm:mt-12">
+      {/* Difference badge */}
+      <div className="flex justify-center mb-3">
+        <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-ink text-paper text-xs sm:text-sm font-bold tabular-nums rounded-full">
+          {leader === "left" ? "←" : "→"} {diff} b. náskok
+        </span>
+      </div>
+
+      {/* Bar with percentage labels */}
+      <div className="flex items-center gap-2 sm:gap-3">
+        <span className="text-sm sm:text-base font-bold tabular-nums text-ink shrink-0">
+          {leftPct.toFixed(1)}%
+        </span>
+        <div className="flex h-3 sm:h-4 rounded-full overflow-hidden gap-0.5 flex-1">
+          <div
+            className="rounded-l-full transition-all duration-700"
+            style={{ width: `${leftShare}%`, backgroundColor: leftColor }}
+          />
+          <div
+            className="rounded-r-full transition-all duration-700"
+            style={{ width: `${100 - leftShare}%`, backgroundColor: rightColor }}
+          />
+        </div>
+        <span className="text-sm sm:text-base font-bold tabular-nums text-ink shrink-0">
+          {rightPct.toFixed(1)}%
+        </span>
+      </div>
     </div>
   );
 }
 
 export default function HeroBanner({ left, right, lastPollAgency, lastPollDate }: HeroBannerProps) {
   return (
-    <section className="border-b border-divider">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
-        <p className="text-center text-xs font-medium uppercase tracking-widest text-text/50 mb-6">
+    <section className="border-b border-divider bg-gradient-to-b from-paper to-surface/50">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-14 sm:py-20 lg:py-24">
+        <p className="text-center text-[10px] sm:text-xs font-semibold uppercase tracking-[0.2em] text-text/40 mb-10 sm:mb-14">
           Kľúčový súboj o premiérske kreslo
         </p>
 
-        <div className="flex items-center justify-center gap-6 sm:gap-10 lg:gap-16">
+        {/* Candidates side-by-side, centered & symmetric */}
+        <div className="flex items-start justify-center gap-6 sm:gap-12 lg:gap-20">
           <CandidateColumn data={left} />
 
-          {/* Vertical hairline divider */}
-          <div className="w-px h-32 sm:h-40 bg-divider" />
+          {/* Vertical divider with VS */}
+          <div className="flex flex-col items-center gap-2 pt-14 sm:pt-20 lg:pt-24 shrink-0">
+            <div className="w-px h-16 sm:h-24 bg-divider" />
+            <span className="text-xs sm:text-sm font-bold text-text/25 tracking-widest">VS</span>
+            <div className="w-px h-16 sm:h-24 bg-divider" />
+          </div>
 
           <CandidateColumn data={right} />
         </div>
 
-        <div className="mt-8 flex flex-col items-center gap-3">
-          <p className="text-xs text-text/50 tabular-nums">
+        {/* Strength bar */}
+        <StrengthBar
+          leftPct={left.percentage}
+          rightPct={right.percentage}
+          leftColor={left.color}
+          rightColor={right.color}
+        />
+
+        {/* Footer */}
+        <div className="mt-10 sm:mt-12 flex flex-col items-center gap-4">
+          <p className="text-xs text-text/40 tabular-nums">
             {lastPollAgency}, {lastPollDate}
           </p>
           <Link
             href="/predikcia"
-            className="inline-block border border-ink bg-ink text-paper px-5 py-2.5 text-sm font-semibold hover:bg-transparent hover:text-ink transition-colors"
+            className="inline-block border-2 border-ink bg-ink text-paper px-6 py-3 text-sm font-bold hover:bg-transparent hover:text-ink transition-colors"
           >
             Zobraziť detailnú predikciu
           </Link>

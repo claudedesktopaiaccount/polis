@@ -447,3 +447,161 @@ npx next dev
 # Visit http://localhost:3000
 # Test scraper: http://localhost:3000/api/scrape
 ```
+
+---
+
+## 🎯 Gap Analysis — Čo chýba na "milión"
+
+**Aktuálny stav:** Funkčné MVP s 9 stránkami, real data pipeline, editorial dizajnom, GDPR compliance, CI/CD, a error trackingom. Solidný technický základ — ale na monetizovateľný produkt chýba veľa.
+
+---
+
+### 🔴 Must-Have (bez toho to nie je produkt)
+
+#### 1. Business Model & Monetizácia
+- **Žiadny revenue stream** — stránka je čisto bezplatná bez akejkoľvek monetizačnej stratégie
+- Možnosti:
+  - **Freemium:** základné dáta zadarmo, detailné analýzy/historické dáta za predplatné
+  - **Newsletter:** týždenný politický prehľad (lead generation + sponzori)
+  - **API access:** predaj poll dát a predikcií pre médiá/akademikov
+  - **Reklama:** programmatic ads alebo priami sponzori (politicky neutrálne!)
+  - **B2B:** white-label dashboardy pre médiá, think-tanky, politické strany
+
+#### 2. Reálne dáta namiesto mockov
+- **Volebný kalkulátor** (`/volebny-kalkulator`) — 20 otázok má **hardcoded party weights** (nie sú odvodené z reálnych programov)
+- **Povolebné plány** (`/povolebne-plany`) — **mock dáta** pre všetkých 10 strán (nie sú reálne programové body)
+- **News scraping** — dáta sa nikde neperzistujú do DB, pri každom requeste sa scrapujú nanovo
+- Fix: Admin panel na správu obsahu + reálne party manifesto dáta + news caching do D1
+
+#### 3. Admin Panel
+- Žiadny spôsob ako spravovať obsah bez deploymentu
+- Treba: CMS alebo admin dashboard na:
+  - Správu party dát a programových bodov
+  - Manuálne pridávanie poll výsledkov
+  - Moderáciu crowd predictions
+  - Monitoring scraper health
+
+#### 4. SEO & Discoverability
+- **Chýba `robots.txt`** — search engines nemajú guidance
+- **Žiadne OG images** — social sharing vyzerá generic (žiadny preview obrázok)
+- **Žiadne JSON-LD structured data** — Google nezobrazí rich snippets
+- **Sitemap bez `lastmod`/`priority`** — crawlery nevedia čo je dôležité
+- **Žiadne social sharing tlačidlá** na stránkach
+
+#### 5. User Authentication & Accounts
+- Len cookie-based anonymous visitor tracking
+- Treba:
+  - **User accounts** (email/OAuth) — personalizácia, saved preferences
+  - **Email notifikácie** — "tvoja predikcia sa zmenila", weekly digest
+  - **Uložené tipovanie** — história tipov naprieč zariadeniami
+  - **Profil** — track record presnosti predikcií
+
+---
+
+### 🟡 Should-Have (bez toho to nie je profesionálny produkt)
+
+#### 6. Analytics & Metriky
+- **Žiadna analytics platforma** — nevieme koľko ľudí stránku používa
+- Odporúčanie: **Umami** (GDPR-compliant, self-hosted) alebo **Plausible**
+- Treba sledovať: page views, bounce rate, feature engagement, conversion funnel
+- **Žiadne A/B testing** — nevieme čo funguje lepšie
+
+#### 7. Performance Optimalizácia
+- **Recharts nie je lazy-loaded** — ~200KB gzipped na každej stránke (aj keď sa nepoužíva)
+- **Portraits sú raw JPG** — nie WebP/AVIF, nie optimalizované cez `next/image` všade
+- **Grafy majú fixed height 400px** — nečitateľné na mobile
+- **Žiadny bundle analysis** — nevieme kde sú bottlenecky
+- **ISR interval 6h pre news** — novinky sú zastaralé (treba 1h)
+
+#### 8. E2E & Integration Testy
+- **33 unit testov** ale **žiadne E2E testy** (Playwright)
+- **Žiadne integration testy** pre API routes
+- Kritické netestované flows:
+  - Homepage load → poll data rendering
+  - Tipovanie: vote → duplicate detection → CSRF
+  - GDPR: delete → verify removal → audit log
+  - Koalícny simulátor: party selection → seat calculation
+
+#### 9. Engagement & Retention
+- **Žiadny newsletter** — najsilnejší retention nástroj pre politický obsah
+- **Žiadne push notifikácie** — nové prieskumy, zmeny v predikciách
+- **Žiadne social sharing** — stránky sa nedajú ľahko zdieľať
+- **Tipovanie je basic** — chýba leaderboard, historické skóre, gamification
+- **Žiadne komentáre/diskusia** — žiadna komunita
+
+#### 10. Accessibility (A11y) Gaps
+- **Žiadny skip-to-main link** — screen reader users musia prechádzať celý navbar
+- **Žiadny focus management** na mobile drawer menu
+- **Color contrast neverifikovaný** — editorial palette môže mať problémy
+- **Žiadne keyboard navigation guides** v interaktívnych komponentoch
+- **Chýba `lang="sk"` na `<html>` tagu** (treba overiť)
+
+---
+
+### 🟢 Nice-to-Have (bez toho to nie je premium produkt)
+
+#### 11. PWA & Mobile Experience
+- **Žiadny `manifest.json`** — nedá sa "pridať na plochu"
+- **Žiadny service worker** — žiadny offline support
+- **Žiadne native-feel** gestá (swipe medzi stránkami, pull-to-refresh)
+
+#### 12. Infrastructure & Scale
+- **Žiadny staging environment** — zmeny idú rovno na prod
+- **Žiadny monitoring dashboard** — len Sentry pre errory
+- **Žiadny automated backup** pre D1 databázu
+- **Žiadne load testing** — nevieme koľko concurrent users zvládne
+- **Žiadny scheduled data retention cleanup** — staré dáta sa nehromadia
+
+#### 13. Advanced Features (competitors have these)
+- **Historické porovnania** — "ako vyzerali prieskumy pred minulými voľbami?"
+- **Regionálne dáta** — prieskumy po krajoch (ak sú dostupné)
+- **Koaličný tracker** — sledovanie koaličných vyhlásení strán
+- **Election countdown** — odpočet do volieb s live dátami
+- **Embedding** — widgety pre médiá (iframe poll chart)
+- **API dokumentácia** — verejné API pre vývojárov/novinárov
+- **Multi-language** — anglická verzia pre zahraničné médiá
+
+#### 14. Legal & Compliance Gaps
+- **Žiadna cookie policy stránka** — GDPR consent banner existuje ale chýba detailná policy
+- **Žiadny imprint/impressum** — kto prevádzkuje stránku (vyžadované v EU)
+- **Žiadne source attribution** — odkiaľ pochádzajú dáta (Wikipedia disclaimer)
+- **Žiadne content moderation policy** pre crowd predictions
+
+#### 15. Brand & Design Polish
+- **Žiadne logo** — len text "Progresívny Tracker"
+- **Žiadny favicon set** — len basic `favicon.ico` (chýba apple-touch-icon, 192x192, 512x512)
+- **Žiadne loading animations** — stránky "skočia" pri renderovaní
+- **Žiadne onboarding** — nový používateľ nevie čo stránka robí
+
+---
+
+### Prioritná Roadmapa
+
+```
+Mesiac 1: SEO + Analytics + Reálne dáta (kalkulátor, plány)
+Mesiac 2: User accounts + Newsletter + Admin panel
+Mesiac 3: E2E testy + Performance optimalizácia + PWA
+Mesiac 4: Monetizácia (freemium/API) + Social sharing + Engagement
+Mesiac 5: Advanced features + Multi-language + Brand polish
+Mesiac 6: B2B offering + Embedding widgets + Scale testing
+```
+
+### Porovnanie s konkurenciou
+
+| Feature | Progresívny Tracker | FiveThirtyEight | Politico | Mandáty.sk |
+|---------|:-------------------:|:---------------:|:--------:|:----------:|
+| Real-time polls | ✅ | ✅ | ✅ | ✅ |
+| Prediction model | ✅ Monte Carlo | ✅ Bayesian | ❌ | ❌ |
+| Coalition simulator | ✅ | ❌ | ❌ | ✅ |
+| Crowd predictions | ✅ basic | ✅ advanced | ❌ | ❌ |
+| User accounts | ❌ | ✅ | ✅ | ❌ |
+| Newsletter | ❌ | ✅ | ✅ | ❌ |
+| API access | ❌ | ✅ | ✅ | ❌ |
+| Mobile app/PWA | ❌ | ✅ | ✅ | ❌ |
+| Analytics | ❌ | ✅ | ✅ | ❌ |
+| Monetizácia | ❌ | ✅ ads+premium | ✅ subscription | ❌ |
+| GDPR compliance | ✅ | ✅ | ✅ | ❌ |
+| Dark mode | ✅ | ❌ | ❌ | ❌ |
+| E2E testy | ❌ | ✅ | ✅ | ❌ |
+
+**Verdict:** Technicky silný základ s unikátnymi features (Monte Carlo, D'Hondt, coalition sim). Na "milión" chýba hlavne: business model, user engagement loop, reálne dáta namiesto mockov, a profesionálna distribúcia (SEO, newsletter, social).
