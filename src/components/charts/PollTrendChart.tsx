@@ -29,7 +29,7 @@ export default function PollTrendChart({ data, parties }: PollTrendChartProps) {
   );
 
   return (
-    <div className="w-full h-[500px]">
+    <div className="w-full h-[300px] sm:h-[400px] lg:h-[500px]">
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={data} margin={{ top: 10, right: 20, left: -10, bottom: 5 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="var(--divider)" />
@@ -47,6 +47,7 @@ export default function PollTrendChart({ data, parties }: PollTrendChartProps) {
             axisLine={{ stroke: "var(--divider)" }}
           />
           <Tooltip
+            itemSorter={(item) => -(Number(item.value) || 0)}
             contentStyle={{
               backgroundColor: "var(--surface)",
               border: "1px solid var(--ink)",
@@ -62,11 +63,16 @@ export default function PollTrendChart({ data, parties }: PollTrendChartProps) {
             labelStyle={{ fontWeight: 600, color: "var(--ink)" }}
           />
           <Legend
-            formatter={(value) => {
-              const party = parties.find((p) => p.id === value);
-              return party?.abbreviation ?? value;
-            }}
-            wrapperStyle={{ fontSize: "12px", color: "var(--text)" }}
+            content={() => (
+              <ul className="flex flex-wrap justify-center gap-x-4 gap-y-1 mt-2" style={{ fontSize: "12px", color: "var(--text)" }}>
+                {visibleParties.map((party) => (
+                  <li key={party.id} className="flex items-center gap-1">
+                    <svg width="14" height="10"><line x1="0" y1="5" x2="14" y2="5" stroke={party.color} strokeWidth="2" /></svg>
+                    <span>{party.abbreviation}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
           />
           <ReferenceLine
             y={5}

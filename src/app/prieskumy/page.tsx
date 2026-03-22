@@ -66,7 +66,7 @@ export default async function PrieskumyPage() {
     id: p.id,
     abbreviation: p.abbreviation,
     color: p.color,
-  }));
+  })).sort((a, b) => (latest?.results[b.id] ?? 0) - (latest?.results[a.id] ?? 0));
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
