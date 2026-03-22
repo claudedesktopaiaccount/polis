@@ -37,6 +37,25 @@ yarn-error.log*
 # vercel
 .vercel
 
+# cloudflare
+.wrangler/
+.open-next/
+
+# claude code
+.claude/settings.local.json
+.claude/settings.json
+.claude/agents/
+.claude/skills/
+.claude/projects/
+
+# mcp
+.mcp.json
+.playwright-mcp/
+
+# design artifacts
+stitch/
+stitch-prompts.md
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 
-export default function proxy(request: NextRequest) {
+export const runtime = "experimental-edge";
+
+export function middleware(request: NextRequest) {
   const response = NextResponse.next();
 
   // Set CSRF cookie if not present
