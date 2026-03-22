@@ -81,3 +81,67 @@ h1, h2, h3 {
 .grid-cols-15 {
   grid-template-columns: repeat(15, minmax(0, 1fr));
 }
+
+/* === View Transitions === */
+
+/* Page content crossfade */
+::view-transition-old(page-content) {
+  animation: vt-fade-out 250ms ease-out;
+}
+::view-transition-new(page-content) {
+  animation: vt-fade-in 250ms ease-out 80ms both;
+}
+
+@keyframes vt-fade-out {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(-8px); }
+}
+@keyframes vt-fade-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Navbar stays perfectly in place — no animation */
+::view-transition-old(navbar),
+::view-transition-new(navbar) {
+  animation: none;
+}
+
+/* Page folio morphs between numbers */
+::view-transition-old(page-folio),
+::view-transition-new(page-folio) {
+  animation-duration: 200ms;
+}
+
+/* Respect prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation-duration: 0s !important;
+  }
+}
+
+/* Page number folio */
+.page-folio {
+  position: fixed;
+  bottom: 1.25rem;
+  right: 1.5rem;
+  z-index: 30;
+  font-family: var(--font-serif), Georgia, serif;
+  font-style: italic;
+  font-size: 0.8rem;
+  color: var(--text);
+  opacity: 0.4;
+  letter-spacing: 0.05em;
+  pointer-events: none;
+  user-select: none;
+}
+
+@media (max-width: 768px) {
+  .page-folio {
+    bottom: 1rem;
+    right: 1rem;
+    font-size: 0.7rem;
+  }
+}

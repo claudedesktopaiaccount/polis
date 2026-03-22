@@ -1,7 +1,19 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import PollTrendChart from "@/components/charts/PollTrendChart";
+import dynamic from "next/dynamic";
+
+const PollTrendChart = dynamic(
+  () => import("@/components/charts/PollTrendChart"),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="w-full h-[300px] sm:h-[400px] lg:h-[500px] bg-surface animate-pulse flex items-center justify-center">
+        <span className="text-xs text-text/40">Načítavam graf…</span>
+      </div>
+    ),
+  }
+);
 
 interface PartyBar {
   id: string;

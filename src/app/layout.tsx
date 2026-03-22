@@ -6,6 +6,8 @@ import Navbar from "@/components/ui/Navbar";
 import Footer from "@/components/ui/Footer";
 import GdprBanner from "@/components/GdprBanner";
 import ThemeProvider from "@/components/ThemeProvider";
+import { ViewTransition } from "react";
+import PageNumber from "@/components/PageNumber";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -20,14 +22,20 @@ const newsreader = Newsreader({
 });
 
 export const metadata: Metadata = {
-  title: "Progressive Tracker — Slovenské prieskumy a predikcie",
+  title: "Polis — Slovenské prieskumy a predikcie",
   description:
     "Agregátor prieskumov, predikcie volieb, koaličný simulátor a tipovanie pre slovenské parlamentné voľby.",
   openGraph: {
     type: "website",
     locale: "sk_SK",
     siteName: "Progressive Tracker",
-    title: "Progressive Tracker — Slovenské prieskumy a predikcie",
+    title: "Polis — Slovenské prieskumy a predikcie",
+    description:
+      "Agregátor prieskumov, predikcie volieb, koaličný simulátor a tipovanie pre slovenské parlamentné voľby.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Polis — Slovenské prieskumy a predikcie",
     description:
       "Agregátor prieskumov, predikcie volieb, koaličný simulátor a tipovanie pre slovenské parlamentné voľby.",
   },
@@ -43,11 +51,30 @@ export default async function RootLayout({
 
   return (
     <html lang="sk" className={theme}>
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              name: "Progressive Tracker",
+              url: "https://progresivne.sk",
+              description:
+                "Agregátor prieskumov, predikcie volieb, koaličný simulátor a tipovanie pre slovenské parlamentné voľby.",
+              inLanguage: "sk",
+            }),
+          }}
+        />
+      </head>
       <body className={`${inter.variable} ${newsreader.variable} font-sans antialiased`}>
         <ThemeProvider initialTheme={theme}>
           <Navbar />
-          <main>{children}</main>
+          <main style={{ viewTransitionName: "page-content" }}>
+            <ViewTransition>{children}</ViewTransition>
+          </main>
           <Footer />
+          <PageNumber />
           <GdprBanner />
         </ThemeProvider>
       </body>

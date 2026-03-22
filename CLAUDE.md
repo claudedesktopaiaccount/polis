@@ -1,4 +1,4 @@
-# Progresívny Tracker
+# Polis
 
 Slovak political tracker web app — polls, predictions, coalition simulations, crowd predictions (tipovanie), and political news aggregation.
 

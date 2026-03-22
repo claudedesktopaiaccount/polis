@@ -8,8 +8,8 @@ import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { getDb } from "@/lib/db";
 import Link from "next/link";
 
-// Revalidate every 6 hours (match cron schedule)
-export const revalidate = 21600;
+// Revalidate every hour (news freshness; polls scraped every 6h via cron)
+export const revalidate = 3600;
 
 export default async function Home() {
   const { env } = await getCloudflareContext({ async: true });

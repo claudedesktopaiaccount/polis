@@ -39,7 +39,7 @@ function CandidateColumn({ data }: { data: CandidateData }) {
     <div className="flex flex-col items-center text-center gap-3 sm:gap-4 flex-1">
       {/* Portrait — big and prominent */}
       <div
-        className="relative w-32 h-32 sm:w-44 sm:h-44 lg:w-52 lg:h-52 overflow-hidden border-3 rounded-md shadow-lg"
+        className="relative w-28 h-28 sm:w-36 sm:h-36 lg:w-44 lg:h-44 overflow-hidden border-3 rounded-md shadow-lg"
         style={{ borderColor: data.color }}
       >
         <Image
@@ -54,7 +54,7 @@ function CandidateColumn({ data }: { data: CandidateData }) {
 
       {/* Name + party */}
       <div>
-        <h2 className="font-serif text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-ink leading-none">
+        <h2 className="font-serif text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-ink leading-none">
           {lastName}
         </h2>
         <p className="mt-1.5 text-xs sm:text-sm text-text/50 font-medium">
@@ -63,7 +63,7 @@ function CandidateColumn({ data }: { data: CandidateData }) {
       </div>
 
       {/* Percentage */}
-      <p className="text-4xl sm:text-5xl lg:text-6xl font-black tabular-nums text-ink leading-none">
+      <p className="text-3xl sm:text-4xl lg:text-5xl font-black tabular-nums text-ink leading-none">
         {data.percentage.toFixed(1)}%
       </p>
 
@@ -90,7 +90,7 @@ function StrengthBar({
   const leader = leftPct > rightPct ? "left" : "right";
 
   return (
-    <div className="w-full max-w-md mx-auto mt-10 sm:mt-12">
+    <div className="w-full max-w-md mx-auto mt-6 sm:mt-8">
       {/* Difference badge */}
       <div className="flex justify-center mb-3">
         <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-ink text-paper text-xs sm:text-sm font-bold tabular-nums rounded-full">
@@ -124,8 +124,8 @@ function StrengthBar({
 export default function HeroBanner({ left, right, lastPollAgency, lastPollDate }: HeroBannerProps) {
   return (
     <section className="border-b border-divider bg-gradient-to-b from-paper to-surface/50">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-14 sm:py-20 lg:py-24">
-        <p className="text-center text-[10px] sm:text-xs font-semibold uppercase tracking-[0.2em] text-text/40 mb-10 sm:mb-14">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-12 sm:pt-12 sm:pb-16 lg:pt-14 lg:pb-18">
+        <p className="text-center text-[10px] sm:text-xs font-semibold uppercase tracking-[0.2em] text-text/40 mb-6 sm:mb-8">
           Kľúčový súboj o premiérske kreslo
         </p>
 
@@ -152,7 +152,7 @@ export default function HeroBanner({ left, right, lastPollAgency, lastPollDate }
         />
 
         {/* Footer */}
-        <div className="mt-10 sm:mt-12 flex flex-col items-center gap-4">
+        <div className="mt-6 sm:mt-8 flex flex-col items-center gap-4">
           <p className="text-xs text-text/40 tabular-nums">
             {lastPollAgency}, {lastPollDate}
           </p>

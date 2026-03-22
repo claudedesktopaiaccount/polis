@@ -19,10 +19,11 @@ export default function Navbar() {
   const { theme, toggleTheme } = useTheme();
 
   return (
-    <header className="sticky top-0 z-50 bg-surface/95 backdrop-blur-sm border-b-3 border-ink">
+    <header className="sticky top-0 z-50 bg-surface/95 backdrop-blur-sm border-b-3 border-ink" style={{ viewTransitionName: "navbar" }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-[60px]">
-        <Link href="/" className="text-xl font-bold text-ink tracking-tight font-serif">
-          Progressive Tracker
+        <Link href="/" className="group text-xl font-bold text-ink tracking-tight font-serif relative">
+          <span className="transition-opacity duration-300 group-hover:opacity-0">Polis</span>
+          <span className="absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100">πόλις</span>
         </Link>
 
         <div className="flex items-center gap-2">
