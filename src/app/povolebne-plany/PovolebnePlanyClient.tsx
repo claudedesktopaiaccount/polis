@@ -6,6 +6,23 @@ import { PARTY_LIST } from "@/lib/parties";
 import { PS_PROMISES, PS_PROGRAM_NAME, KNK_PROMISES, KNK_PROGRAM_NAME } from "@/lib/ps-promises";
 import type { PartyPromise } from "@/lib/ps-promises";
 
+interface DbPartyData {
+  id: string;
+  name: string;
+  promises: Array<{
+    id: number;
+    partyId: string;
+    promiseText: string;
+    category: string;
+    isPro: boolean;
+    sourceUrl: string | null;
+  }>;
+}
+
+interface Props {
+  partiesData?: DbPartyData[];
+}
+
 const PREVIEW_COUNT = 5;
 
 interface ProgramData {
@@ -353,11 +370,31 @@ function ProgramSection({
   );
 }
 
-export default function PovolebnePlanyClient() {
+export default function PovolebnePlanyClient({ partiesData }: Props) {
   const [activeParty, setActiveParty] = useState("ps");
   const [searchQuery, setSearchQuery] = useState("");
 
-  const programs = useMemo(() => PARTY_PROGRAMS[activeParty] ?? [], [activeParty]);
+  // Build a merged PARTY_PROGRAMS: DB data takes precedence over hardcoded data when available
+  const effectivePrograms = useMemo<Record<string, ProgramData[]>>(() => {
+    if (!partiesData || partiesData.length === 0) return PARTY_PROGRAMS;
+    const dbMap: Record<string, ProgramData[]> = {};
+    for (const party of partiesData) {
+      dbMap[party.id] = [
+        {
+          name: "",
+          promises: party.promises.map((p) => ({
+            text: p.promiseText,
+            category: p.category,
+            isPro: p.isPro,
+          })),
+        },
+      ];
+    }
+    // For "ps", preserve detailed hardcoded data if DB has none
+    return { ...PARTY_PROGRAMS, ...dbMap };
+  }, [partiesData]);
+
+  const programs = useMemo(() => effectivePrograms[activeParty] ?? [], [effectivePrograms, activeParty]);
   const totalPromises = programs.reduce((sum, p) => sum + p.promises.length, 0);
   const hasLargeProgram = programs.some((p) => p.promises.length > 10);
   const activePartyData = PARTY_LIST.find((p) => p.id === activeParty);
