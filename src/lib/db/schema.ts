@@ -193,3 +193,20 @@ export const gdprAuditLog = sqliteTable(
     index("gdpr_audit_log_timestamp_idx").on(table.timestamp),
   ]
 );
+
+// ─── Newsletter Subscribers ───────────────────────────────
+
+export const newsletterSubscribers = sqliteTable(
+  "newsletter_subscribers",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    email: text("email").notNull(),
+    createdAt: text("created_at").notNull(),
+    confirmedAt: text("confirmed_at"),
+    unsubscribedAt: text("unsubscribed_at"),
+    source: text("source").default("web"), // 'web' | 'homepage' | 'footer'
+  },
+  (table) => [
+    uniqueIndex("newsletter_subscribers_email_unique").on(table.email),
+  ]
+);

@@ -15,6 +15,13 @@
       "when": 1774310400000,
       "tag": "0003_gdpr_audit_log",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1774390459304,
+      "tag": "0002_swift_virginia_dare",
+      "breakpoints": true
     }
   ]
 }
