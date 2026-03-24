@@ -9,7 +9,9 @@
 
 ## Context
 
-Polis is a Slovak political tracker with a technically strong MVP: 9 pages, real data pipeline (Wikipedia scraping), Monte Carlo prediction model, D'Hondt coalition simulator, crowd predictions, GDPR compliance, editorial broadsheet design, Cloudflare Workers deployment, and 33+ unit tests. Current traffic is pre-launch (under 500 monthly visitors). Slovak parliamentary elections are expected within 12–24 months.
+Polis is a Slovak political tracker with a technically strong MVP: 9 pages, real data pipeline (Wikipedia scraping), Monte Carlo prediction model, D'Hondt coalition simulator, crowd predictions, GDPR compliance, editorial broadsheet design, Cloudflare Workers deployment, and 33+ unit tests. Current traffic is pre-launch (under 500 monthly visitors).
+
+**Target election:** Slovak parliamentary elections are constitutionally due by October 2027 (current mandate began October 2023). Snap elections could be called earlier — the timeline is built assuming elections in the October 2026–October 2027 window, with Phase 3 and 4 features ready by October 2026 at the latest to cover early scenarios. If elections shift outside this window, Phase 3 and 4 compress or extend accordingly, but Phase 1 and 2 timelines are election-independent.
 
 The gap analysis in HANDOFF.md identifies the core weaknesses: no audience, mock data on two key pages, no newsletter, no user accounts, no admin panel, and no business model signals.
 
@@ -78,6 +80,7 @@ This is an **acquisition play**, not a standalone business play. The goal is to 
 - Simple email + password auth (no OAuth complexity at this stage)
 - Unlocks: saved prediction history across devices, personalized email alerts, registered user count for acquisition term sheet
 - Anonymous visitors don't appear in acquisition negotiations; registered users do
+- **GDPR note:** Adding user accounts triggers full data controller obligations beyond the current cookie-only setup: right to erasure for account data, data portability (Article 20), and potentially DPA registration depending on user volume. The existing GDPR infrastructure (consent flow, delete endpoint, export endpoint) covers the foundation — account auth adds a user table and email storage that must be covered by an updated privacy policy and included in the existing delete/export flows. This is manageable but must not be treated as a zero-cost addition; budget one week for compliance review before launch.
 
 ### 2.3 Prediction Leaderboard
 - Upgrade `/tipovanie` from basic vote to scored prediction game
@@ -104,13 +107,14 @@ This is an **acquisition play**, not a standalone business play. The goal is to 
 
 **Goal:** Transform Polis from a data site into essential election infrastructure. Be so useful to journalists and engaged citizens that media companies feel they need to own it.
 
-### 3.1 Live Election Tracker (`/volby/2026`)
+### 3.1 Live Election Tracker (`/volby/[year]`)
 - Dedicated election results page with real-time count ingestion as official results are published
 - D'Hondt seat projections updating live as percentages change
 - Coalition majority meters showing live paths to 76-seat majority
 - Comparison panel: Polis pre-election prediction vs. actual unfolding results
 - Embed widget in sidebar so any journalist can drop live results into their article
 - This is the product demo event — everything else builds to this page
+- **Data source:** Štatistický úrad SR (ŠÚ SR) publishes official election results at volby.statistics.sk. As of 2023, this is a web interface without a documented machine-readable API. Implementation options, in order of preference: (1) check if ŠÚ SR publishes a JSON/CSV feed by the time of the next election — this should be verified 6 months before the election; (2) scrape the official results page with Cheerio on a 60-second interval (same pattern as the existing Wikipedia scraper); (3) partner with a Slovak media outlet that has a data agreement with ŠÚ SR. Option 2 is the fallback. A scraping failure on election night is the single biggest technical risk — build with automatic retry, alerting via Sentry, and a manual override UI in the admin panel to enter results by hand if scraping fails.
 
 ### 3.2 AI Daily Political Summaries
 - Automated one-paragraph daily summary of biggest political shifts
@@ -149,6 +153,14 @@ This is an **acquisition play**, not a standalone business play. The goal is to 
 - Social media presence activated: real-time coalition updates, seat projection tweets/posts
 - Cloudflare Workers + D1 handle traffic spikes natively — no scaling crisis
 
+**How 100k election-night visitors is achievable from a 30k/month baseline:**
+The jump from 30k monthly to 100k in a single night is not organic — it requires pre-arranged amplification:
+1. **Media embeds:** If 3–5 Slovak media sites embed the Polis live tracker in their election coverage articles, each sending even 10k–20k readers to the embed/source, this alone can exceed 100k. This is why Phase 2 media partnership seeding is critical infrastructure, not a nice-to-have.
+2. **TV mention:** A single mention of "sledujte koalíciu živě na polis.sk" during RTVS or TA3 election night coverage could drive 50k+ visits in minutes. Pursue RTVS/TA3 as both acquisition target and distribution partner — they have incentive to use your tools if they're considering buying you.
+3. **Newsletter blast:** 10k subscribers opening an election-night email with a direct link accounts for 3k–5k visits immediately.
+4. **Organic social:** The leaderboard and prediction game generate pre-election social sharing; Slovak political Twitter amplifies on the night.
+100k on election night is achievable but requires active outreach — it won't happen passively from 30k monthly visitors alone.
+
 ### 4.2 Acquisition Outreach Timeline
 - **Month 16–18:** First outreach — share API access, traffic stats, election preview features. No hard pitch yet. Build relationships.
 - **Month 19–21:** Active conversations — share traffic projections, demonstrate live tracker, begin LOI discussions with 2–3 targets simultaneously
@@ -168,7 +180,7 @@ Prepare in advance:
 - D1 database record counts (polls, predictions, news items)
 - Revenue signals (even minimal API paid tier revenue)
 
-**Phase 4 success metric:** Term sheet from at least one qualified acquirer at or above €800k.
+**Phase 4 success metric:** Term sheet from at least one qualified acquirer at or above €900k, with a target of €1M. The €900k floor reflects realistic negotiation margin from a €1M ask; accepting below €800k would require re-evaluating whether to hold through the next election cycle instead.
 
 ---
 
@@ -181,7 +193,7 @@ These items from the HANDOFF.md gap analysis are deliberately excluded from this
 - Staging environment — useful but not acquisition-critical; Cloudflare preview deployments suffice
 - Advanced A/B testing — no time or traffic to make this meaningful
 - Full-blown CMS — a lightweight admin panel is sufficient
-- Accessibility deep-dive — important but not a valuation driver for a media acquisition
+- Accessibility deep-dive — deferred to post-acquisition. EU Web Accessibility Directive obligations apply to public sector bodies; Polis as a private site has no hard legal deadline. Acquirers like Denník N and RTVS will expect accessibility compliance post-acquisition and it should be on the post-deal roadmap, but is not a pre-acquisition blocker.
 
 ---
 
@@ -193,7 +205,7 @@ These items from the HANDOFF.md gap analysis are deliberately excluded from this
 | 2 | 10 | 10k monthly visitors, 1k registered users |
 | 3 | 18 | 30k monthly visitors, public API live |
 | 4 | Election night | 100k+ visitors, active acquisition conversations |
-| 4 | 24 | Term sheet ≥ €800k |
+| 4 | 24 | Term sheet ≥ €900k (target €1M) |
 
 ---
 
