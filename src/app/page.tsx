@@ -2,6 +2,7 @@ import HeroBanner from "@/components/HeroBanner";
 import PartyCard from "@/components/PartyCard";
 import NewsHeadlines from "@/components/NewsHeadlines";
 import SectionHeading from "@/components/ui/SectionHeading";
+import NewsletterSignup from "@/components/NewsletterSignup";
 import { getLatestPolls } from "@/lib/poll-data";
 import { scrapeNews } from "@/lib/scraper/news";
 import { getCloudflareContext } from "@opennextjs/cloudflare";
@@ -81,6 +82,12 @@ export default async function Home() {
               </Link>
             </div>
 
+            <div className="mt-10 pt-8 border-t border-divider">
+              <p className="font-serif text-lg font-semibold text-ink mb-1">Polis Týždenník</p>
+              <p className="text-sm text-muted mb-4">Týždenný prehľad prieskumov a predikcií. Zadarmo.</p>
+              <NewsletterSignup source="homepage" />
+            </div>
+
             {/* CTA Cards */}
             <div className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-4">
               <CTACard
@@ -113,7 +120,7 @@ export default async function Home() {
       <div className="border-t border-divider bg-surface">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-center">
           <p className="text-sm text-text/60">
-            Progressive Tracker — Agregátor prieskumov a predikcie slovenských volieb
+            Polis — Agregátor prieskumov a predikcie slovenských volieb
           </p>
           <p className="mt-1 text-xs text-text/40">
             Dáta z verejne dostupných prieskumov. Neoficiálna stránka.

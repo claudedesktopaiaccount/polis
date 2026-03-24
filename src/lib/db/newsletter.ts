@@ -1,9 +1,9 @@
 import { eq } from "drizzle-orm";
-import type { DrizzleD1Database } from "drizzle-orm/d1";
+import type { Database } from "./index";
 import { newsletterSubscribers } from "./schema";
 
 export async function isAlreadySubscribed(
-  db: DrizzleD1Database,
+  db: Database,
   email: string
 ): Promise<boolean> {
   const rows = await db
@@ -15,7 +15,7 @@ export async function isAlreadySubscribed(
 }
 
 export async function subscribeEmail(
-  db: DrizzleD1Database,
+  db: Database,
   email: string,
   source: string = "web"
 ): Promise<void> {
