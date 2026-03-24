@@ -4,7 +4,7 @@ import NewsHeadlines from "@/components/NewsHeadlines";
 import SectionHeading from "@/components/ui/SectionHeading";
 import NewsletterSignup from "@/components/NewsletterSignup";
 import { getLatestPolls } from "@/lib/poll-data";
-import { scrapeNews } from "@/lib/scraper/news";
+import { getLatestNews } from "@/lib/db/news";
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { getDb } from "@/lib/db";
 import Link from "next/link";
@@ -17,7 +17,7 @@ export default async function Home() {
   const db = getDb(env.DB);
   const [pollData, newsItems] = await Promise.all([
     getLatestPolls(db),
-    scrapeNews().catch(() => []),
+    getLatestNews(db, 10).catch(() => []),
   ]);
   const ps = pollData.parties.find((p) => p.partyId === "ps");
   const smer = pollData.parties.find((p) => p.partyId === "smer-sd");
