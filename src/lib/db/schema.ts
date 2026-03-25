@@ -207,6 +207,7 @@ export const newsletterSubscribers = sqliteTable(
     confirmedAt: text("confirmed_at"),
     unsubscribedAt: text("unsubscribed_at"),
     source: text("source").default("web"), // 'web' | 'homepage' | 'footer'
+    lastDigestSentAt: text("last_digest_sent_at"),
   },
   (table) => [
     uniqueIndex("newsletter_subscribers_email_unique").on(table.email),

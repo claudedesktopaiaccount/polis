@@ -43,6 +43,13 @@
       "when": 1774469787386,
       "tag": "0005_modern_sebastian_shaw",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1774471361834,
+      "tag": "0006_thankful_silver_centurion",
+      "breakpoints": true
     }
   ]
 }
