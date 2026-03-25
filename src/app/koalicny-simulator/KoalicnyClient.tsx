@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { PARTIES, PARTY_LIST, COALITIONS } from "@/lib/parties";
+import ShareButtons from "@/components/ShareButtons";
 import { allocateSeats } from "@/lib/prediction/dhondt";
 import Hemicycle from "@/components/charts/Hemicycle";
 
@@ -72,6 +73,13 @@ export default function KoalicnyClient({ pollResults }: KoalicnyClientProps) {
             <Hemicycle seats={allSeats} selectedParties={selected} />
           </div>
         </div>
+
+        {/* Share */}
+        <ShareButtons
+          url={typeof window !== "undefined" ? window.location.href : "/koalicny-simulator"}
+          title="Koaličný simulátor | Polis"
+          description="Simulácia koaličných scenárov pre slovenské parlamentné voľby."
+        />
 
         {/* Preset buttons */}
         <div className="mt-6 flex flex-wrap gap-3 border-t border-divider pt-4">
