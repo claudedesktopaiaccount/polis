@@ -29,6 +29,10 @@ export default function SukromiePage() {
             <li>
               <strong className="text-ink">IP adresa:</strong> Používame ju dočasne na rate limiting. Neukladáme ju do databázy.
             </li>
+            <li>
+              <strong className="text-ink">Používateľský účet (voliteľné):</strong> Ak sa zaregistrujete, ukladáme vašu e-mailovú adresu,
+              zobrazované meno a bezpečne hashované heslo (PBKDF2-SHA256). Heslo v čitateľnej podobe nikdy neukladáme.
+            </li>
           </ul>
         </section>
 
@@ -38,6 +42,7 @@ export default function SukromiePage() {
             <li>Zabránenie duplicitným hlasom v sekcii Tipovanie</li>
             <li>Ochranu pred automatizovanými útokmi (rate limiting)</li>
             <li>CSRF ochranu formulárov</li>
+            <li>Správu používateľského účtu a prepojenie predpovedí naprieč zariadeniami</li>
           </ul>
         </section>
 
@@ -45,7 +50,8 @@ export default function SukromiePage() {
           <h2 className="font-serif text-xl font-bold text-ink mb-3">Doba uchovávania</h2>
           <p className="text-sm">
             Údaje o hlasovaní uchovávame po dobu trvania volebného cyklu. Cookie identifikátor má platnosť
-            1 rok. Údaje môžete kedykoľvek vymazať pomocou tlačidla nižšie.
+            1 rok. Údaje z používateľského účtu uchovávame do vymazania účtu. Údaje môžete kedykoľvek
+            vymazať pomocou tlačidla nižšie alebo v sekcii Profil.
           </p>
         </section>
 
@@ -55,7 +61,7 @@ export default function SukromiePage() {
             <li><strong className="text-ink">Prístup</strong> — vedieť, aké údaje o vás máme</li>
             <li><strong className="text-ink">Vymazanie</strong> — požiadať o odstránenie všetkých vašich údajov</li>
             <li><strong className="text-ink">Odvolanie súhlasu</strong> — kedykoľvek odvolať súhlas s fingerprintingom</li>
-            <li><strong className="text-ink">Prenosnosť</strong> — získať vaše údaje v strojovo čitateľnom formáte</li>
+            <li><strong className="text-ink">Prenosnosť (čl. 20)</strong> — získať vaše údaje v strojovo čitateľnom formáte (JSON export)</li>
           </ul>
         </section>
 

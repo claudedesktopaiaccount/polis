@@ -27,6 +27,42 @@ export default function ProfilClient() {
     router.push("/");
   }
 
+  async function handleExport() {
+    const csrfToken = document.cookie
+      .split("; ")
+      .find((c) => c.startsWith("pt_csrf="))
+      ?.split("=")[1] ?? "";
+    const res = await fetch("/api/gdpr/export", {
+      method: "POST",
+      headers: { "X-CSRF-Token": csrfToken },
+    });
+    if (res.ok) {
+      const data = await res.json();
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "polis-data-export.json";
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+  }
+
+  async function handleDeleteAccount() {
+    if (!window.confirm("Naozaj chcete vymazať svoj účet? Táto akcia je nevratná.")) return;
+    const csrfToken = document.cookie
+      .split("; ")
+      .find((c) => c.startsWith("pt_csrf="))
+      ?.split("=")[1] ?? "";
+    const res = await fetch("/api/gdpr/delete", {
+      method: "POST",
+      headers: { "X-CSRF-Token": csrfToken },
+    });
+    if (res.ok) {
+      router.push("/");
+    }
+  }
+
   if (isLoading) {
     return (
       <div className="min-h-[70vh] flex items-start justify-center pt-16 px-4">
@@ -63,6 +99,24 @@ export default function ProfilClient() {
         >
           Odhlásiť sa
         </button>
+
+        <div className="mt-8 pt-6 border-t border-divider">
+          <h2 className="font-serif text-lg font-semibold text-ink mb-4">Správa dát</h2>
+          <div className="flex flex-col gap-3">
+            <button
+              onClick={handleExport}
+              className="w-full py-2.5 border border-divider text-text text-sm font-medium hover:border-ink transition-colors"
+            >
+              Exportovať dáta
+            </button>
+            <button
+              onClick={handleDeleteAccount}
+              className="w-full py-2.5 border border-red-300 text-red-700 text-sm font-medium hover:bg-red-50 transition-colors"
+            >
+              Vymazať účet
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

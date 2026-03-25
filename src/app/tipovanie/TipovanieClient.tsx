@@ -4,6 +4,8 @@ import { useState } from "react";
 import { PARTY_LIST, PARTIES } from "@/lib/parties";
 import ShareButtons from "@/components/ShareButtons";
 import { getFingerprint } from "@/lib/fingerprint";
+import { useAuth } from "@/components/AuthProvider";
+import Link from "next/link";
 
 export interface CrowdData {
   partyId: string;
@@ -16,12 +18,16 @@ interface Props {
 }
 
 export default function TipovanieClient({ initialCrowd, initialTotalBets }: Props) {
+  const { user } = useAuth();
   const [selectedWinner, setSelectedWinner] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [alreadyVotedParty, setAlreadyVotedParty] = useState<string | null>(null);
   const [crowdData, setCrowdData] = useState<CrowdData[]>(initialCrowd);
   const [totalBets, setTotalBets] = useState(initialTotalBets);
+  const [showAdvanced, setShowAdvanced] = useState(false);
+  const [predictedPcts, setPredictedPcts] = useState<Record<string, string>>({});
+  const [coalitionPick, setCoalitionPick] = useState<Set<string>>(new Set());
 
   async function handleSubmit() {
     if (!selectedWinner) return;
@@ -40,7 +46,20 @@ export default function TipovanieClient({ initialCrowd, initialTotalBets }: Prop
           "Content-Type": "application/json",
           "X-CSRF-Token": csrfToken,
         },
-        body: JSON.stringify({ selectedWinner, fingerprint }),
+        body: JSON.stringify({
+          selectedWinner,
+          fingerprint,
+          ...(showAdvanced && Object.keys(predictedPcts).length > 0
+            ? { predictedPercentages: Object.fromEntries(
+                Object.entries(predictedPcts)
+                  .filter(([, v]) => v !== "")
+                  .map(([k, v]) => [k, parseFloat(v)])
+              ) }
+            : {}),
+          ...(showAdvanced && coalitionPick.size > 0
+            ? { coalitionPick: [...coalitionPick] }
+            : {}),
+        }),
       });
 
       const data = await res.json() as { error?: string; partyId?: string };
@@ -116,6 +135,94 @@ export default function TipovanieClient({ initialCrowd, initialTotalBets }: Prop
               </div>
             )}
 
+            {/* Advanced predictions toggle */}
+            {selectedWinner && (
+              <div className="mb-6">
+                <button
+                  onClick={() => setShowAdvanced(!showAdvanced)}
+                  className="text-xs text-text/50 hover:text-ink underline transition-colors"
+                >
+                  {showAdvanced ? "Skryť rozšírené tipovanie" : "Rozšírené tipovanie (percentá, koalícia)"}
+                </button>
+
+                {showAdvanced && (
+                  <div className="mt-4 space-y-4">
+                    {/* Percentage predictions */}
+                    <div className="border border-divider bg-surface p-4">
+                      <h4 className="text-xs font-semibold uppercase tracking-wider text-ink mb-3">
+                        Tipnite percentá strán
+                      </h4>
+                      <div className="grid grid-cols-2 gap-2">
+                        {PARTY_LIST.map((party) => (
+                          <div key={party.id} className="flex items-center gap-2">
+                            <div
+                              className="w-2 h-2 shrink-0"
+                              style={{ backgroundColor: party.color }}
+                            />
+                            <span className="text-xs text-text truncate flex-1">
+                              {party.abbreviation}
+                            </span>
+                            <input
+                              type="number"
+                              min="0"
+                              max="100"
+                              step="0.1"
+                              placeholder="—"
+                              value={predictedPcts[party.id] ?? ""}
+                              onChange={(e) =>
+                                setPredictedPcts((prev) => ({
+                                  ...prev,
+                                  [party.id]: e.target.value,
+                                }))
+                              }
+                              className="w-16 px-2 py-1 text-xs text-right border border-divider bg-transparent tabular-nums focus:border-ink focus:outline-none"
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Coalition prediction */}
+                    <div className="border border-divider bg-surface p-4">
+                      <h4 className="text-xs font-semibold uppercase tracking-wider text-ink mb-3">
+                        Tipnite koalíciu
+                      </h4>
+                      <div className="flex flex-wrap gap-2">
+                        {PARTY_LIST.map((party) => {
+                          const isInCoalition = coalitionPick.has(party.id);
+                          return (
+                            <button
+                              key={party.id}
+                              onClick={() => {
+                                setCoalitionPick((prev) => {
+                                  const next = new Set(prev);
+                                  if (next.has(party.id)) next.delete(party.id);
+                                  else next.add(party.id);
+                                  return next;
+                                });
+                              }}
+                              className={`px-3 py-1.5 text-xs border transition-colors ${
+                                isInCoalition
+                                  ? "border-ink bg-ink text-paper font-medium"
+                                  : "border-divider text-text hover:border-ink"
+                              }`}
+                            >
+                              {party.abbreviation}
+                            </button>
+                          );
+                        })}
+                      </div>
+                      {coalitionPick.size > 0 && (
+                        <p className="text-xs text-text/40 mt-2">
+                          {coalitionPick.size} {coalitionPick.size === 1 ? "strana" : coalitionPick.size < 5 ? "strany" : "strán"}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* Party list */}
             <div className="border border-divider bg-surface p-6 mb-6 lg:mb-0">
               <h3 className="font-serif text-xl font-bold text-ink mb-1">
@@ -181,11 +288,27 @@ export default function TipovanieClient({ initialCrowd, initialTotalBets }: Prop
             <p className="text-sm text-text/60">
               Tipujete výhru: <strong style={{ color: selectedParty?.color }}>{selectedParty?.name}</strong>
             </p>
+            {user ? (
+              <p className="text-xs text-text/40 mt-2">Prihlásený ako {user.displayName}</p>
+            ) : (
+              <p className="text-xs text-text/50 mt-3">
+                <Link href="/prihlasenie" className="underline hover:text-ink">
+                  Prihláste sa
+                </Link>{" "}
+                pre uloženie tipu naprieč zariadeniami
+              </p>
+            )}
             <ShareButtons
               url={typeof window !== "undefined" ? window.location.href : "/tipovanie"}
               title="Tipujem voľby na Polis"
               description="Tipnite si víťaza slovenských parlamentných volieb."
             />
+            <Link
+              href="/tipovanie/rebricek"
+              className="inline-block mt-3 text-sm text-muted hover:text-ink underline"
+            >
+              Pozrite si rebríček predpovedí →
+            </Link>
           </div>
         )}
       </div>

@@ -7,6 +7,7 @@ import { seedParties } from "@/lib/db/seed";
 import { PARTY_LIST } from "@/lib/parties";
 import { hashString } from "@/lib/hash";
 import { createSentry, captureException } from "@/lib/sentry";
+import { validateSession, SESSION_COOKIE } from "@/lib/auth/session";
 
 export const runtime = "edge";
 
@@ -54,8 +55,10 @@ export async function POST(request: NextRequest) {
     const body = (await request.json()) as {
       selectedWinner: string;
       fingerprint?: string;
+      predictedPercentages?: Record<string, number>;
+      coalitionPick?: string[];
     };
-    const { selectedWinner, fingerprint } = body;
+    const { selectedWinner, fingerprint, predictedPercentages, coalitionPick } = body;
 
     if (!selectedWinner || typeof selectedWinner !== "string" || !VALID_PARTY_IDS.has(selectedWinner)) {
       return NextResponse.json({ error: "Invalid party" }, { status: 400 });
@@ -63,6 +66,22 @@ export async function POST(request: NextRequest) {
 
     if (fingerprint && (typeof fingerprint !== "string" || fingerprint.length > 128)) {
       return NextResponse.json({ error: "Invalid fingerprint" }, { status: 400 });
+    }
+
+    // Validate optional percentage predictions
+    if (predictedPercentages) {
+      for (const [partyId, pct] of Object.entries(predictedPercentages)) {
+        if (!VALID_PARTY_IDS.has(partyId) || typeof pct !== "number" || pct < 0 || pct > 100) {
+          return NextResponse.json({ error: "Invalid percentage prediction" }, { status: 400 });
+        }
+      }
+    }
+
+    // Validate optional coalition pick
+    if (coalitionPick) {
+      if (!Array.isArray(coalitionPick) || coalitionPick.some((id) => !VALID_PARTY_IDS.has(id))) {
+        return NextResponse.json({ error: "Invalid coalition pick" }, { status: 400 });
+      }
     }
 
     let visitorId = request.cookies.get("pt_visitor")?.value;
@@ -75,16 +94,27 @@ export async function POST(request: NextRequest) {
     const db = getDb(env.DB);
     await ensureSeeded(db);
 
+    // Resolve authenticated user if session exists
+    let userId: string | null = null;
+    const sessionToken = request.cookies.get(SESSION_COOKIE)?.value;
+    if (sessionToken) {
+      const session = await validateSession(sessionToken, db);
+      if (session) userId = session.userId;
+    }
+
     // D1-based rate limiting (persists across isolate restarts)
     const ip = request.headers.get("cf-connecting-ip") || request.headers.get("x-forwarded-for") || "unknown";
     if (await isRateLimited(db, ip)) {
       return NextResponse.json({ error: "Too many requests" }, { status: 429 });
     }
 
-    // Check duplicate: by cookie (visitorId) OR by fingerprint
+    // Check duplicate: by cookie (visitorId) OR by fingerprint OR by userId
     const conditions = [eq(userPredictions.visitorId, visitorId)];
     if (fingerprint) {
       conditions.push(eq(userPredictions.fingerprint, fingerprint));
+    }
+    if (userId) {
+      conditions.push(eq(userPredictions.userId, userId));
     }
 
     const existingVote = await db
@@ -110,6 +140,9 @@ export async function POST(request: NextRequest) {
         partyId: selectedWinner,
         createdAt: now,
         fingerprint: fingerprint || null,
+        userId,
+        predictedPct: predictedPercentages?.[selectedWinner] ?? null,
+        coalitionPick: coalitionPick ? JSON.stringify(coalitionPick) : null,
       });
     } catch (e: unknown) {
       const msg = e instanceof Error ? e.message : "";
