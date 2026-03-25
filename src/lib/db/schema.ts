@@ -293,10 +293,12 @@ export const notificationLog = sqliteTable(
     userId: text("user_id").notNull().references(() => users.id),
     type: text("type").notNull(),
     sentAt: text("sent_at").notNull(),
+    date: text("date").notNull(), // YYYY-MM-DD, for unique constraint
   },
   (table) => [
     index("notif_log_user_idx").on(table.userId),
     index("notif_log_sent_idx").on(table.sentAt),
+    uniqueIndex("notif_log_user_type_date_unique").on(table.userId, table.type, table.date),
   ]
 );
 

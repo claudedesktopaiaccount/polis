@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/components/AuthProvider";
 
@@ -15,12 +15,37 @@ function formatDate(iso: string): string {
 export default function ProfilClient() {
   const { user, isLoading, logout } = useAuth();
   const router = useRouter();
+  const [notifPrefs, setNotifPrefs] = useState({ onNewPoll: false, onScoreChange: false });
+  const [notifLoading, setNotifLoading] = useState(true);
+  const [notifSaved, setNotifSaved] = useState(false);
 
   useEffect(() => {
     if (!isLoading && !user) {
       router.push("/prihlasenie");
     }
   }, [isLoading, user, router]);
+
+  useEffect(() => {
+    fetch("/api/user/notification-prefs")
+      .then((r) => r.json())
+      .then((data) => {
+        const prefs = data as { onNewPoll: boolean; onScoreChange: boolean };
+        setNotifPrefs(prefs);
+        setNotifLoading(false);
+      })
+      .catch(() => setNotifLoading(false));
+  }, []);
+
+  async function saveNotifPrefs() {
+    setNotifSaved(false);
+    await fetch("/api/user/notification-prefs", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(notifPrefs),
+    });
+    setNotifSaved(true);
+    setTimeout(() => setNotifSaved(false), 3000);
+  }
 
   async function handleLogout() {
     await logout();
@@ -117,6 +142,41 @@ export default function ProfilClient() {
             </button>
           </div>
         </div>
+
+        <section className="border-t border-divider pt-6 mt-6">
+          <h2 className="font-newsreader text-lg font-semibold mb-4">Emailové notifikácie</h2>
+          {notifLoading ? (
+            <p className="text-sm text-ink/50">Načítava sa...</p>
+          ) : (
+            <div className="space-y-3">
+              <label className="flex items-center gap-3 text-sm cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={notifPrefs.onNewPoll}
+                  onChange={(e) => setNotifPrefs({ ...notifPrefs, onNewPoll: e.target.checked })}
+                />
+                Nový prieskum zverejnený
+              </label>
+              <label className="flex items-center gap-3 text-sm cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={notifPrefs.onScoreChange}
+                  onChange={(e) => setNotifPrefs({ ...notifPrefs, onScoreChange: e.target.checked })}
+                />
+                Zmena skóre vo vašej predikcii
+              </label>
+              <div className="flex items-center gap-3 mt-2">
+                <button
+                  onClick={saveNotifPrefs}
+                  className="border border-ink px-4 py-1.5 text-sm hover:bg-hover"
+                >
+                  Uložiť
+                </button>
+                {notifSaved && <span className="text-sm text-green-700">Uložené.</span>}
+              </div>
+            </div>
+          )}
+        </section>
       </div>
     </div>
   );
