@@ -7,6 +7,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${SITE_URL}/prieskumy`, lastModified: new Date(), changeFrequency: "daily", priority: 0.9 },
     { url: `${SITE_URL}/predikcia`, lastModified: new Date(), changeFrequency: "daily", priority: 0.9 },
     { url: `${SITE_URL}/tipovanie`, lastModified: new Date(), changeFrequency: "daily", priority: 0.8 },
+    { url: `${SITE_URL}/tipovanie/rebricek`, lastModified: new Date(), changeFrequency: "daily", priority: 0.7 },
     { url: `${SITE_URL}/koalicny-simulator`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.7 },
     { url: `${SITE_URL}/volebny-kalkulator`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
     { url: `${SITE_URL}/povolebne-plany`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.6 },
