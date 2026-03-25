@@ -1,6 +1,7 @@
 "use client";
 
 import { PARTIES } from "@/lib/parties";
+import ShareButtons from "@/components/ShareButtons";
 import type { SimulationResult } from "@/lib/prediction/monte-carlo";
 import type { SeatAllocation } from "@/lib/prediction/dhondt";
 import ParliamentGrid from "@/components/charts/ParliamentGrid";
@@ -173,6 +174,11 @@ export default function PredikciaClient({
         <p className="mt-4 text-[10px] text-text/40">
           Na základe prieskumu: {latestAgency}, {latestDate}. Maximálna odchýlka ±2.5%.
         </p>
+        <ShareButtons
+          url={typeof window !== "undefined" ? window.location.href : "/predikcia"}
+          title="Predikcia volieb | Polis"
+          description="Monte Carlo predikcia výsledkov slovenských parlamentných volieb."
+        />
       </div>
     </>
   );

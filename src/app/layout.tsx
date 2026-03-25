@@ -41,6 +41,18 @@ export const metadata: Metadata = {
   },
 };
 
+const SW_REGISTRATION_SCRIPT = `if('serviceWorker'in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js').catch(function(){});})}`;
+
+const LD_JSON = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "Progressive Tracker",
+  url: "https://progresivne.sk",
+  description:
+    "Agregátor prieskumov, predikcie volieb, koaličný simulátor a tipovanie pre slovenské parlamentné voľby.",
+  inLanguage: "sk",
+});
+
 export default async function RootLayout({
   children,
 }: Readonly<{
@@ -52,19 +64,15 @@ export default async function RootLayout({
   return (
     <html lang="sk" className={theme}>
       <head>
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="theme-color" content="#111110" />
+        {/* Service worker registration — static string, no user input */}
+        <script
+          dangerouslySetInnerHTML={{ __html: SW_REGISTRATION_SCRIPT }}
+        />
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "WebSite",
-              name: "Progressive Tracker",
-              url: "https://progresivne.sk",
-              description:
-                "Agregátor prieskumov, predikcie volieb, koaličný simulátor a tipovanie pre slovenské parlamentné voľby.",
-              inLanguage: "sk",
-            }),
-          }}
+          dangerouslySetInnerHTML={{ __html: LD_JSON }}
         />
       </head>
       <body className={`${inter.variable} ${newsreader.variable} font-sans antialiased`}>

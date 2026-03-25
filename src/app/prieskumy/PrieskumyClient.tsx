@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import dynamic from "next/dynamic";
+import ShareButtons from "@/components/ShareButtons";
 
 const PollTrendChart = dynamic(
   () => import("@/components/charts/PollTrendChart"),
@@ -162,6 +163,11 @@ export default function PrieskumyClient({
             Agregované dáta z agentúr. Hrubé čiary označujú hlavné strany.
           </p>
           <PollTrendChart data={filteredData} parties={partyMeta} />
+          <ShareButtons
+            url={typeof window !== "undefined" ? window.location.href : "/prieskumy"}
+            title="Prieskumy verejnej mienky | Polis"
+            description="Aktuálne volebné prieskumy a trendy pre slovenské parlamentné voľby."
+          />
         </div>
 
         {/* Raw data table */}

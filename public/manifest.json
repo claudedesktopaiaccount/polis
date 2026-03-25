@@ -1,0 +1,14 @@
+{
+  "name": "Polis — Slovenské prieskumy a predikcie",
+  "short_name": "Polis",
+  "description": "Agregátor prieskumov, predikcie volieb, koaličný simulátor a tipovanie.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F4F3EE",
+  "theme_color": "#111110",
+  "lang": "sk",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

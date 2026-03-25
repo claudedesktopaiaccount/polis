@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { PARTY_LIST, PARTIES } from "@/lib/parties";
+import ShareButtons from "@/components/ShareButtons";
 import { getFingerprint } from "@/lib/fingerprint";
 
 export interface CrowdData {
@@ -180,6 +181,11 @@ export default function TipovanieClient({ initialCrowd, initialTotalBets }: Prop
             <p className="text-sm text-text/60">
               Tipujete výhru: <strong style={{ color: selectedParty?.color }}>{selectedParty?.name}</strong>
             </p>
+            <ShareButtons
+              url={typeof window !== "undefined" ? window.location.href : "/tipovanie"}
+              title="Tipujem voľby na Polis"
+              description="Tipnite si víťaza slovenských parlamentných volieb."
+            />
           </div>
         )}
       </div>
