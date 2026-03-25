@@ -1,6 +1,6 @@
 # Phase 1: Foundation — Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** Remove the two biggest acquisition blockers — mock data and zero distribution — by shipping a newsletter signup, D1-backed news on the homepage, a sourced party programs page, and a lightweight admin panel.
 
@@ -43,7 +43,7 @@
 - Modify: `src/lib/db/schema.ts`
 - Generate: `drizzle/XXXX_add_newsletter_subscribers.sql`
 
-- [ ] **Step 1: Add table to schema**
+- [x] **Step 1: Add table to schema**
 
 In `src/lib/db/schema.ts`, append:
 
@@ -66,7 +66,7 @@ export const newsletterSubscribers = sqliteTable(
 );
 ```
 
-- [ ] **Step 2: Generate migration**
+- [x] **Step 2: Generate migration**
 
 ```bash
 npm run db:generate
@@ -74,7 +74,7 @@ npm run db:generate
 
 Expected: new file in `drizzle/` with the newsletter_subscribers table CREATE statement.
 
-- [ ] **Step 3: Verify migration file looks correct**
+- [x] **Step 3: Verify migration file looks correct**
 
 Open the generated migration file. Should contain:
 ```sql
@@ -85,13 +85,13 @@ CREATE TABLE `newsletter_subscribers` (
   ...
 ```
 
-- [ ] **Step 4: Apply migration locally**
+- [x] **Step 4: Apply migration locally**
 
 ```bash
 npm run db:migrate
 ```
 
-- [ ] **Step 5: Write unit test for schema shape**
+- [x] **Step 5: Write unit test for schema shape**
 
 Create `src/lib/db/__tests__/schema.test.ts` if it doesn't exist:
 
@@ -109,7 +109,7 @@ describe("newsletterSubscribers schema", () => {
 });
 ```
 
-- [ ] **Step 6: Run test**
+- [x] **Step 6: Run test**
 
 ```bash
 npm test src/lib/db/__tests__/schema.test.ts
@@ -117,7 +117,7 @@ npm test src/lib/db/__tests__/schema.test.ts
 
 Expected: PASS
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add src/lib/db/schema.ts drizzle/ src/lib/db/__tests__/schema.test.ts
@@ -132,7 +132,7 @@ git commit -m "feat: add newsletter_subscribers table"
 - Create: `src/lib/db/newsletter.ts`
 - Test: `src/lib/db/__tests__/newsletter.test.ts`
 
-- [ ] **Step 1: Write failing tests**
+- [x] **Step 1: Write failing tests**
 
 Create `src/lib/db/__tests__/newsletter.test.ts`:
 
@@ -180,7 +180,7 @@ describe("isAlreadySubscribed", () => {
 });
 ```
 
-- [ ] **Step 2: Run tests to confirm they fail**
+- [x] **Step 2: Run tests to confirm they fail**
 
 ```bash
 npm test src/lib/db/__tests__/newsletter.test.ts
@@ -188,7 +188,7 @@ npm test src/lib/db/__tests__/newsletter.test.ts
 
 Expected: FAIL — `subscribeEmail` not found.
 
-- [ ] **Step 3: Implement helpers**
+- [x] **Step 3: Implement helpers**
 
 Create `src/lib/db/newsletter.ts`:
 
@@ -225,7 +225,7 @@ export async function subscribeEmail(
 }
 ```
 
-- [ ] **Step 4: Run tests**
+- [x] **Step 4: Run tests**
 
 ```bash
 npm test src/lib/db/__tests__/newsletter.test.ts
@@ -233,7 +233,7 @@ npm test src/lib/db/__tests__/newsletter.test.ts
 
 Expected: PASS (4 tests).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/lib/db/newsletter.ts src/lib/db/__tests__/newsletter.test.ts
@@ -248,7 +248,7 @@ git commit -m "feat: newsletter subscribe/check DB helpers"
 - Create: `src/app/api/newsletter/subscribe/route.ts`
 - Test: via Playwright or manual curl test in step 4
 
-- [ ] **Step 1: Write the route**
+- [x] **Step 1: Write the route**
 
 Create `src/app/api/newsletter/subscribe/route.ts`:
 
@@ -293,7 +293,7 @@ export async function POST(req: NextRequest) {
 }
 ```
 
-- [ ] **Step 2: Write unit test for email validation**
+- [x] **Step 2: Write unit test for email validation**
 
 Create `src/app/api/newsletter/__tests__/validate.test.ts`:
 
@@ -317,7 +317,7 @@ describe("isValidEmail", () => {
 });
 ```
 
-- [ ] **Step 3: Run unit tests**
+- [x] **Step 3: Run unit tests**
 
 ```bash
 npm test src/app/api/newsletter/__tests__/validate.test.ts
@@ -325,7 +325,7 @@ npm test src/app/api/newsletter/__tests__/validate.test.ts
 
 Expected: PASS (5 tests).
 
-- [ ] **Step 4: Manual smoke test**
+- [x] **Step 4: Manual smoke test**
 
 > **Note:** This route uses `getCloudflareContext({ async: true })`, which only works in the Wrangler runtime — not `npm run dev`. Use `npm run preview` for this test.
 
@@ -348,7 +348,7 @@ curl -X POST http://localhost:8787/api/newsletter/subscribe \
 
 Expected: `{"error":"already_subscribed"}` with status 409.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/app/api/newsletter/ src/app/api/newsletter/__tests__/
@@ -365,7 +365,7 @@ git commit -m "feat: POST /api/newsletter/subscribe with duplicate detection"
 - Modify: `src/components/ui/Footer.tsx` (add inline signup)
 - Modify: `src/app/page.tsx` (add signup section after party cards)
 
-- [ ] **Step 1: Build the signup component**
+- [x] **Step 1: Build the signup component**
 
 Create `src/components/NewsletterSignup.tsx`:
 
@@ -439,7 +439,7 @@ export default function NewsletterSignup({ source = "web", compact = false }: Pr
 }
 ```
 
-- [ ] **Step 2: Create /newsletter landing page**
+- [x] **Step 2: Create /newsletter landing page**
 
 Create `src/app/newsletter/page.tsx`:
 
@@ -466,7 +466,7 @@ export default function NewsletterPage() {
 }
 ```
 
-- [ ] **Step 3: Add signup section to homepage**
+- [x] **Step 3: Add signup section to homepage**
 
 In `src/app/page.tsx`, import `NewsletterSignup` and add a section after the party cards block (before the closing `</div>` of the left column):
 
@@ -481,7 +481,7 @@ import NewsletterSignup from "@/components/NewsletterSignup";
 </div>
 ```
 
-- [ ] **Step 4: Add compact signup to footer**
+- [x] **Step 4: Add compact signup to footer**
 
 In `src/components/ui/Footer.tsx`, import `NewsletterSignup` and add before the footer credits:
 
@@ -495,7 +495,7 @@ import NewsletterSignup from "@/components/NewsletterSignup";
 </div>
 ```
 
-- [ ] **Step 5: Write E2E test for signup flow**
+- [x] **Step 5: Write E2E test for signup flow**
 
 Create `e2e/newsletter.spec.ts`:
 
@@ -525,7 +525,7 @@ test("newsletter signup — duplicate detection", async ({ page }) => {
 });
 ```
 
-- [ ] **Step 6: Run E2E tests**
+- [x] **Step 6: Run E2E tests**
 
 ```bash
 npm run test:e2e e2e/newsletter.spec.ts
@@ -533,7 +533,7 @@ npm run test:e2e e2e/newsletter.spec.ts
 
 Expected: PASS (2 tests).
 
-- [ ] **Step 7: Add /newsletter to sitemap**
+- [x] **Step 7: Add /newsletter to sitemap**
 
 In `src/app/sitemap.ts`, add an entry for the newsletter page alongside existing routes:
 
@@ -541,7 +541,7 @@ In `src/app/sitemap.ts`, add an entry for the newsletter page alongside existing
 { url: `${SITE_URL}/newsletter`, lastModified: new Date(), priority: 0.7, changeFrequency: "monthly" },
 ```
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add src/components/NewsletterSignup.tsx src/app/newsletter/ src/app/page.tsx src/components/ui/Footer.tsx src/app/sitemap.ts e2e/newsletter.spec.ts
@@ -559,7 +559,7 @@ The scraper worker already writes news to D1 every 6h. The homepage calls `scrap
 - Modify: `src/app/page.tsx`
 - Modify: `workers/scraper/wrangler.toml`
 
-- [ ] **Step 1: Write failing test for getLatestNews**
+- [x] **Step 1: Write failing test for getLatestNews**
 
 Create `src/lib/db/__tests__/news.test.ts`:
 
@@ -591,7 +591,7 @@ describe("getLatestNews", () => {
 });
 ```
 
-- [ ] **Step 2: Run tests to confirm they fail**
+- [x] **Step 2: Run tests to confirm they fail**
 
 ```bash
 npm test src/lib/db/__tests__/news.test.ts
@@ -599,7 +599,7 @@ npm test src/lib/db/__tests__/news.test.ts
 
 Expected: FAIL — `getLatestNews` not found.
 
-- [ ] **Step 3: Implement getLatestNews**
+- [x] **Step 3: Implement getLatestNews**
 
 Create `src/lib/db/news.ts`:
 
@@ -627,7 +627,7 @@ export async function getLatestNews(
 }
 ```
 
-- [ ] **Step 4: Run tests**
+- [x] **Step 4: Run tests**
 
 ```bash
 npm test src/lib/db/__tests__/news.test.ts
@@ -635,7 +635,7 @@ npm test src/lib/db/__tests__/news.test.ts
 
 Expected: PASS (2 tests).
 
-- [ ] **Step 5: Update homepage to use D1 cache**
+- [x] **Step 5: Update homepage to use D1 cache**
 
 In `src/app/page.tsx`:
 - Remove: `import { scrapeNews } from "@/lib/scraper/news";`
@@ -644,7 +644,7 @@ In `src/app/page.tsx`:
 
 The `revalidate = 3600` already ensures fresh ISR — no change needed there.
 
-- [ ] **Step 6: Cut scraper cron to hourly**
+- [x] **Step 6: Cut scraper cron to hourly**
 
 In `workers/scraper/wrangler.toml`, change:
 ```toml
@@ -654,7 +654,7 @@ crons = ["0 */6 * * *"]
 crons = ["0 * * * *"]
 ```
 
-- [ ] **Step 7: Verify build passes**
+- [x] **Step 7: Verify build passes**
 
 ```bash
 npm run build
@@ -662,7 +662,7 @@ npm run build
 
 Expected: no TypeScript errors, build succeeds.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add src/lib/db/news.ts src/lib/db/__tests__/news.test.ts src/app/page.tsx workers/scraper/wrangler.toml
@@ -681,7 +681,7 @@ Currently `PovolebnePlanyClient.tsx` has hardcoded programs (3–5 items per par
 - Modify: `src/app/povolebne-plany/page.tsx` — fetch from DB
 - Modify: `src/app/povolebne-plany/PovolebnePlanyClient.tsx` — accept props
 
-- [ ] **Step 1: Write failing test for getPromisesForParty**
+- [x] **Step 1: Write failing test for getPromisesForParty**
 
 Create `src/lib/db/__tests__/party-promises.test.ts`:
 
@@ -708,7 +708,7 @@ describe("getPromisesForParty", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to confirm failure**
+- [x] **Step 2: Run test to confirm failure**
 
 ```bash
 npm test src/lib/db/__tests__/party-promises.test.ts
@@ -716,7 +716,7 @@ npm test src/lib/db/__tests__/party-promises.test.ts
 
 Expected: FAIL.
 
-- [ ] **Step 3: Implement DB helper**
+- [x] **Step 3: Implement DB helper**
 
 Create `src/lib/db/party-promises.ts`:
 
@@ -749,7 +749,7 @@ export async function getAllPartiesWithPromises(db: DrizzleD1Database) {
 }
 ```
 
-- [ ] **Step 4: Run tests**
+- [x] **Step 4: Run tests**
 
 ```bash
 npm test src/lib/db/__tests__/party-promises.test.ts
@@ -757,7 +757,7 @@ npm test src/lib/db/__tests__/party-promises.test.ts
 
 Expected: PASS.
 
-- [ ] **Step 5: Create seed script with real sourced data**
+- [x] **Step 5: Create seed script with real sourced data**
 
 Create `src/lib/db/seeds/party-programs-seed.ts`:
 
@@ -804,7 +804,7 @@ async function seed() {
 seed().catch(console.error);
 ```
 
-- [ ] **Step 6: Update PovolebnePlany page to fetch from DB**
+- [x] **Step 6: Update PovolebnePlany page to fetch from DB**
 
 In `src/app/povolebne-plany/page.tsx`, change from pure client component to server+client split:
 
@@ -830,7 +830,7 @@ export default async function PovolebnePlanyPage() {
 }
 ```
 
-- [ ] **Step 7: Update PovolebnePlanyClient to accept props**
+- [x] **Step 7: Update PovolebnePlanyClient to accept props**
 
 In `src/app/povolebne-plany/PovolebnePlanyClient.tsx`:
 - Add `interface Props { partiesData: Array<{ id: string; name: string; promises: Array<{...}> }> }`
@@ -838,13 +838,13 @@ In `src/app/povolebne-plany/PovolebnePlanyClient.tsx`:
 - Remove the import of `PS_PROMISES`, `KNK_PROMISES` etc. (data now comes from DB)
 - Keep the existing UI rendering logic, just wire it to props
 
-- [ ] **Step 8: Verify build passes**
+- [x] **Step 8: Verify build passes**
 
 ```bash
 npm run build
 ```
 
-- [ ] **Step 9: Fill in real party program content**
+- [x] **Step 9: Fill in real party program content**
 
 Open `src/lib/db/seeds/party-programs-seed.ts` and replace the `// TODO:` placeholders with real program data. Research sources:
 - PS: https://progresivne.sk/program
@@ -859,7 +859,7 @@ Open `src/lib/db/seeds/party-programs-seed.ts` and replace the `// TODO:` placeh
 
 Each party: minimum 10 items, minimum 4 categories, include `sourceUrl` for each.
 
-- [ ] **Step 10: Fill in real party program content (content task — do before committing)**
+- [x] **Step 10: Fill in real party program content (content task — do before committing)**
 
 Open `src/lib/db/seeds/party-programs-seed.ts` and replace ALL `// TODO:` placeholders with real program data. Research sources:
 - PS: https://progresivne.sk/program
@@ -875,7 +875,7 @@ Open `src/lib/db/seeds/party-programs-seed.ts` and replace ALL `// TODO:` placeh
 
 Each party: minimum 10 items, minimum 4 categories, include `sourceUrl` for each. Block 2–4 hours for this research. **Do not proceed to Step 11 until all parties have ≥10 items.**
 
-- [ ] **Step 11: Run seed against production D1**
+- [x] **Step 11: Run seed against production D1**
 
 ```bash
 npx tsx src/lib/db/seeds/party-programs-seed.ts
@@ -883,7 +883,7 @@ npx tsx src/lib/db/seeds/party-programs-seed.ts
 
 Expected: `Seeded N party promises` where N ≥ 100 (10 parties × 10 items minimum).
 
-- [ ] **Step 12: Commit**
+- [x] **Step 12: Commit**
 
 ```bash
 git add src/lib/db/party-promises.ts src/lib/db/__tests__/party-promises.test.ts src/lib/db/seeds/ src/app/povolebne-plany/
@@ -898,7 +898,7 @@ git commit -m "feat: party programs from D1, seed script with real sourced data"
 - Create: `src/app/admin/layout.tsx`
 - Modify: `.env.example`, `wrangler.jsonc`
 
-- [ ] **Step 1: Add ADMIN_SECRET to env**
+- [x] **Step 1: Add ADMIN_SECRET to env**
 
 In `.env.example`, add:
 ```
@@ -911,7 +911,7 @@ In `wrangler.jsonc`, add to `vars`:
 "ADMIN_SECRET": "dev-secret-change-in-production"
 ```
 
-- [ ] **Step 2: Create admin layout with auth gate**
+- [x] **Step 2: Create admin layout with auth gate**
 
 Create `src/app/admin/layout.tsx`:
 
@@ -944,7 +944,7 @@ export default async function AdminLayout({ children }: Props) {
 }
 ```
 
-- [ ] **Step 3: Create login page**
+- [x] **Step 3: Create login page**
 
 Create `src/app/admin/login/page.tsx`:
 
@@ -994,7 +994,7 @@ export default function AdminLogin() {
 }
 ```
 
-- [ ] **Step 4: Create auth API route**
+- [x] **Step 4: Create auth API route**
 
 Create `src/app/api/admin/auth/route.ts`:
 
@@ -1033,7 +1033,7 @@ export async function GET(req: NextRequest) {
 }
 ```
 
-- [ ] **Step 5: Create admin dashboard index**
+- [x] **Step 5: Create admin dashboard index**
 
 Create `src/app/admin/page.tsx`:
 
@@ -1061,7 +1061,7 @@ export default function AdminDashboard() {
 }
 ```
 
-- [ ] **Step 6: Test login flow manually**
+- [x] **Step 6: Test login flow manually**
 
 ```bash
 npm run dev
@@ -1070,7 +1070,7 @@ npm run dev
 # Should redirect to /admin dashboard
 ```
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add src/app/admin/ src/app/api/admin/ .env.example wrangler.jsonc
@@ -1085,7 +1085,7 @@ git commit -m "feat: admin panel auth gate (session cookie, ADMIN_SECRET)"
 - Create: `src/app/admin/promises/page.tsx`
 - Create: `src/app/api/admin/promises/route.ts`
 
-- [ ] **Step 1: Create promises API route (GET + POST + DELETE)**
+- [x] **Step 1: Create promises API route (GET + POST + DELETE)**
 
 Create `src/app/api/admin/promises/route.ts`:
 
@@ -1140,7 +1140,7 @@ export async function DELETE(req: NextRequest) {
 }
 ```
 
-- [ ] **Step 2: Create admin promises page (list + add form)**
+- [x] **Step 2: Create admin promises page (list + add form)**
 
 Create `src/app/admin/promises/page.tsx`:
 
@@ -1213,7 +1213,7 @@ export default function AdminPromises() {
 }
 ```
 
-- [ ] **Step 3: Verify page loads and CRUD works**
+- [x] **Step 3: Verify page loads and CRUD works**
 
 ```bash
 npm run dev
@@ -1222,7 +1222,7 @@ npm run dev
 # Delete it and verify it's removed
 ```
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add src/app/admin/promises/ src/app/api/admin/promises/
@@ -1237,7 +1237,7 @@ git commit -m "feat: admin promises CRUD"
 - Create: `src/app/admin/polls/page.tsx`
 - Create: `src/app/api/admin/polls/route.ts`
 
-- [ ] **Step 1: Create polls admin API**
+- [x] **Step 1: Create polls admin API**
 
 Create `src/app/api/admin/polls/route.ts`:
 
@@ -1280,7 +1280,7 @@ export async function POST(req: NextRequest) {
 }
 ```
 
-- [ ] **Step 2: Create polls admin page**
+- [x] **Step 2: Create polls admin page**
 
 Create `src/app/admin/polls/page.tsx`:
 
@@ -1345,7 +1345,7 @@ export default function AdminPolls() {
 }
 ```
 
-- [ ] **Step 3: Test manually**
+- [x] **Step 3: Test manually**
 
 ```bash
 npm run dev
@@ -1354,7 +1354,7 @@ npm run dev
 # Submit and check that the homepage /prieskumy shows the new poll
 ```
 
-- [ ] **Step 4: Final build verification**
+- [x] **Step 4: Final build verification**
 
 ```bash
 npm run build && npm test
@@ -1362,7 +1362,7 @@ npm run build && npm test
 
 Expected: build succeeds, all unit tests pass.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/app/admin/polls/ src/app/api/admin/polls/
@@ -1375,19 +1375,19 @@ git commit -m "feat: admin manual poll entry"
 
 Before declaring Phase 1 done, verify:
 
-- [ ] Newsletter signup works end-to-end (form → D1 row inserted)
-- [ ] `/newsletter` page exists and is in sitemap
-- [ ] Homepage news section loads from D1 (not live scraping) — check Network tab, no scraper fetch on page load
-- [ ] `/povolebne-plany` shows DB-sourced data with ≥10 items per major party
-- [ ] Seed script ran successfully against production D1
-- [ ] Admin panel login works with ADMIN_SECRET
-- [ ] Admin can add/delete party promises
-- [ ] Admin can manually enter a poll
-- [ ] `npm run build` succeeds
-- [ ] `npm test` passes (all existing + new unit tests)
-- [ ] `npm run test:e2e` passes (includes newsletter signup E2E test)
-- [ ] Scraper cron is set to hourly in `workers/scraper/wrangler.toml`
-- [ ] Add `.superpowers/` to `.gitignore` if not already there
+- [x] Newsletter signup works end-to-end (form → D1 row inserted)
+- [x] `/newsletter` page exists and is in sitemap
+- [x] Homepage news section loads from D1 (not live scraping) — check Network tab, no scraper fetch on page load
+- [x] `/povolebne-plany` shows DB-sourced data with ≥10 items per major party
+- [x] Seed script ran successfully against production D1
+- [x] Admin panel login works with ADMIN_SECRET
+- [x] Admin can add/delete party promises
+- [x] Admin can manually enter a poll
+- [x] `npm run build` succeeds
+- [x] `npm test` passes (all existing + new unit tests)
+- [x] `npm run test:e2e` passes (includes newsletter signup E2E test)
+- [x] Scraper cron is set to hourly in `workers/scraper/wrangler.toml`
+- [x] Add `.superpowers/` to `.gitignore` if not already there
 
 ---
 

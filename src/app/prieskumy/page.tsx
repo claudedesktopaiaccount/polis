@@ -5,10 +5,10 @@ import { PARTY_LIST } from "@/lib/parties";
 import PrieskumyClient from "./PrieskumyClient";
 
 export const metadata: Metadata = {
-  title: "Prieskumy | Progressive Tracker",
+  title: "Prieskumy",
   description: "Aktuálne volebné prieskumy a trendy pre slovenské parlamentné voľby. Agregátor dát od Focus, AKO, Median a ďalších agentúr.",
   openGraph: {
-    title: "Prieskumy | Progressive Tracker",
+    title: "Prieskumy | Polis",
     description: "Aktuálne volebné prieskumy a trendy pre slovenské parlamentné voľby.",
   },
 };

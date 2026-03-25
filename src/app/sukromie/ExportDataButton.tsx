@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { getCsrfToken } from "@/lib/csrf";
 
 export default function ExportDataButton() {
   const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
@@ -8,10 +9,7 @@ export default function ExportDataButton() {
   async function handleExport() {
     setStatus("loading");
     try {
-      const csrfToken = document.cookie
-        .split("; ")
-        .find((c) => c.startsWith("pt_csrf="))
-        ?.split("=")[1] ?? "";
+      const csrfToken = getCsrfToken();
 
       const res = await fetch("/api/gdpr/export", {
         method: "POST",
@@ -25,7 +23,7 @@ export default function ExportDataButton() {
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `progressive-tracker-data-${new Date().toISOString().slice(0, 10)}.json`;
+      a.download = `polis-data-${new Date().toISOString().slice(0, 10)}.json`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);

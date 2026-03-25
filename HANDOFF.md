@@ -30,43 +30,57 @@ Slovak political survey analysis website. Next.js 16 + Tailwind CSS v4 + Cloudfl
 
 Všetky core features hotové: Wikipedia scraper (colspan fix), D1 setup, real news scraping, error/loading states, worker scraper, CSRF, GDPR consent+audit, security hardening, SEO metadata, accessibility, 33+ unit testov. Production readiness Phase 0 (blockers) + Phase 1 (reliability/observability) dokončené. Editorial Authority redesign (R0-R7) + dark mode hotový.
 
-**Posledná zmena (2026-03-22):** Zoradenie strán podľa % v `/prieskumy` — legenda, tooltip, aj tabuľky zoradené od najvyššej preferencie. Custom legend renderer (Recharts defaultne triedil abecedne). `itemSorter` na Tooltip.
+**Posledná zmena (2026-03-23):** Analytics — Umami Cloud integrácia s GDPR consent-gating (`UmamiAnalytics.tsx`), website ID v `wrangler.jsonc` + `.env`.
 
 ---
 
-### 🟡 Phase 2: Performance
+### ✅ Phase 4.5: SEO Fixes (DONE)
 
-#### 2.1 Dynamic import for Recharts
-- Lazy-load via `next/dynamic` with `ssr: false` in `PrieskumyClient.tsx`
-- ⚠️ Zmena v working tree (uncommitted)
-
-#### 2.2 Image optimization
-- Verify all portrait usages use `next/image` `<Image>` (not raw `<img>`)
-- Check `HeroBanner.tsx` and `TipovanieClient.tsx`
-
-#### 2.3 News ISR interval
-- Split revalidation: polls stay at 6h, homepage/news to `revalidate = 3600` (1h)
-- ⚠️ Zmena v working tree (uncommitted)
-
-#### 2.4 Responsive charts
-- `PollTrendChart.tsx` — responsive breakpoints (300px mobile, 400px tablet, 500px desktop)
-- ⚠️ Zmena v working tree (uncommitted)
+- 4.5.1 ✅ Shared site config — `src/lib/site-config.ts` (SITE_URL, SITE_NAME, SITE_DESCRIPTION, SITE_LOCALE)
+- 4.5.2 ✅ URL consistency — `robots.ts` + `sitemap.ts` use `SITE_URL` from config
+- 4.5.3 ✅ Rebrand — "Progressive Tracker" → "Polis" in all metadata, footer, fingerprint, conditions, privacy, scrapers, wrangler
+- 4.5.4 ✅ Title template — root layout `title.template: "%s | Polis"`, simplified page titles
+- 4.5.5 ✅ Dynamic favicon — `src/app/icon.tsx` (32×32) + `src/app/apple-icon.tsx` (180×180) via `ImageResponse`
+- 4.5.6 ✅ OG image — `src/app/opengraph-image.tsx` (1200×630), auto-detected by Next.js
+- 4.5.7 ✅ JSON-LD enriched — `@graph` with `WebSite` + `Organization` schemas
+- 4.5.8 ✅ `metadataBase` set in root layout for proper OG URL resolution
+- 4.5.9 ✅ Cleanup — removed 5 unused default Next.js SVGs from `public/`
+- 4.5.10 ✅ `.env.example` updated with `NEXT_PUBLIC_SITE_URL`
 
 ---
 
-### 🟡 Phase 3: Testing
+### ✅ Phase 2: Performance (DONE)
+
+- 2.1 ✅ Dynamic import for Recharts — `next/dynamic` + `ssr: false` in `PrieskumyClient.tsx`
+- 2.2 ✅ Image optimization — all portraits use `next/image` `<Image>`
+- 2.3 ✅ News ISR interval — homepage `revalidate = 3600` (1h)
+- 2.4 ✅ Responsive charts — `PollTrendChart.tsx` 300/400/500px breakpointy
+
+---
+
+### ✅ Phase 3: Testing (DONE)
 
 #### 3.1 E2E tests (Playwright)
-Critical flows: homepage load, prieskumy chart, tipovanie vote+duplicate, koalicny-simulator, GDPR delete, volebny-kalkulator quiz
+- `playwright.config.ts` — Chromium, webServer auto-start, trace on retry
+- `e2e/helpers/csrf.ts` — CSRF + visitor cookie injection helper
+- `e2e/homepage.spec.ts` — page load, nav links, party content
+- `e2e/prieskumy.spec.ts` — Recharts dynamic load, time range buttons, % values
+- `e2e/tipovanie.spec.ts` — vote flow, duplicate detection, CSRF
+- `e2e/koalicny-simulator.spec.ts` — party selection, seat counts, majority indicator
+- `e2e/gdpr-delete.spec.ts` — delete flow, confirm dialog, cancel, export button
+- `e2e/volebny-kalkulator.spec.ts` — 20-question quiz, results, restart
+- Run: `npm run test:e2e`
 
 #### 3.2 Scraper integration test
-Daily scheduled test fetching real Wikipedia page, validating ≥5 polls with recognized party IDs
+- `src/lib/scraper/wikipedia.integration.test.ts` — fetches real Wikipedia, validates ≥5 polls, party IDs, dates, percentages
+- Excluded from default `npm test` (vitest exclude pattern)
+- Run: `npm run test:integration`
 
 ---
 
 ### 🟢 Phase 4: Polish (Nice-to-Have)
 
-- **Analytics:** Umami (GDPR-compliant, self-hosted)
+- ~~**Analytics:**~~ ✅ Done — Umami Cloud (GDPR-compliant, consent-gated via `UmamiAnalytics.tsx`)
 - ~~**Dark mode:**~~ ✅ Done (cookie-based ThemeProvider + CSS custom properties)
 - **Data retention:** Scheduled purge of old `userPredictions` after electoral cycle
 - **README:** Replace default create-next-app with real documentation
@@ -77,9 +91,9 @@ Daily scheduled test fetching real Wikipedia page, validating ≥5 polls with re
 
 | Priority | Item | Risk if Skipped |
 |----------|------|-----------------|
-| MEDIUM | Image optimization | Slow page loads |
-| MEDIUM | E2E tests (Playwright) | Regression risk |
-| LOW | Analytics (Umami) | No usage data |
+| ~~MEDIUM~~ | ~~Image optimization~~ | ✅ Done |
+| ~~MEDIUM~~ | ~~E2E tests (Playwright)~~ | ✅ Done |
+| ~~LOW~~ | ~~Analytics (Umami)~~ | ✅ Done |
 | LOW | README | Missing documentation |
 
 ### Verification Checklist
@@ -282,10 +296,10 @@ npx next dev
   - Monitoring scraper health
 
 #### 4. SEO & Discoverability
-- **Chýba `robots.txt`** — search engines nemajú guidance
-- **Žiadne OG images** — social sharing vyzerá generic (žiadny preview obrázok)
-- **Žiadne JSON-LD structured data** — Google nezobrazí rich snippets
-- **Sitemap bez `lastmod`/`priority`** — crawlery nevedia čo je dôležité
+- ~~**Chýba `robots.txt`**~~ — ✅ Done (robots.ts s consistent URL)
+- ~~**Žiadne OG images**~~ — ✅ Done (dynamic opengraph-image.tsx 1200×630)
+- ~~**Žiadne JSON-LD structured data**~~ — ✅ Done (@graph WebSite + Organization)
+- ~~**Sitemap bez `lastmod`/`priority`**~~ — ✅ Done (lastmod + priority + consistent URL)
 - **Žiadne social sharing tlačidlá** na stránkach
 
 #### 5. User Authentication & Accounts
@@ -301,8 +315,7 @@ npx next dev
 ### 🟡 Should-Have (bez toho to nie je profesionálny produkt)
 
 #### 6. Analytics & Metriky
-- **Žiadna analytics platforma** — nevieme koľko ľudí stránku používa
-- Odporúčanie: **Umami** (GDPR-compliant, self-hosted) alebo **Plausible**
+- ~~**Žiadna analytics platforma**~~ ✅ Done — Umami Cloud, consent-gated
 - Treba sledovať: page views, bounce rate, feature engagement, conversion funnel
 - **Žiadne A/B testing** — nevieme čo funguje lepšie
 

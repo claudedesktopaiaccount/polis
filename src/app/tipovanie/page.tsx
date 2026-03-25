@@ -7,10 +7,10 @@ import { createSentryWithoutRequest, captureException } from "@/lib/sentry";
 import TipovanieClient from "./TipovanieClient";
 
 export const metadata: Metadata = {
-  title: "Tipovanie | Progressive Tracker",
+  title: "Tipovanie",
   description: "Tipnite si víťaza slovenských parlamentných volieb a porovnajte sa s ostatnými.",
   openGraph: {
-    title: "Tipovanie | Progressive Tracker",
+    title: "Tipovanie | Polis",
     description: "Tipnite si víťaza slovenských parlamentných volieb.",
   },
 };

@@ -40,9 +40,9 @@ export async function getFingerprint(): Promise<string> {
       ctx.fillStyle = "#f60";
       ctx.fillRect(50, 0, 100, 50);
       ctx.fillStyle = "#069";
-      ctx.fillText("Progressive Tracker", 2, 15);
+      ctx.fillText("Polis", 2, 15);
       ctx.fillStyle = "rgba(102, 204, 0, 0.7)";
-      ctx.fillText("Progressive Tracker", 4, 35);
+      ctx.fillText("Polis", 4, 35);
       signals.push(canvas.toDataURL());
     }
   } catch {

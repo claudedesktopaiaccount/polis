@@ -69,7 +69,7 @@ function isPolitical(title: string): boolean {
 }
 
 const USER_AGENT =
-  "Mozilla/5.0 (compatible; ProgressiveTracker/1.0; +https://progressive-tracker.sk)";
+  "Mozilla/5.0 (compatible; Polis/1.0; +https://progresivne.sk)";
 
 function formatDate(date: Date): string {
   const months = [

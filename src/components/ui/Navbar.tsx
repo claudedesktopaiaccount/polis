@@ -2,7 +2,9 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useTheme } from "@/components/ThemeProvider";
+import { useAuth } from "@/components/AuthProvider";
 
 const NAV_ITEMS = [
   { href: "/", label: "Domov" },
@@ -17,6 +19,13 @@ const NAV_ITEMS = [
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const { theme, toggleTheme } = useTheme();
+  const { user, isLoading, logout } = useAuth();
+  const router = useRouter();
+
+  async function handleLogout() {
+    await logout();
+    router.push("/");
+  }
 
   return (
     <header className="sticky top-0 z-50 bg-surface/95 backdrop-blur-sm border-b-3 border-ink" style={{ viewTransitionName: "navbar" }}>
@@ -39,6 +48,35 @@ export default function Navbar() {
               </Link>
             ))}
           </nav>
+
+          {/* Auth controls */}
+          {!isLoading && (
+            <div className="hidden lg:flex items-center gap-1">
+              {user ? (
+                <>
+                  <Link
+                    href="/profil"
+                    className="px-3 py-2 text-sm font-medium text-text hover:text-ink hover:bg-hover transition-colors"
+                  >
+                    {user.displayName}
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className="px-3 py-2 text-sm font-medium text-text hover:text-ink hover:bg-hover transition-colors"
+                  >
+                    Odhlásiť sa
+                  </button>
+                </>
+              ) : (
+                <Link
+                  href="/prihlasenie"
+                  className="px-3 py-2 text-sm font-medium text-text hover:text-ink hover:bg-hover transition-colors"
+                >
+                  Prihlásiť sa
+                </Link>
+              )}
+            </div>
+          )}
 
           {/* Dark mode toggle */}
           <button
@@ -87,6 +125,35 @@ export default function Navbar() {
               {item.label}
             </Link>
           ))}
+          <div className="border-t border-divider mt-2 pt-2">
+            {!isLoading && (
+              user ? (
+                <>
+                  <Link
+                    href="/profil"
+                    onClick={() => setOpen(false)}
+                    className="block px-3 py-3 text-base font-medium text-text hover:text-ink hover:bg-hover transition-colors"
+                  >
+                    {user.displayName}
+                  </Link>
+                  <button
+                    onClick={() => { setOpen(false); handleLogout(); }}
+                    className="block w-full text-left px-3 py-3 text-base font-medium text-text hover:text-ink hover:bg-hover transition-colors"
+                  >
+                    Odhlásiť sa
+                  </button>
+                </>
+              ) : (
+                <Link
+                  href="/prihlasenie"
+                  onClick={() => setOpen(false)}
+                  className="block px-3 py-3 text-base font-medium text-text hover:text-ink hover:bg-hover transition-colors"
+                >
+                  Prihlásiť sa
+                </Link>
+              )
+            )}
+          </div>
         </nav>
       )}
     </header>

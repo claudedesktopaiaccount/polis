@@ -6,10 +6,10 @@ import { allocateSeats } from "@/lib/prediction/dhondt";
 import PredikciaClient from "./PredikciaClient";
 
 export const metadata: Metadata = {
-  title: "Predikcia | Progressive Tracker",
+  title: "Predikcia",
   description: "Monte Carlo predikcia výsledkov slovenských parlamentných volieb. Simulácia rozdelenia mandátov metódou D'Hondt.",
   openGraph: {
-    title: "Predikcia | Progressive Tracker",
+    title: "Predikcia | Polis",
     description: "Monte Carlo predikcia výsledkov slovenských parlamentných volieb.",
   },
 };

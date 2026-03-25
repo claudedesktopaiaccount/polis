@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import SectionHeading from "@/components/ui/SectionHeading";
 
 export const metadata: Metadata = {
-  title: "Podmienky používania | Progressive Tracker",
-  description: "Podmienky používania stránky Progressive Tracker.",
+  title: "Podmienky používania",
+  description: "Podmienky používania stránky Polis.",
 };
 
 export default function PodmienkyPage() {
@@ -15,7 +15,7 @@ export default function PodmienkyPage() {
         <section>
           <h2 className="font-serif text-xl font-bold text-ink mt-8 mb-3">1. Všeobecné ustanovenia</h2>
           <p className="text-sm">
-            Tieto podmienky upravujú používanie webovej stránky Progressive Tracker (ďalej len &quot;stránka&quot;).
+            Tieto podmienky upravujú používanie webovej stránky Polis (ďalej len &quot;stránka&quot;).
             Používaním stránky vyjadrujete súhlas s týmito podmienkami.
           </p>
         </section>

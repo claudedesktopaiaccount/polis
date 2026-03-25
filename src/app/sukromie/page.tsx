@@ -5,8 +5,8 @@ import ExportDataButton from "./ExportDataButton";
 import ConsentManager from "./ConsentManager";
 
 export const metadata: Metadata = {
-  title: "Ochrana súkromia | Progressive Tracker",
-  description: "Informácie o spracovaní osobných údajov na stránke Progressive Tracker.",
+  title: "Ochrana súkromia",
+  description: "Informácie o spracovaní osobných údajov na stránke Polis.",
 };
 
 export default function SukromiePage() {

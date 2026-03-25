@@ -1,17 +1,26 @@
 import type { Metadata } from "next";
-import { Inter, Newsreader } from "next/font/google";
+import { Inter, Newsreader, Dancing_Script } from "next/font/google";
 import { cookies } from "next/headers";
 import "./globals.css";
 import Navbar from "@/components/ui/Navbar";
 import Footer from "@/components/ui/Footer";
 import GdprBanner from "@/components/GdprBanner";
+import UmamiAnalytics from "@/components/UmamiAnalytics";
 import ThemeProvider from "@/components/ThemeProvider";
+import { AuthProvider } from "@/components/AuthProvider";
 import { ViewTransition } from "react";
 import PageNumber from "@/components/PageNumber";
+import { SITE_URL, SITE_NAME, SITE_DESCRIPTION, SITE_LOCALE } from "@/lib/site-config";
 
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin", "latin-ext"],
+});
+
+const dancingScript = Dancing_Script({
+  variable: "--font-dancing",
+  subsets: ["latin", "latin-ext"],
+  weight: ["700"],
 });
 
 const newsreader = Newsreader({
@@ -22,36 +31,27 @@ const newsreader = Newsreader({
 });
 
 export const metadata: Metadata = {
-  title: "Polis — Slovenské prieskumy a predikcie",
-  description:
-    "Agregátor prieskumov, predikcie volieb, koaličný simulátor a tipovanie pre slovenské parlamentné voľby.",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "Polis — Slovenské prieskumy a predikcie",
+    template: `%s | ${SITE_NAME}`,
+  },
+  description: SITE_DESCRIPTION,
   openGraph: {
     type: "website",
-    locale: "sk_SK",
-    siteName: "Progressive Tracker",
+    locale: SITE_LOCALE,
+    siteName: SITE_NAME,
     title: "Polis — Slovenské prieskumy a predikcie",
-    description:
-      "Agregátor prieskumov, predikcie volieb, koaličný simulátor a tipovanie pre slovenské parlamentné voľby.",
+    description: SITE_DESCRIPTION,
   },
   twitter: {
     card: "summary_large_image",
     title: "Polis — Slovenské prieskumy a predikcie",
-    description:
-      "Agregátor prieskumov, predikcie volieb, koaličný simulátor a tipovanie pre slovenské parlamentné voľby.",
+    description: SITE_DESCRIPTION,
   },
 };
 
 const SW_REGISTRATION_SCRIPT = `if('serviceWorker'in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js').catch(function(){});})}`;
-
-const LD_JSON = JSON.stringify({
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  name: "Progressive Tracker",
-  url: "https://progresivne.sk",
-  description:
-    "Agregátor prieskumov, predikcie volieb, koaličný simulátor a tipovanie pre slovenské parlamentné voľby.",
-  inLanguage: "sk",
-});
 
 export default async function RootLayout({
   children,
@@ -72,18 +72,45 @@ export default async function RootLayout({
         />
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: LD_JSON }}
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@graph": [
+                {
+                  "@type": "WebSite",
+                  "@id": `${SITE_URL}/#website`,
+                  name: SITE_NAME,
+                  url: SITE_URL,
+                  description: SITE_DESCRIPTION,
+                  inLanguage: "sk",
+                  publisher: { "@id": `${SITE_URL}/#organization` },
+                },
+                {
+                  "@type": "Organization",
+                  "@id": `${SITE_URL}/#organization`,
+                  name: SITE_NAME,
+                  url: SITE_URL,
+                },
+              ],
+            }),
+          }}
         />
       </head>
-      <body className={`${inter.variable} ${newsreader.variable} font-sans antialiased`}>
+      <body className={`${inter.variable} ${newsreader.variable} ${dancingScript.variable} font-sans antialiased`}>
         <ThemeProvider initialTheme={theme}>
-          <Navbar />
-          <main style={{ viewTransitionName: "page-content" }}>
-            <ViewTransition>{children}</ViewTransition>
-          </main>
-          <Footer />
-          <PageNumber />
-          <GdprBanner />
+          <AuthProvider>
+            <a href="#main-content" className="skip-link">
+              Preskočiť na obsah
+            </a>
+            <Navbar />
+            <main id="main-content" style={{ viewTransitionName: "page-content" }}>
+              <ViewTransition>{children}</ViewTransition>
+            </main>
+            <Footer />
+            <PageNumber />
+            <GdprBanner />
+            <UmamiAnalytics />
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>

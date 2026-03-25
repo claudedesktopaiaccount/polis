@@ -26,7 +26,7 @@ export default function GdprBanner() {
   }
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 p-4 bg-surface border-t border-divider">
+    <div role="dialog" aria-label="Súhlas s cookies" className="fixed bottom-0 left-0 right-0 z-50 p-4 bg-surface border-t border-divider">
       <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center gap-4">
         <p className="text-sm text-text flex-1">
           Táto stránka používa cookies a fingerprinting na zabránenie duplicitným hlasom v sekcii Tipovanie.
