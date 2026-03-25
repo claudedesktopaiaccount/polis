@@ -1,12 +1,16 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "progressive-tracker",
+  "name": "polis",
   "main": ".open-next/worker.js",
   "compatibility_date": "2025-03-15",
   "compatibility_flags": ["nodejs_compat_v2"],
   "assets": {
     "directory": ".open-next/assets",
     "binding": "ASSETS"
+  },
+  // ADMIN_SECRET must be set via: npx wrangler secret put ADMIN_SECRET
+  "vars": {
+    "NEXT_PUBLIC_UMAMI_WEBSITE_ID": "c08dd305-ebb3-4041-9c02-fcd92bef838b"
   },
   "d1_databases": [
     {

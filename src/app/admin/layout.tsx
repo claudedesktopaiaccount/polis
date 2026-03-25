@@ -7,7 +7,16 @@ interface Props { children: ReactNode }
 async function isAuthenticated(): Promise<boolean> {
   const cookieStore = await cookies();
   const sessionToken = cookieStore.get("admin_session")?.value;
-  return !!sessionToken && sessionToken === process.env.ADMIN_SECRET;
+  const sigHex = cookieStore.get("admin_sig")?.value;
+  if (!sessionToken || !sigHex || !process.env.ADMIN_SECRET) return false;
+
+  const encoder = new TextEncoder();
+  const key = await crypto.subtle.importKey(
+    "raw", encoder.encode(process.env.ADMIN_SECRET),
+    { name: "HMAC", hash: "SHA-256" }, false, ["verify"]
+  );
+  const sigBytes = new Uint8Array(sigHex.match(/.{2}/g)!.map(b => parseInt(b, 16)));
+  return crypto.subtle.verify("HMAC", key, sigBytes, encoder.encode(sessionToken));
 }
 
 export default async function AdminLayout({ children }: Props) {

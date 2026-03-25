@@ -19,12 +19,16 @@ export async function subscribeEmail(
   email: string,
   source: string = "web"
 ): Promise<void> {
-  const alreadyExists = await isAlreadySubscribed(db, email);
-  if (alreadyExists) throw new Error("already_subscribed");
-
-  await db.insert(newsletterSubscribers).values({
-    email: email.toLowerCase().trim(),
-    createdAt: new Date().toISOString(),
-    source,
-  });
+  try {
+    await db.insert(newsletterSubscribers).values({
+      email: email.toLowerCase().trim(),
+      createdAt: new Date().toISOString(),
+      source,
+    });
+  } catch (err) {
+    if (err instanceof Error && err.message.includes("UNIQUE constraint failed")) {
+      throw new Error("already_subscribed");
+    }
+    throw err;
+  }
 }

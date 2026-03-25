@@ -1,15 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getCloudflareContext } from "@opennextjs/cloudflare";
+import { isAdminAuthed } from "@/lib/admin-auth";
 
 export const runtime = "edge";
 
-function isAdminAuthed(req: NextRequest): boolean {
-  const session = req.cookies.get("admin_session")?.value;
-  return !!session && session === process.env.ADMIN_SECRET;
-}
-
 export async function POST(req: NextRequest) {
-  if (!isAdminAuthed(req)) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+  if (!(await isAdminAuthed(req))) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
 
   const body = await req.json().catch(() => null) as {
     agency?: string;
