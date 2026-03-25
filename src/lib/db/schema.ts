@@ -154,10 +154,12 @@ export const userPredictions = sqliteTable(
     coalitionPick: text("coalition_pick"), // JSON array
     createdAt: text("created_at").notNull(),
     fingerprint: text("fingerprint"),
+    userId: text("user_id").references(() => users.id),
   },
   (table) => [
     uniqueIndex("user_predictions_visitor_unique").on(table.visitorId),
     index("user_predictions_fingerprint_idx").on(table.fingerprint),
+    index("user_predictions_user_id_idx").on(table.userId),
   ]
 );
 
@@ -210,3 +212,48 @@ export const newsletterSubscribers = sqliteTable(
     uniqueIndex("newsletter_subscribers_email_unique").on(table.email),
   ]
 );
+
+// ─── Users ──────────────────────────────────────────────
+
+export const users = sqliteTable("users", {
+  id: text("id").primaryKey(), // UUID
+  email: text("email").notNull(),
+  passwordHash: text("password_hash").notNull(),
+  displayName: text("display_name").notNull(),
+  createdAt: text("created_at").notNull(),
+  emailVerifiedAt: text("email_verified_at"),
+  visitorId: text("visitor_id"), // link to legacy cookie-based identity
+}, (table) => [
+  uniqueIndex("users_email_unique").on(table.email),
+  index("users_visitor_id_idx").on(table.visitorId),
+]);
+
+// ─── User Sessions ──────────────────────────────────────
+
+export const userSessions = sqliteTable("user_sessions", {
+  id: text("id").primaryKey(), // session token (UUID)
+  userId: text("user_id").notNull().references(() => users.id),
+  createdAt: text("created_at").notNull(),
+  expiresAt: text("expires_at").notNull(),
+}, (table) => [
+  index("user_sessions_user_idx").on(table.userId),
+  index("user_sessions_expires_idx").on(table.expiresAt),
+]);
+
+// ─── Prediction Scores ─────────────────────────────────
+
+export const predictionScores = sqliteTable("prediction_scores", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  userId: text("user_id").references(() => users.id),
+  visitorId: text("visitor_id"),
+  electionId: text("election_id").notNull(), // e.g., "sr-2027"
+  winnerScore: real("winner_score"),
+  percentageScore: real("percentage_score"),
+  coalitionScore: real("coalition_score"),
+  totalScore: real("total_score").notNull().default(0),
+  scoredAt: text("scored_at").notNull(),
+}, (table) => [
+  index("pred_scores_user_idx").on(table.userId),
+  index("pred_scores_election_idx").on(table.electionId),
+  index("pred_scores_total_idx").on(table.totalScore),
+]);
