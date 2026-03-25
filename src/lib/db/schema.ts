@@ -257,3 +257,76 @@ export const predictionScores = sqliteTable("prediction_scores", {
   index("pred_scores_election_idx").on(table.electionId),
   index("pred_scores_total_idx").on(table.totalScore),
 ]);
+
+// ─── Kalkulator Weights ──────────────────────────────────
+export const kalkulatorWeights = sqliteTable(
+  "kalkulator_weights",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    questionId: integer("question_id").notNull(),
+    answerIndex: integer("answer_index").notNull(),
+    partyId: text("party_id").notNull().references(() => parties.id),
+    weight: real("weight").notNull().default(0),
+    sourceUrl: text("source_url"),
+    updatedAt: text("updated_at").notNull(),
+  },
+  (table) => [
+    uniqueIndex("kalkulator_q_a_p_unique").on(table.questionId, table.answerIndex, table.partyId),
+    index("kalkulator_question_idx").on(table.questionId),
+  ]
+);
+
+// ─── User Notification Prefs ─────────────────────────────
+export const userNotificationPrefs = sqliteTable("user_notification_prefs", {
+  userId: text("user_id").primaryKey().references(() => users.id),
+  onNewPoll: integer("on_new_poll").notNull().default(0),
+  onScoreChange: integer("on_score_change").notNull().default(0),
+  updatedAt: text("updated_at").notNull(),
+});
+
+// ─── Notification Log ─────────────────────────────────────
+export const notificationLog = sqliteTable(
+  "notification_log",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    userId: text("user_id").notNull().references(() => users.id),
+    type: text("type").notNull(),
+    sentAt: text("sent_at").notNull(),
+  },
+  (table) => [
+    index("notif_log_user_idx").on(table.userId),
+    index("notif_log_sent_idx").on(table.sentAt),
+  ]
+);
+
+// ─── API Keys ─────────────────────────────────────────────
+export const apiKeys = sqliteTable(
+  "api_keys",
+  {
+    id: text("id").primaryKey(),
+    userId: text("user_id").notNull().references(() => users.id),
+    keyHash: text("key_hash").notNull(),
+    tier: text("tier").notNull().default("free"),
+    stripeSubscriptionId: text("stripe_subscription_id"),
+    createdAt: text("created_at").notNull(),
+    revokedAt: text("revoked_at"),
+  },
+  (table) => [
+    uniqueIndex("api_keys_hash_unique").on(table.keyHash),
+    index("api_keys_user_idx").on(table.userId),
+  ]
+);
+
+// ─── API Usage ────────────────────────────────────────────
+export const apiUsage = sqliteTable(
+  "api_usage",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    keyId: text("key_id").notNull().references(() => apiKeys.id),
+    date: text("date").notNull(),
+    count: integer("count").notNull().default(0),
+  },
+  (table) => [
+    uniqueIndex("api_usage_key_date_unique").on(table.keyId, table.date),
+  ]
+);
