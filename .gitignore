@@ -60,6 +60,15 @@ yarn-error.log*
 stitch/
 stitch-prompts.md
 
+# superpowers plugin cache
+.superpowers/
+
+# external reference directories
+edmunds-claude-code/
+
+# debug logs
+firebase-debug.log
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
