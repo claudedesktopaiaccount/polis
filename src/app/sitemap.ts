@@ -12,6 +12,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${SITE_URL}/volebny-kalkulator`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
     { url: `${SITE_URL}/povolebne-plany`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.6 },
     { url: `${SITE_URL}/newsletter`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
+    { url: `${SITE_URL}/api-pristup`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
     { url: `${SITE_URL}/embed`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.5 },
     { url: `${SITE_URL}/prihlasenie`, lastModified: new Date(), changeFrequency: "yearly", priority: 0.4 },
     { url: `${SITE_URL}/registracia`, lastModified: new Date(), changeFrequency: "yearly", priority: 0.4 },

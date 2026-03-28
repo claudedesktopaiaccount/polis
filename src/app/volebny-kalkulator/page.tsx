@@ -1,5 +1,12 @@
 import type { Metadata } from "next";
+import { getCloudflareContext } from "@opennextjs/cloudflare";
+import { getDb } from "@/lib/db";
 import VolebnyKalkulatorClient from "./VolebnyKalkulatorClient";
+import { getKalkulatorWeights } from "@/lib/db/kalkulator";
+import { QUESTIONS } from "@/lib/kalkulator/questions";
+import type { Question } from "@/lib/kalkulator/questions";
+
+export const revalidate = 86400; // 24h — weights change rarely
 
 export const metadata: Metadata = {
   title: "Koho voliť?",
@@ -10,6 +17,33 @@ export const metadata: Metadata = {
   },
 };
 
-export default function VolebnyKalkulatorPage() {
-  return <VolebnyKalkulatorClient />;
+export default async function VolebnyKalkulatorPage() {
+  let questions: Question[] = QUESTIONS; // fallback to static data
+
+  try {
+    const { env } = await getCloudflareContext({ async: true });
+    const db = getDb(env.DB);
+    const rows = await getKalkulatorWeights(db);
+
+    if (rows.length > 0) {
+      // Reconstruct Question[] from flat DB rows
+      questions = QUESTIONS.map((q) => ({
+        ...q,
+        answers: q.answers.map((answer, answerIndex) => {
+          const weights: Record<string, number> = { ...answer.weights };
+          // Override with DB values
+          for (const row of rows) {
+            if (row.questionId === q.id && row.answerIndex === answerIndex) {
+              weights[row.partyId] = row.weight;
+            }
+          }
+          return { ...answer, weights };
+        }),
+      }));
+    }
+  } catch {
+    // DB unavailable during static build — use static fallback
+  }
+
+  return <VolebnyKalkulatorClient questions={questions} />;
 }

@@ -3,6 +3,8 @@ import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { getDb } from "@/lib/db";
 import { polls, pollResults, parties } from "@/lib/db/schema";
 import { desc, eq, inArray } from "drizzle-orm";
+import { lookupApiKey } from "@/lib/api-keys/keys";
+import { checkAndIncrement } from "@/lib/api-keys/rate-limit";
 
 export const runtime = "edge";
 
@@ -28,15 +30,41 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
 
+    const { env } = await getCloudflareContext({ async: true });
+    const db = getDb(env.DB);
+
+    // ── API Key validation ──────────────────────────────────
+    const rawKey =
+      request.headers.get("authorization")?.replace("Bearer ", "") ??
+      searchParams.get("key");
+
+    if (!rawKey) {
+      return NextResponse.json(
+        { error: "API kľúč je povinný. Získajte ho na polis.sk/api-pristup" },
+        { status: 401 }
+      );
+    }
+
+    const keyRecord = await lookupApiKey(rawKey, db);
+
+    if (!keyRecord) {
+      return NextResponse.json({ error: "Neplatný API kľúč" }, { status: 401 });
+    }
+
+    const { allowed, remaining } = await checkAndIncrement(keyRecord.id, keyRecord.tier, db);
+    if (!allowed) {
+      return NextResponse.json(
+        { error: "Denný limit 100 požiadaviek vyčerpaný. Prejdite na platenú verziu." },
+        { status: 429 }
+      );
+    }
+
     // Parse limit (default 10, max 50)
     const rawLimit = parseInt(searchParams.get("limit") ?? "10", 10);
     const limit = isNaN(rawLimit) ? 10 : Math.min(Math.max(1, rawLimit), 50);
 
     // Optional partyId filter
     const partyIdFilter = searchParams.get("partyId");
-
-    const { env } = await getCloudflareContext({ async: true });
-    const db = getDb(env.DB);
 
     // Fetch polls ordered by date desc
     const pollRows = await db
@@ -99,7 +127,7 @@ export async function GET(request: NextRequest) {
       color: p.color,
     }));
 
-    return NextResponse.json(
+    const response = NextResponse.json(
       {
         polls: pollsResponse,
         parties: partiesResponse,
@@ -107,6 +135,13 @@ export async function GET(request: NextRequest) {
       },
       { headers: CORS_HEADERS }
     );
+
+    if (remaining !== undefined) {
+      response.headers.set("X-RateLimit-Remaining", String(remaining));
+      response.headers.set("X-RateLimit-Limit", "100");
+    }
+
+    return response;
   } catch (e) {
     console.error("GET /api/v1/polls error:", e);
     return NextResponse.json(

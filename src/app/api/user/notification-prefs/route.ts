@@ -1,0 +1,63 @@
+import { NextRequest, NextResponse } from "next/server";
+import { getCloudflareContext } from "@opennextjs/cloudflare";
+import { getDb } from "@/lib/db";
+import { eq } from "drizzle-orm";
+import { userNotificationPrefs } from "@/lib/db/schema";
+import { validateSession, SESSION_COOKIE } from "@/lib/auth/session";
+
+export const runtime = "edge";
+
+export async function GET(req: NextRequest) {
+  const { env } = await getCloudflareContext({ async: true });
+  const db = getDb(env.DB);
+  const sessionToken = req.cookies.get(SESSION_COOKIE)?.value;
+  if (!sessionToken) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const session = await validateSession(sessionToken, db);
+  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const prefs = await db
+    .select()
+    .from(userNotificationPrefs)
+    .where(eq(userNotificationPrefs.userId, session.userId));
+
+  if (prefs.length === 0) {
+    return NextResponse.json({ onNewPoll: false, onScoreChange: false });
+  }
+  return NextResponse.json({
+    onNewPoll: prefs[0].onNewPoll === 1,
+    onScoreChange: prefs[0].onScoreChange === 1,
+  });
+}
+
+export async function POST(req: NextRequest) {
+  const { env } = await getCloudflareContext({ async: true });
+  const db = getDb(env.DB);
+  const sessionToken = req.cookies.get(SESSION_COOKIE)?.value;
+  if (!sessionToken) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const session = await validateSession(sessionToken, db);
+  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const body = (await req.json()) as { onNewPoll: boolean; onScoreChange: boolean };
+  const now = new Date().toISOString();
+
+  await db
+    .insert(userNotificationPrefs)
+    .values({
+      userId: session.userId,
+      onNewPoll: body.onNewPoll ? 1 : 0,
+      onScoreChange: body.onScoreChange ? 1 : 0,
+      updatedAt: now,
+    })
+    .onConflictDoUpdate({
+      target: [userNotificationPrefs.userId],
+      set: {
+        onNewPoll: body.onNewPoll ? 1 : 0,
+        onScoreChange: body.onScoreChange ? 1 : 0,
+        updatedAt: now,
+      },
+    });
+
+  return NextResponse.json({ ok: true });
+}
