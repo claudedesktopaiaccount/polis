@@ -109,7 +109,7 @@ export default async function RootLayout({
               Preskočiť na obsah
             </a>
             <Navbar />
-            <main id="main-content" style={{ viewTransitionName: "page-content" }}>
+            <main id="main-content" className="pb-16 lg:pb-0" style={{ viewTransitionName: "page-content" }}>
               <ViewTransition>{children}</ViewTransition>
             </main>
             <Footer />
