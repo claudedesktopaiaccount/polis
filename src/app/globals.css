@@ -30,7 +30,7 @@
   /* Typography */
   --font-sans: var(--font-inter);
   --font-serif: var(--font-newsreader);
-  --font-mono: var(--font-mono, ui-monospace, "JetBrains Mono", "Fira Code", monospace);
+  --font-mono: var(--font-jetbrains-mono, ui-monospace, "JetBrains Mono", "Fira Code", monospace);
 }
 
 :root {
