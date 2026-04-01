@@ -1,19 +1,42 @@
 "use client";
 
 import { useState } from "react";
-import { PARTIES, PARTY_LIST, COALITIONS } from "@/lib/parties";
+import { PARTIES, PARTY_LIST } from "@/lib/parties";
 import ShareButtons from "@/components/ShareButtons";
 import { allocateSeats } from "@/lib/prediction/dhondt";
 import Hemicycle from "@/components/charts/Hemicycle";
 
 const MAJORITY = 76;
 
+const PRESETS = [
+  { label: "Najpravdepodobnejšia", parties: ["ps", "demokrati", "kdh", "sas"] },
+  { label: "Koalícia SMER", parties: ["smer-sd", "hlas-sd", "sns"] },
+  { label: "Široká opozícia", parties: ["ps", "demokrati", "kdh", "sas", "slovensko"] },
+] as const;
+
+function getInitialSelected(): Set<string> {
+  if (typeof window === "undefined") return new Set();
+  const params = new URLSearchParams(window.location.search);
+  const partiesParam = params.get("parties");
+  if (partiesParam) {
+    return new Set(partiesParam.split(",").filter((id) => id in PARTIES));
+  }
+  return new Set();
+}
+
 interface KoalicnyClientProps {
   pollResults: { partyId: string; percentage: number }[];
 }
 
 export default function KoalicnyClient({ pollResults }: KoalicnyClientProps) {
-  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [selected, setSelected] = useState<Set<string>>(getInitialSelected);
+
+  const shareUrl =
+    typeof window !== "undefined"
+      ? selected.size > 0
+        ? `${window.location.origin}/koalicny-simulator?parties=${[...selected].join(",")}`
+        : `${window.location.origin}/koalicny-simulator`
+      : "";
 
   const allSeats = allocateSeats(pollResults);
 
@@ -38,6 +61,10 @@ export default function KoalicnyClient({ pollResults }: KoalicnyClientProps) {
 
   function applyPreset(partyIds: readonly string[]) {
     setSelected(new Set(partyIds.filter((id) => inParliament.includes(id))));
+  }
+
+  function handleCopyUrl() {
+    navigator.clipboard?.writeText(shareUrl);
   }
 
   return (
@@ -81,26 +108,38 @@ export default function KoalicnyClient({ pollResults }: KoalicnyClientProps) {
           description="Simulácia koaličných scenárov pre slovenské parlamentné voľby."
         />
 
+        {/* Copy share URL */}
+        {shareUrl && (
+          <div className="mt-3">
+            <button
+              onClick={handleCopyUrl}
+              className="text-xs text-info hover:underline"
+            >
+              Kopírovať odkaz →
+            </button>
+          </div>
+        )}
+
         {/* Preset buttons */}
-        <div className="mt-6 flex flex-wrap gap-3 border-t border-divider pt-4">
-          <button
-            onClick={() => applyPreset(COALITIONS.progressive)}
-            className="px-4 py-2 text-sm font-medium border border-divider text-text hover:bg-hover transition-colors"
-          >
-            Progresívna koalícia
-          </button>
-          <button
-            onClick={() => applyPreset(COALITIONS.fico)}
-            className="px-4 py-2 text-sm font-medium border border-divider text-text hover:bg-hover transition-colors"
-          >
-            Koalícia Fico
-          </button>
-          <button
-            onClick={() => setSelected(new Set())}
-            className="px-4 py-2 text-sm font-medium border border-divider text-text/50 hover:bg-hover transition-colors"
-          >
-            Zmazať výber
-          </button>
+        <div className="mt-6 border-t border-divider pt-4">
+          <p className="micro-label mb-2">Rýchle scenáre</p>
+          <div className="flex flex-wrap gap-2">
+            {PRESETS.map((preset) => (
+              <button
+                key={preset.label}
+                onClick={() => applyPreset(preset.parties)}
+                className="text-xs px-3 py-1.5 border border-divider hover:bg-hover transition-colors"
+              >
+                {preset.label}
+              </button>
+            ))}
+            <button
+              onClick={() => setSelected(new Set())}
+              className="text-xs px-3 py-1.5 border border-divider text-text/50 hover:bg-hover transition-colors"
+            >
+              Zmazať výber
+            </button>
+          </div>
         </div>
       </div>
 
