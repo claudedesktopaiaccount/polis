@@ -1,24 +1,5 @@
 import { describe, it, expect } from "vitest";
-
-interface TickerItem {
-  partyId: string;
-  abbreviation: string;
-  percentage: number;
-  delta: number;
-  color: string;
-}
-
-function formatDelta(delta: number): string {
-  if (delta > 0) return `+${delta.toFixed(1)}`;
-  if (delta < 0) return `${delta.toFixed(1)}`;
-  return "0.0";
-}
-
-function getDeltaClass(delta: number): string {
-  if (delta > 0) return "delta-positive";
-  if (delta < 0) return "delta-negative";
-  return "delta-neutral";
-}
+import { formatDelta, getDeltaClass } from "../TickerBar";
 
 describe("TickerBar — delta formatting", () => {
   it("formats positive delta with + prefix", () => {
