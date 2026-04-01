@@ -23,7 +23,7 @@ export default function PersonalBar({ score, rank, totalUsers }: PersonalBarProp
       <div className="flex items-center gap-3">
         <span className="micro-label">Tvoje skóre</span>
         <span className="data-value font-bold text-base">{score}</span>
-        {rank && totalUsers && (
+        {rank !== null && totalUsers !== null && (
           <span className="text-text/50">
             #{rank} z {totalUsers.toLocaleString("sk-SK")}
           </span>
