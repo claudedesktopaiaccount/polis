@@ -10,14 +10,25 @@ import Link from "next/link";
 export interface CrowdData {
   partyId: string;
   totalBets: number;
+  avgPct?: number;
+}
+
+interface LeaderboardEntry {
+  rank: number;
+  displayName: string;
+  totalScore: number;
+  winnerScore: number;
+  percentageScore: number;
+  coalitionScore: number;
 }
 
 interface Props {
   initialCrowd: CrowdData[];
   initialTotalBets: number;
+  leaderboard?: LeaderboardEntry[];
 }
 
-export default function TipovanieClient({ initialCrowd, initialTotalBets }: Props) {
+export default function TipovanieClient({ initialCrowd, initialTotalBets, leaderboard = [] }: Props) {
   const { user } = useAuth();
   const [selectedWinner, setSelectedWinner] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
@@ -97,6 +108,7 @@ export default function TipovanieClient({ initialCrowd, initialTotalBets }: Prop
   const selectedParty = selectedWinner ? PARTIES[selectedWinner] : null;
 
   return (
+    <>
     <div className="lg:grid lg:grid-cols-2 lg:gap-8">
       {/* Left: Voting */}
       <div>
@@ -313,7 +325,7 @@ export default function TipovanieClient({ initialCrowd, initialTotalBets }: Prop
         )}
       </div>
 
-      {/* Right: Crowd results */}
+      {/* Right: Crowd results + avg percentages */}
       <div>
         {totalBets > 0 ? (
           <div className="border border-divider bg-surface p-6">
@@ -404,5 +416,81 @@ export default function TipovanieClient({ initialCrowd, initialTotalBets }: Prop
         )}
       </div>
     </div>
+
+    {/* Leaderboard section — full width below grid */}
+    {leaderboard.length > 0 && (
+      <section className="mt-8 border-t border-divider pt-6">
+        <h2 className="font-serif text-2xl font-bold mb-1">Rebríček prediktorov</h2>
+        <p className="text-sm text-text/50 mb-4">Kto najlepšie predpovedá voľby?</p>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b-2 border-ink text-left">
+                <th className="py-2 pr-3 font-semibold">#</th>
+                <th className="py-2 pr-3 font-semibold">Meno</th>
+                <th className="py-2 pr-3 font-semibold text-right">Víťaz</th>
+                <th className="py-2 pr-3 font-semibold text-right">Percentá</th>
+                <th className="py-2 pr-3 font-semibold text-right">Koalícia</th>
+                <th className="py-2 font-semibold text-right">Celkom</th>
+              </tr>
+            </thead>
+            <tbody>
+              {leaderboard.map((e) => (
+                <tr key={e.rank} className="border-b border-divider hover:bg-hover transition-colors">
+                  <td className="py-2 pr-3 font-mono">{e.rank}.</td>
+                  <td className="py-2 pr-3">{e.displayName}</td>
+                  <td className="py-2 pr-3 text-right data-value">{e.winnerScore.toFixed(0)}</td>
+                  <td className="py-2 pr-3 text-right data-value">{e.percentageScore.toFixed(0)}</td>
+                  <td className="py-2 pr-3 text-right data-value">{e.coalitionScore.toFixed(0)}</td>
+                  <td className="py-2 text-right data-value font-bold">{e.totalScore.toFixed(0)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        {!user && (
+          <div className="mt-4 p-3 bg-hover/50 border border-divider text-sm text-center">
+            <Link href="/registracia" className="text-info font-medium hover:underline">
+              Zaregistruj sa
+            </Link>
+            {" "}a sleduj svoje skóre v rebríčku.
+          </div>
+        )}
+      </section>
+    )}
+
+    {/* Crowd consensus — avg predicted percentages */}
+    {crowdData.some((c) => (c.avgPct ?? 0) > 0) && (
+      <section className="mt-8 border-t border-divider pt-6">
+        <h2 className="font-serif text-xl font-bold mb-4">Čo tipuje dav?</h2>
+        <div className="space-y-2">
+          {[...crowdData]
+            .filter((c) => (c.avgPct ?? 0) > 0)
+            .sort((a, b) => (b.avgPct ?? 0) - (a.avgPct ?? 0))
+            .map((c) => {
+              const party = PARTIES[c.partyId];
+              if (!party) return null;
+              return (
+                <div key={c.partyId} className="flex items-center gap-3">
+                  <span className="w-12 text-xs font-semibold">{party.abbreviation}</span>
+                  <div className="flex-1 h-5 bg-divider/30 relative">
+                    <div
+                      className="h-full transition-all duration-500"
+                      style={{
+                        width: `${Math.min(((c.avgPct ?? 0) / 30) * 100, 100)}%`,
+                        backgroundColor: party.color,
+                      }}
+                    />
+                  </div>
+                  <span className="data-value text-sm font-bold w-14 text-right">
+                    {(c.avgPct ?? 0).toFixed(1)}%
+                  </span>
+                </div>
+              );
+            })}
+        </div>
+      </section>
+    )}
+    </>
   );
 }
