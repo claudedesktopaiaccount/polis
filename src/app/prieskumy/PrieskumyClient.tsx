@@ -3,6 +3,14 @@
 import { useState, useMemo } from "react";
 import dynamic from "next/dynamic";
 import ShareButtons from "@/components/ShareButtons";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
 
 const PollTrendChart = dynamic(
   () => import("@/components/charts/PollTrendChart"),
@@ -64,6 +72,8 @@ export default function PrieskumyClient({
   );
   const [timeRange, setTimeRange] = useState(12);
   const [showTable, setShowTable] = useState(false);
+  const [viewMode, setViewMode] = useState<"polls" | "model" | "crowd">("polls");
+  const [expandedParty, setExpandedParty] = useState<string | null>(null);
 
   const toggleAgency = (name: string) => {
     setSelectedAgencies((prev) => {
@@ -81,6 +91,17 @@ export default function PrieskumyClient({
     }
     return data;
   }, [chartData, selectedAgencies, timeRange]);
+
+  // Build per-party history from chartData for drill-down mini charts
+  const partyHistory = useMemo(() => {
+    const map: Record<string, { date: string; value: number }[]> = {};
+    for (const party of partyBars) {
+      map[party.id] = filteredData
+        .filter((d) => d[party.id] !== undefined)
+        .map((d) => ({ date: String(d.date), value: Number(d[party.id]) }));
+    }
+    return map;
+  }, [filteredData, partyBars]);
 
   const exportCSV = () => {
     const headers = ["Dátum", "Agentúra", ...partyBars.map((p) => p.abbreviation)];
@@ -154,20 +175,59 @@ export default function PrieskumyClient({
 
       {/* Main content */}
       <div>
+        {/* Triple view toggle */}
+        <div className="flex gap-2 mb-4">
+          {(["polls", "model", "crowd"] as const).map((mode) => (
+            <button
+              key={mode}
+              onClick={() => setViewMode(mode)}
+              className={`text-xs px-3 py-1.5 border transition-colors ${
+                viewMode === mode
+                  ? "bg-ink text-paper border-ink"
+                  : "border-divider hover:bg-hover"
+              }`}
+            >
+              {mode === "polls" ? "Prieskumy" : mode === "model" ? "Model" : "Dav"}
+            </button>
+          ))}
+        </div>
+
         {/* Trend chart */}
         <div className="border border-divider bg-surface p-6 mb-8">
-          <h3 className="font-serif text-xl font-bold text-ink mb-1">
-            Vývoj volebných preferencií
-          </h3>
-          <p className="text-xs text-text/50 mb-4">
-            Agregované dáta z agentúr. Hrubé čiary označujú hlavné strany.
-          </p>
-          <PollTrendChart data={filteredData} parties={partyMeta} />
-          <ShareButtons
-            url={typeof window !== "undefined" ? window.location.href : "/prieskumy"}
-            title="Prieskumy verejnej mienky | Polis"
-            description="Aktuálne volebné prieskumy a trendy pre slovenské parlamentné voľby."
-          />
+          {viewMode === "polls" && (
+            <>
+              <h3 className="font-serif text-xl font-bold text-ink mb-1">
+                Vývoj volebných preferencií
+              </h3>
+              <p className="text-xs text-text/50 mb-4">
+                Agregované dáta z agentúr. Hrubé čiary označujú hlavné strany.
+              </p>
+              <PollTrendChart data={filteredData} parties={partyMeta} />
+              <ShareButtons
+                url={typeof window !== "undefined" ? window.location.href : "/prieskumy"}
+                title="Prieskumy verejnej mienky | Polis"
+                description="Aktuálne volebné prieskumy a trendy pre slovenské parlamentné voľby."
+              />
+            </>
+          )}
+
+          {viewMode === "model" && (
+            <div className="py-12 text-center">
+              <p className="text-sm font-medium text-ink mb-1">Model dáta</p>
+              <p className="text-xs text-text/50">
+                Predikčný model — čoskoro k dispozícii.
+              </p>
+            </div>
+          )}
+
+          {viewMode === "crowd" && (
+            <div className="py-12 text-center">
+              <p className="text-sm font-medium text-ink mb-1">Dav — tipovanie</p>
+              <p className="text-xs text-text/50">
+                Agregované tipy používateľov — čoskoro k dispozícii.
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Raw data table */}
@@ -256,30 +316,65 @@ export default function PrieskumyClient({
                 </thead>
                 <tbody>
                   {partyBars.map((party) => (
-                    <tr key={party.id} className="border-b border-divider hover:bg-hover">
-                      <td className="py-2 px-2">
-                        <div className="flex items-center gap-2">
-                          <div
-                            className="w-2.5 h-2.5 shrink-0"
-                            style={{ backgroundColor: party.color }}
-                          />
-                          <span className="font-medium text-ink text-xs">{party.abbreviation}</span>
-                        </div>
-                      </td>
-                      {agencies.map((a) => {
-                        const pct = a.results[party.id];
-                        return (
-                          <td
-                            key={a.name}
-                            className={`text-right py-2 px-2 tabular-nums text-xs ${
-                              pct !== undefined && pct < 5 ? "text-danger" : "text-text"
-                            }`}
-                          >
-                            {pct !== undefined ? `${pct.toFixed(1)}%` : "–"}
+                    <>
+                      <tr
+                        key={party.id}
+                        className="border-b border-divider hover:bg-hover cursor-pointer"
+                        onClick={() => setExpandedParty(expandedParty === party.id ? null : party.id)}
+                      >
+                        <td className="py-2 px-2">
+                          <div className="flex items-center gap-2">
+                            <div
+                              className="w-2.5 h-2.5 shrink-0"
+                              style={{ backgroundColor: party.color }}
+                            />
+                            <span className="font-medium text-ink text-xs">{party.abbreviation}</span>
+                            <span className="text-[10px] text-text/30">{expandedParty === party.id ? "▲" : "▼"}</span>
+                          </div>
+                        </td>
+                        {agencies.map((a) => {
+                          const pct = a.results[party.id];
+                          return (
+                            <td
+                              key={a.name}
+                              className={`text-right py-2 px-2 tabular-nums text-xs ${
+                                pct !== undefined && pct < 5 ? "text-danger" : "text-text"
+                              }`}
+                            >
+                              {pct !== undefined ? `${pct.toFixed(1)}%` : "–"}
+                            </td>
+                          );
+                        })}
+                      </tr>
+                      {expandedParty === party.id && (
+                        <tr key={`${party.id}-drill`} className="border-b border-divider bg-hover/30">
+                          <td colSpan={agencies.length + 1} className="py-3 px-2">
+                            <p className="micro-label mb-2">{party.abbreviation} — trend</p>
+                            {partyHistory[party.id]?.length > 0 ? (
+                              <ResponsiveContainer width="100%" height={80}>
+                                <LineChart data={partyHistory[party.id]}>
+                                  <XAxis dataKey="date" hide />
+                                  <YAxis domain={["auto", "auto"]} hide />
+                                  <Tooltip
+                                    contentStyle={{ fontSize: 11 }}
+                                    formatter={(v: number) => [`${v.toFixed(1)}%`, party.abbreviation]}
+                                  />
+                                  <Line
+                                    type="monotone"
+                                    dataKey="value"
+                                    stroke={party.color}
+                                    dot={false}
+                                    strokeWidth={2}
+                                  />
+                                </LineChart>
+                              </ResponsiveContainer>
+                            ) : (
+                              <p className="text-xs text-text/40">Žiadne dáta</p>
+                            )}
                           </td>
-                        );
-                      })}
-                    </tr>
+                        </tr>
+                      )}
+                    </>
                   ))}
                 </tbody>
               </table>
