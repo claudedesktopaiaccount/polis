@@ -15,6 +15,7 @@ interface DbPartyData {
     promiseText: string;
     category: string;
     isPro: boolean;
+    status: string;
     sourceUrl: string | null;
   }>;
 }
@@ -335,7 +336,10 @@ function ProgramSection({
                             >
                               {promise.isPro ? "+" : "−"}
                             </div>
-                            <p className="text-sm text-ink">{promise.text}</p>
+                            <div className="flex flex-col gap-1">
+                              <p className="text-sm text-ink">{promise.text}</p>
+                              {promise.status && <StatusBadge status={promise.status} />}
+                            </div>
                           </div>
                         </div>
                       ))}
@@ -370,6 +374,24 @@ function ProgramSection({
   );
 }
 
+function StatusBadge({ status }: { status: string }) {
+  const map: Record<string, { label: string; color: string }> = {
+    fulfilled:    { label: "Splnené",   color: "#00C853" },
+    in_progress:  { label: "Prebieha", color: "#FFB300" },
+    broken:       { label: "Nesplnené", color: "#D32F2F" },
+    not_started:  { label: "Nezačaté", color: "#757575" },
+  };
+  const s = map[status] ?? map["not_started"];
+  return (
+    <span
+      className="text-[10px] font-mono uppercase tracking-wide px-1.5 py-0.5 border"
+      style={{ color: s.color, borderColor: s.color }}
+    >
+      {s.label}
+    </span>
+  );
+}
+
 export default function PovolebnePlanyClient({ partiesData }: Props) {
   const [activeParty, setActiveParty] = useState("ps");
   const [searchQuery, setSearchQuery] = useState("");
@@ -386,6 +408,7 @@ export default function PovolebnePlanyClient({ partiesData }: Props) {
             text: p.promiseText,
             category: p.category,
             isPro: p.isPro,
+            status: p.status,
           })),
         },
       ];

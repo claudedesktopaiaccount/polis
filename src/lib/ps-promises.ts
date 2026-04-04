@@ -2,6 +2,7 @@ export interface PartyPromise {
   text: string;
   category: string;
   isPro: boolean;
+  status?: string;
 }
 
 export const PS_PROGRAM_NAME = "TRESK! — Totálny reštart Slovenska";
