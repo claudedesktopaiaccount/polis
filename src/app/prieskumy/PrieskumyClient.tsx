@@ -357,7 +357,8 @@ export default function PrieskumyClient({
                                   <YAxis domain={["auto", "auto"]} hide />
                                   <Tooltip
                                     contentStyle={{ fontSize: 11 }}
-                                    formatter={(v: number) => [`${v.toFixed(1)}%`, party.abbreviation]}
+                                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                                    formatter={(v: any) => [`${Number(v).toFixed(1)}%`, party.abbreviation]}
                                   />
                                   <Line
                                     type="monotone"
