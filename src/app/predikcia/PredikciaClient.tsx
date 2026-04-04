@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { PARTIES } from "@/lib/parties";
 import ShareButtons from "@/components/ShareButtons";
 import type { SimulationResult } from "@/lib/prediction/monte-carlo";
@@ -19,6 +20,9 @@ export default function PredikciaClient({
   latestAgency,
   latestDate,
 }: PredikciaClientProps) {
+  const [adjustments, setAdjustments] = useState<Record<string, number>>({});
+  const [showMethodology, setShowMethodology] = useState(false);
+
   const seatMap: Record<string, number> = {};
   currentSeats.forEach((s) => (seatMap[s.partyId] = s.seats));
 
@@ -41,6 +45,9 @@ export default function PredikciaClient({
               const barWidth = (result.winProbability / maxWin) * 100;
               const seats = seatMap[result.partyId] ?? 0;
 
+              const adj = adjustments[result.partyId] ?? 0;
+              const adjMeanPct = result.meanPct + adj;
+
               return (
                 <div key={result.partyId}>
                   <div className="flex items-baseline justify-between mb-1">
@@ -54,9 +61,20 @@ export default function PredikciaClient({
                       {pct.toFixed(0)}%
                     </span>
                   </div>
-                  <div className="h-8 bg-hover overflow-hidden">
+                  {/* Bar with confidence interval overlay */}
+                  <div className="h-8 bg-hover overflow-hidden relative">
+                    {/* Confidence interval shading */}
                     <div
-                      className="h-full flex items-center px-3 transition-all duration-500"
+                      className="absolute top-0 h-full opacity-20"
+                      style={{
+                        left: `${Math.min((result.lowerBound / 35) * 100, 100)}%`,
+                        width: `${Math.min(((result.upperBound - result.lowerBound) / 35) * 100, 100)}%`,
+                        backgroundColor: party?.color,
+                      }}
+                    />
+                    {/* Main bar */}
+                    <div
+                      className="h-full flex items-center px-3 transition-all duration-500 relative"
                       style={{
                         width: `${Math.max(barWidth, 2)}%`,
                         backgroundColor: party?.color,
@@ -72,9 +90,14 @@ export default function PredikciaClient({
                   <div className="flex items-center justify-between mt-1">
                     <span className="text-[10px] text-text/40 tabular-nums">
                       {seats > 0 ? `Odhadované mandáty: ${seats}` : "Pod prahom"}
+                      {adj !== 0 && (
+                        <span className={adj > 0 ? "text-[#00E676] ml-1" : "text-[#FF5252] ml-1"}>
+                          ({adj > 0 ? "+" : ""}{adjMeanPct.toFixed(1)}%)
+                        </span>
+                      )}
                     </span>
                     <span className="text-[10px] text-text/40 tabular-nums">
-                      ±{((result.upperBound - result.lowerBound) / 2).toFixed(1)}%
+                      {result.lowerBound.toFixed(1)}–{result.upperBound.toFixed(1)}%
                     </span>
                   </div>
                 </div>
@@ -115,6 +138,9 @@ export default function PredikciaClient({
                 </th>
                 <th className="text-right py-2 px-2 font-semibold text-ink text-xs uppercase tracking-wider">
                   Výhra
+                </th>
+                <th className="text-right py-2 px-2 font-semibold text-ink text-xs uppercase tracking-wider">
+                  Úprava
                 </th>
               </tr>
             </thead>
@@ -165,6 +191,28 @@ export default function PredikciaClient({
                       >
                         {(result.winProbability * 100).toFixed(1)}%
                       </td>
+                      <td className="text-right py-2 px-2">
+                        <div className="flex items-center gap-1 justify-end">
+                          <input
+                            type="range"
+                            min={-3}
+                            max={3}
+                            step={0.1}
+                            value={adjustments[result.partyId] ?? 0}
+                            onChange={(e) =>
+                              setAdjustments((prev) => ({
+                                ...prev,
+                                [result.partyId]: parseFloat(e.target.value),
+                              }))
+                            }
+                            className="w-16"
+                          />
+                          <span className="data-value text-xs w-10 text-right">
+                            {((adjustments[result.partyId] ?? 0) > 0 ? "+" : "")}
+                            {(adjustments[result.partyId] ?? 0).toFixed(1)}
+                          </span>
+                        </div>
+                      </td>
                     </tr>
                   );
                 })}
@@ -174,6 +222,19 @@ export default function PredikciaClient({
         <p className="mt-4 text-[10px] text-text/40">
           Na základe prieskumu: {latestAgency}, {latestDate}. Maximálna odchýlka ±2.5%.
         </p>
+        <button
+          onClick={() => setShowMethodology(!showMethodology)}
+          className="text-xs text-info hover:underline mt-6 block"
+        >
+          {showMethodology ? "Skryť metodológiu ▲" : "Ako funguje predikcia? ▼"}
+        </button>
+        {showMethodology && (
+          <div className="mt-3 text-sm text-text/70 space-y-2 border-t border-divider pt-3">
+            <p>Model spustí <strong>10 000 simulácií</strong> volieb. Každá simulácia náhodne upraví preferencie strán podľa historickej odchýlky prieskumov od reálnych výsledkov.</p>
+            <p>Pre každú simuláciu sa rozdeľujú mandáty <strong>D&apos;Hondtovou metódou</strong> (rovnaká, akú používa slovenský parlament). Strany pod 5% sa do parlamentu nedostanú.</p>
+            <p>Výsledky ukazujú, koľkokrát z 10 000 pokusov každá strana „vyhrala" alebo sa dostala do parlamentu. Čím širší interval spoľahlivosti, tým menej istý je výsledok.</p>
+          </div>
+        )}
         <ShareButtons
           url={typeof window !== "undefined" ? window.location.href : "/predikcia"}
           title="Predikcia volieb | Polis"

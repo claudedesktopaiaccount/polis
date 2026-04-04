@@ -30,6 +30,7 @@
   /* Typography */
   --font-sans: var(--font-inter);
   --font-serif: var(--font-newsreader);
+  --font-mono: var(--font-jetbrains-mono, ui-monospace, "JetBrains Mono", "Fira Code", monospace);
 }
 
 :root {
@@ -92,6 +93,54 @@ h1, h2, h3 {
 /* Tabular numbers for data */
 .tabular-nums {
   font-variant-numeric: tabular-nums;
+}
+
+/* Data typography — monospace for numbers */
+.data-value {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+/* Micro-labels — uppercase section headers */
+.micro-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  opacity: 0.4;
+}
+
+/* Semantic delta colors */
+.delta-positive { color: #00E676; }
+.delta-negative { color: #FF5252; }
+.delta-neutral { color: var(--color-text); opacity: 0.4; }
+
+/* Live pulse indicator */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+.pulse-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  background: var(--color-success);
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+/* Number ticker animation */
+@keyframes count-up {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-count {
+  animation: count-up 400ms ease-out forwards;
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .pulse-dot { animation: none; opacity: 1; }
+  .animate-count { animation: none; }
 }
 
 /* 3px thick border utility */

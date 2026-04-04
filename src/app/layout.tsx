@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Newsreader, Dancing_Script } from "next/font/google";
+import { Inter, Newsreader, Dancing_Script, JetBrains_Mono } from "next/font/google";
 import { cookies } from "next/headers";
 import "./globals.css";
 import Navbar from "@/components/ui/Navbar";
@@ -21,6 +21,12 @@ const dancingScript = Dancing_Script({
   variable: "--font-dancing",
   subsets: ["latin", "latin-ext"],
   weight: ["700"],
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-jetbrains-mono",
+  display: "swap",
 });
 
 const newsreader = Newsreader({
@@ -96,14 +102,14 @@ export default async function RootLayout({
           }}
         />
       </head>
-      <body className={`${inter.variable} ${newsreader.variable} ${dancingScript.variable} font-sans antialiased`}>
+      <body className={`${inter.variable} ${newsreader.variable} ${dancingScript.variable} ${jetbrainsMono.variable} font-sans antialiased`}>
         <ThemeProvider initialTheme={theme}>
           <AuthProvider>
             <a href="#main-content" className="skip-link">
               Preskočiť na obsah
             </a>
             <Navbar />
-            <main id="main-content" style={{ viewTransitionName: "page-content" }}>
+            <main id="main-content" className="pb-16 lg:pb-0" style={{ viewTransitionName: "page-content" }}>
               <ViewTransition>{children}</ViewTransition>
             </main>
             <Footer />

@@ -9,6 +9,7 @@ export default function GdprBanner() {
 
   useEffect(() => {
     if (getConsentStatus() === null) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setVisible(true);
     }
   }, []);

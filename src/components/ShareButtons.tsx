@@ -13,6 +13,7 @@ export default function ShareButtons({ url, title, description }: ShareButtonsPr
   const [canNativeShare, setCanNativeShare] = useState(false);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setCanNativeShare(typeof navigator !== "undefined" && "share" in navigator);
   }, []);
 

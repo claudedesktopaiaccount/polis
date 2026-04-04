@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import Link from "next/link";
 import SectionHeading from "@/components/ui/SectionHeading";
 import { PARTIES, PARTY_LIST } from "@/lib/parties";
 import { QUESTIONS } from "@/lib/kalkulator/questions";
@@ -17,6 +18,12 @@ export default function VolebnyKalkulatorClient({ questions: questionsProp }: Pr
   const [showResults, setShowResults] = useState(false);
 
   const partyIds = PARTY_LIST.map((p) => p.id);
+
+  useEffect(() => {
+    if (showResults) {
+      document.cookie = "polis_engaged=1; path=/; max-age=31536000; SameSite=Lax";
+    }
+  }, [showResults]);
 
   function selectAnswer(answerIdx: number) {
     setAnswers((prev) => ({ ...prev, [currentQ]: answerIdx }));
@@ -113,6 +120,35 @@ export default function VolebnyKalkulatorClient({ questions: questionsProp }: Pr
         >
           Skúsiť znova
         </button>
+
+        {/* Post-quiz funnel */}
+        <div className="mt-8 border-t border-divider pt-6 space-y-4">
+          {/* Top match highlight */}
+          <div className="bg-hover/50 p-4 border border-divider">
+            <p className="micro-label mb-1">Tvoja najväčšia zhoda</p>
+            <p className="font-serif text-xl font-bold" style={{ color: top.party?.color ?? "var(--ink)" }}>
+              {top.party?.name} — {top.score.toFixed(0)}%
+            </p>
+          </div>
+
+          {/* Funnel CTAs */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <Link
+              href="/prieskumy"
+              className="block p-4 border border-divider hover:bg-hover transition-colors"
+            >
+              <p className="font-semibold text-sm mb-1">Ako sa darí {top.party?.abbreviation}?</p>
+              <p className="text-xs text-text/50">Pozri si aktuálne prieskumy →</p>
+            </Link>
+            <Link
+              href="/tipovanie"
+              className="block p-4 border border-divider hover:bg-hover transition-colors"
+            >
+              <p className="font-semibold text-sm mb-1">Tipni si výsledok volieb</p>
+              <p className="text-xs text-text/50">Ako dopadnú voľby podľa teba? →</p>
+            </Link>
+          </div>
+        </div>
       </div>
     );
   }
