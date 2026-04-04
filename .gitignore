@@ -45,16 +45,16 @@ yarn-error.log*
 .wrangler/
 .open-next/
 
-# claude code
-.claude/settings.local.json
-.claude/settings.json
-.claude/agents/
-.claude/skills/
-.claude/projects/
+# claude code (entire folder — internal tool config)
+.claude/
 
 # mcp
 .mcp.json
 .playwright-mcp/
+
+# internal development docs
+HANDOFF.md
+docs/superpowers/
 
 # design artifacts
 stitch/
