@@ -6,14 +6,8 @@ import { eq, desc } from "drizzle-orm";
 
 export const runtime = "edge";
 
-const CORS_HEADERS = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "GET",
-  "Access-Control-Allow-Headers": "Content-Type",
-};
-
 export async function OPTIONS() {
-  return new Response(null, { status: 204, headers: CORS_HEADERS });
+  return new Response(null, { status: 204 });
 }
 
 export async function GET(req: NextRequest) {
@@ -21,7 +15,7 @@ export async function GET(req: NextRequest) {
   if (!electionId) {
     return NextResponse.json(
       { error: "electionId is required" },
-      { status: 400, headers: CORS_HEADERS }
+      { status: 400 }
     );
   }
 
@@ -34,7 +28,6 @@ export async function GET(req: NextRequest) {
       winnerScore: predictionScores.winnerScore,
       percentageScore: predictionScores.percentageScore,
       coalitionScore: predictionScores.coalitionScore,
-      userId: predictionScores.userId,
       displayName: users.displayName,
     })
     .from(predictionScores)
@@ -46,7 +39,6 @@ export async function GET(req: NextRequest) {
   const leaderboard = rows.map((row, i) => ({
     rank: i + 1,
     displayName: row.displayName || null,
-    userId: row.userId || null,
     totalScore: row.totalScore,
     winnerScore: row.winnerScore,
     percentageScore: row.percentageScore,
@@ -57,7 +49,6 @@ export async function GET(req: NextRequest) {
     { leaderboard },
     {
       headers: {
-        ...CORS_HEADERS,
         "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600",
       },
     }
