@@ -125,6 +125,8 @@ export const partyPromises = sqliteTable(
     category: text("category").notNull(),
     isPro: integer("is_pro", { mode: "boolean" }).notNull(),
     sourceUrl: text("source_url"),
+    status: text("status").notNull().default("not_started"),
+    // status values: 'fulfilled' | 'in_progress' | 'broken' | 'not_started'
   },
   (table) => [index("party_promises_party_id_idx").on(table.partyId)]
 );

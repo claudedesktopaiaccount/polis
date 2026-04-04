@@ -1,0 +1,1 @@
+ALTER TABLE `party_promises` ADD `status` text DEFAULT 'not_started' NOT NULL;
