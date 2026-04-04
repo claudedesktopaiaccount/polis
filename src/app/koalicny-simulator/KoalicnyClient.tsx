@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { PARTIES, PARTY_LIST, COALITIONS } from "@/lib/parties";
 import ShareButtons from "@/components/ShareButtons";
 import { allocateSeats } from "@/lib/prediction/dhondt";
@@ -14,6 +14,11 @@ interface KoalicnyClientProps {
 
 export default function KoalicnyClient({ pollResults }: KoalicnyClientProps) {
   const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [shareUrl, setShareUrl] = useState("/koalicny-simulator");
+
+  useEffect(() => {
+    setShareUrl(window.location.href);
+  }, []);
 
   const allSeats = allocateSeats(pollResults);
 
@@ -76,7 +81,7 @@ export default function KoalicnyClient({ pollResults }: KoalicnyClientProps) {
 
         {/* Share */}
         <ShareButtons
-          url={typeof window !== "undefined" ? window.location.href : "/koalicny-simulator"}
+          url={shareUrl}
           title="Koaličný simulátor | Polis"
           description="Simulácia koaličných scenárov pre slovenské parlamentné voľby."
         />

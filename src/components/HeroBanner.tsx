@@ -39,7 +39,7 @@ function CandidateColumn({ data }: { data: CandidateData }) {
     <div className="flex flex-col items-center text-center gap-3 sm:gap-4 flex-1">
       {/* Portrait — big and prominent */}
       <div
-        className="relative w-28 h-28 sm:w-36 sm:h-36 lg:w-44 lg:h-44 overflow-hidden border-3 rounded-md shadow-lg"
+        className="relative w-28 h-28 sm:w-36 sm:h-36 lg:w-44 lg:h-44 overflow-hidden border-4"
         style={{ borderColor: data.color }}
       >
         <Image

@@ -131,7 +131,7 @@ export default function PrieskumyClient({
                 onClick={() => setTimeRange(range.months)}
                 className={`block w-full text-left px-3 py-1.5 text-sm transition-colors ${
                   timeRange === range.months
-                    ? "bg-ink text-paper font-semibold"
+                    ? "bg-ink text-paper dark:bg-stone-200 dark:text-stone-900 font-semibold"
                     : "text-text hover:bg-hover"
                 }`}
               >

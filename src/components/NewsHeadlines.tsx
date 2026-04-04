@@ -10,7 +10,13 @@ interface NewsHeadlinesProps {
 }
 
 export default function NewsHeadlines({ items }: NewsHeadlinesProps) {
-  if (items.length === 0) return null;
+  if (items.length === 0) {
+    return (
+      <p className="py-6 text-sm text-text/40 italic">
+        Žiadne správy k dispozícii.
+      </p>
+    );
+  }
 
   return (
     <div className="divide-y divide-divider">
