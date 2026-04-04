@@ -1,6 +1,6 @@
 # Phase 3: Activation & First Revenue — Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** Turn the Phase 2 audience into engaged, retained, and paying users — weekly newsletter digest, per-user email notifications, API freemium tier with Stripe billing, and real sourced data replacing hardcoded weights in the volebný kalkulátor.
 
@@ -71,7 +71,7 @@ Task 1 (Schema) ──┬──> Task 2 (Kalkulátor real data)             [Str
 - Modify: `src/lib/db/schema.ts`
 - Generate: `drizzle/XXXX_phase3.sql`
 
-- [ ] **Step 1: Add five new tables to schema**
+- [x] **Step 1: Add five new tables to schema**
 
 Open `src/lib/db/schema.ts`. After the last existing table, append:
 
@@ -160,7 +160,7 @@ export const apiUsage = sqliteTable(
 );
 ```
 
-- [ ] **Step 2: Generate migration**
+- [x] **Step 2: Generate migration**
 
 ```bash
 npm run db:generate
@@ -168,17 +168,17 @@ npm run db:generate
 
 Expected: new file created in `drizzle/` e.g. `0004_phase3_tables.sql`.
 
-- [ ] **Step 3: Verify migration file**
+- [x] **Step 3: Verify migration file**
 
 Open the generated SQL file. Should contain `CREATE TABLE kalkulator_weights`, `CREATE TABLE user_notification_prefs`, `CREATE TABLE notification_log`, `CREATE TABLE api_keys`, `CREATE TABLE api_usage`.
 
-- [ ] **Step 4: Apply migration locally**
+- [x] **Step 4: Apply migration locally**
 
 ```bash
 npm run db:migrate
 ```
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/lib/db/schema.ts drizzle/
@@ -200,7 +200,7 @@ git commit -m "feat: add kalkulator_weights, notification, api_keys tables for P
 - Modify: `src/app/volebny-kalkulator/VolebnyKalkulatorClient.tsx`
 - Modify: `src/app/volebny-kalkulator/page.tsx`
 
-- [ ] **Step 1: Extract QUESTIONS to shared data file**
+- [x] **Step 1: Extract QUESTIONS to shared data file**
 
 Create `src/lib/kalkulator/questions.ts`. Cut the entire `QUESTIONS` array and `Question` interface from `VolebnyKalkulatorClient.tsx` and paste here. Add export:
 
@@ -220,7 +220,7 @@ export const QUESTIONS: Question[] = [
 ];
 ```
 
-- [ ] **Step 2: Update VolebnyKalkulatorClient to import from shared file**
+- [x] **Step 2: Update VolebnyKalkulatorClient to import from shared file**
 
 At the top of `src/app/volebny-kalkulator/VolebnyKalkulatorClient.tsx`, replace the inline `Question` interface and `QUESTIONS` constant with:
 
@@ -229,7 +229,7 @@ import { QUESTIONS } from "@/lib/kalkulator/questions";
 import type { Question } from "@/lib/kalkulator/questions";
 ```
 
-- [ ] **Step 3: Run build to verify no regressions**
+- [x] **Step 3: Run build to verify no regressions**
 
 ```bash
 npm run build
@@ -237,7 +237,7 @@ npm run build
 
 Expected: builds cleanly, no type errors.
 
-- [ ] **Step 4: Write DB helper tests**
+- [x] **Step 4: Write DB helper tests**
 
 Create `src/lib/db/kalkulator.test.ts`:
 
@@ -284,7 +284,7 @@ describe("upsertKalkulatorWeight", () => {
 });
 ```
 
-- [ ] **Step 5: Run tests to verify they fail**
+- [x] **Step 5: Run tests to verify they fail**
 
 ```bash
 npm test -- kalkulator.test.ts
@@ -292,7 +292,7 @@ npm test -- kalkulator.test.ts
 
 Expected: FAIL — `getKalkulatorWeights` not defined.
 
-- [ ] **Step 6: Implement DB helper**
+- [x] **Step 6: Implement DB helper**
 
 Create `src/lib/db/kalkulator.ts`:
 
@@ -335,7 +335,7 @@ export async function upsertKalkulatorWeight(
 }
 ```
 
-- [ ] **Step 7: Run tests to verify they pass**
+- [x] **Step 7: Run tests to verify they pass**
 
 ```bash
 npm test -- kalkulator.test.ts
@@ -343,7 +343,7 @@ npm test -- kalkulator.test.ts
 
 Expected: PASS.
 
-- [ ] **Step 8: Write seeder script**
+- [x] **Step 8: Write seeder script**
 
 Create `scripts/seed-kalkulator.ts`:
 
@@ -403,7 +403,7 @@ async function main() {
 main().catch((err) => { console.error(err); process.exit(1); });
 ```
 
-- [ ] **Step 9: Run seeder against local D1**
+- [x] **Step 9: Run seeder against local D1**
 
 ```bash
 npx tsx scripts/seed-kalkulator.ts
@@ -411,7 +411,7 @@ npx tsx scripts/seed-kalkulator.ts
 
 Expected: `Seeded 600 rows.`
 
-- [ ] **Step 10: Update volebny-kalkulator page to read from D1**
+- [x] **Step 10: Update volebny-kalkulator page to read from D1**
 
 Replace `src/app/volebny-kalkulator/page.tsx` with:
 
@@ -467,7 +467,7 @@ export default async function VolebnyKalkulatorPage() {
 }
 ```
 
-- [ ] **Step 11: Update VolebnyKalkulatorClient to accept questions prop**
+- [x] **Step 11: Update VolebnyKalkulatorClient to accept questions prop**
 
 In `src/app/volebny-kalkulator/VolebnyKalkulatorClient.tsx`, add a props interface and use the prop instead of the module-level constant:
 
@@ -483,7 +483,7 @@ export default function VolebnyKalkulatorClient({ questions: questionsProp }: Pr
 }
 ```
 
-- [ ] **Step 12: Create admin kalkulator editor**
+- [x] **Step 12: Create admin kalkulator editor**
 
 Create `src/app/admin/kalkulator/page.tsx`:
 
@@ -577,7 +577,7 @@ export default async function AdminKalkulatorPage({
 }
 ```
 
-- [ ] **Step 13: Run build + tests**
+- [x] **Step 13: Run build + tests**
 
 ```bash
 npm run build && npm test
@@ -585,7 +585,7 @@ npm run build && npm test
 
 Expected: build succeeds, all tests pass.
 
-- [ ] **Step 14: Commit**
+- [x] **Step 14: Commit**
 
 ```bash
 git add src/lib/kalkulator/ src/lib/db/kalkulator.ts src/lib/db/kalkulator.test.ts \
@@ -606,7 +606,7 @@ git commit -m "feat: volebny kalkulator reads weights from D1 with admin editor"
 - Create: `src/lib/email/digest.ts`
 - Create: `src/lib/email/digest.test.ts`
 
-- [ ] **Step 1: Write token tests**
+- [x] **Step 1: Write token tests**
 
 Create `src/lib/email/tokens.test.ts`:
 
@@ -639,7 +639,7 @@ describe("generateUnsubToken / verifyUnsubToken", () => {
 });
 ```
 
-- [ ] **Step 2: Run token tests to verify they fail**
+- [x] **Step 2: Run token tests to verify they fail**
 
 ```bash
 npm test -- tokens.test.ts
@@ -647,7 +647,7 @@ npm test -- tokens.test.ts
 
 Expected: FAIL — `generateUnsubToken` not defined.
 
-- [ ] **Step 3: Implement tokens.ts**
+- [x] **Step 3: Implement tokens.ts**
 
 Create `src/lib/email/tokens.ts`:
 
@@ -694,7 +694,7 @@ export async function verifyUnsubToken(
 }
 ```
 
-- [ ] **Step 4: Run token tests to verify they pass**
+- [x] **Step 4: Run token tests to verify they pass**
 
 ```bash
 npm test -- tokens.test.ts
@@ -702,7 +702,7 @@ npm test -- tokens.test.ts
 
 Expected: PASS.
 
-- [ ] **Step 5: Write digest tests**
+- [x] **Step 5: Write digest tests**
 
 Create `src/lib/email/digest.test.ts`:
 
@@ -739,7 +739,7 @@ describe("buildDigestText", () => {
 });
 ```
 
-- [ ] **Step 6: Run digest tests to verify they fail**
+- [x] **Step 6: Run digest tests to verify they fail**
 
 ```bash
 npm test -- digest.test.ts
@@ -747,7 +747,7 @@ npm test -- digest.test.ts
 
 Expected: FAIL.
 
-- [ ] **Step 7: Implement digest.ts**
+- [x] **Step 7: Implement digest.ts**
 
 Create `src/lib/email/digest.ts`:
 
@@ -849,7 +849,7 @@ export function buildDigestText(polls: PollSummary[], siteUrl: string): string {
 }
 ```
 
-- [ ] **Step 8: Run digest tests to verify they pass**
+- [x] **Step 8: Run digest tests to verify they pass**
 
 ```bash
 npm test -- digest.test.ts
@@ -857,7 +857,7 @@ npm test -- digest.test.ts
 
 Expected: PASS.
 
-- [ ] **Step 9: Implement Resend wrapper**
+- [x] **Step 9: Implement Resend wrapper**
 
 Create `src/lib/email/resend.ts`:
 
@@ -902,7 +902,7 @@ export async function sendEmail(params: SendEmailParams, env: Env): Promise<void
 }
 ```
 
-- [ ] **Step 10: Add RESEND_API_KEY to .env.example if missing**
+- [x] **Step 10: Add RESEND_API_KEY to .env.example if missing**
 
 Open `.env.example`. Add if not already present:
 
@@ -911,7 +911,7 @@ RESEND_API_KEY=re_xxxxxxxxxxxx
 CRON_SECRET=your-random-secret-here
 ```
 
-- [ ] **Step 11: Commit**
+- [x] **Step 11: Commit**
 
 ```bash
 git add src/lib/email/
@@ -929,7 +929,7 @@ git commit -m "feat: email infrastructure — Resend wrapper, digest templates, 
 - Create: `src/app/api/newsletter/unsubscribe/route.ts`
 - Modify: `wrangler.jsonc`
 
-- [ ] **Step 1: Create newsletter cron route**
+- [x] **Step 1: Create newsletter cron route**
 
 Create `src/app/api/cron/newsletter/route.ts`:
 
@@ -1023,7 +1023,7 @@ export async function GET(req: NextRequest) {
 }
 ```
 
-- [ ] **Step 2: Create unsubscribe route**
+- [x] **Step 2: Create unsubscribe route**
 
 Create `src/app/api/newsletter/unsubscribe/route.ts`:
 
@@ -1069,7 +1069,7 @@ export async function GET(req: NextRequest) {
 }
 ```
 
-- [ ] **Step 3: Add cron trigger to wrangler.jsonc**
+- [x] **Step 3: Add cron trigger to wrangler.jsonc**
 
 Open `wrangler.jsonc`. Add a `triggers` section (or append to existing):
 
@@ -1091,11 +1091,11 @@ Also add the env var declarations:
 }
 ```
 
-- [ ] **Step 4: Add CRON_SECRET to Cloudflare dashboard**
+- [x] **Step 4: Add CRON_SECRET to Cloudflare dashboard**
 
 In the Cloudflare Workers dashboard for this project, add a secret `CRON_SECRET` with a strong random value. This matches `env.CRON_SECRET` used in the cron route.
 
-- [ ] **Step 5: Run build**
+- [x] **Step 5: Run build**
 
 ```bash
 npm run build
@@ -1103,7 +1103,7 @@ npm run build
 
 Expected: no errors.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/app/api/cron/newsletter/ src/app/api/newsletter/ wrangler.jsonc .env.example
@@ -1121,7 +1121,7 @@ git commit -m "feat: weekly newsletter digest cron + unsubscribe endpoint"
 - Create: `src/app/api/cron/notifications/route.ts`
 - Modify: `src/app/profil/ProfilClient.tsx`
 
-- [ ] **Step 1: Create notification prefs API**
+- [x] **Step 1: Create notification prefs API**
 
 Create `src/app/api/user/notification-prefs/route.ts`:
 
@@ -1193,7 +1193,7 @@ export async function POST(req: NextRequest) {
 }
 ```
 
-- [ ] **Step 2: Create notification cron route**
+- [x] **Step 2: Create notification cron route**
 
 Create `src/app/api/cron/notifications/route.ts`:
 
@@ -1291,7 +1291,7 @@ export async function GET(req: NextRequest) {
 }
 ```
 
-- [ ] **Step 3: Add notification prefs UI to profile page**
+- [x] **Step 3: Add notification prefs UI to profile page**
 
 In `src/app/profil/ProfilClient.tsx`, add a notification preferences section. Find where the profile content renders and insert after the account info section:
 
@@ -1348,7 +1348,7 @@ async function saveNotifPrefs() {
 </section>
 ```
 
-- [ ] **Step 4: Run build**
+- [x] **Step 4: Run build**
 
 ```bash
 npm run build
@@ -1356,7 +1356,7 @@ npm run build
 
 Expected: no errors.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/app/api/cron/notifications/ src/app/api/user/ src/app/profil/
@@ -1376,7 +1376,7 @@ git commit -m "feat: email notifications opt-in with hourly cron and profile UI"
 - Create: `src/app/api/keys/route.ts`
 - Modify: `src/app/api/v1/polls/route.ts`
 
-- [ ] **Step 1: Write rate limit tests**
+- [x] **Step 1: Write rate limit tests**
 
 Create `src/lib/api-keys/rate-limit.test.ts`:
 
@@ -1426,7 +1426,7 @@ describe("checkAndIncrement", () => {
 });
 ```
 
-- [ ] **Step 2: Run rate limit tests to verify they fail**
+- [x] **Step 2: Run rate limit tests to verify they fail**
 
 ```bash
 npm test -- rate-limit.test.ts
@@ -1434,7 +1434,7 @@ npm test -- rate-limit.test.ts
 
 Expected: FAIL.
 
-- [ ] **Step 3: Implement rate-limit.ts**
+- [x] **Step 3: Implement rate-limit.ts**
 
 Create `src/lib/api-keys/rate-limit.ts`:
 
@@ -1484,7 +1484,7 @@ export async function checkAndIncrement(
 }
 ```
 
-- [ ] **Step 4: Run rate limit tests to verify they pass**
+- [x] **Step 4: Run rate limit tests to verify they pass**
 
 ```bash
 npm test -- rate-limit.test.ts
@@ -1492,7 +1492,7 @@ npm test -- rate-limit.test.ts
 
 Expected: PASS.
 
-- [ ] **Step 5: Implement keys.ts**
+- [x] **Step 5: Implement keys.ts**
 
 Create `src/lib/api-keys/keys.ts`:
 
@@ -1556,7 +1556,7 @@ export async function lookupApiKey(
 }
 ```
 
-- [ ] **Step 6: Create keys API route**
+- [x] **Step 6: Create keys API route**
 
 Create `src/app/api/keys/route.ts`:
 
@@ -1620,7 +1620,7 @@ export async function POST(req: NextRequest) {
 }
 ```
 
-- [ ] **Step 7: Protect /api/v1/polls with API key requirement**
+- [x] **Step 7: Protect /api/v1/polls with API key requirement**
 
 Open `src/app/api/v1/polls/route.ts`. At the start of the GET handler, add key validation:
 
@@ -1671,7 +1671,7 @@ if (remaining !== undefined) {
 return response;
 ```
 
-- [ ] **Step 8: Run build + tests**
+- [x] **Step 8: Run build + tests**
 
 ```bash
 npm run build && npm test
@@ -1679,7 +1679,7 @@ npm run build && npm test
 
 Expected: builds cleanly, all tests pass.
 
-- [ ] **Step 9: Commit**
+- [x] **Step 9: Commit**
 
 ```bash
 git add src/lib/api-keys/ src/app/api/keys/ src/app/api/v1/polls/
@@ -1701,7 +1701,7 @@ git commit -m "feat: API key management with SHA-256 hashing and free-tier rate 
 - Modify: `wrangler.jsonc`
 - Modify: `.env.example`
 
-- [ ] **Step 1: Add Stripe env vars**
+- [x] **Step 1: Add Stripe env vars**
 
 Open `.env.example`, add:
 
@@ -1721,7 +1721,7 @@ Open `wrangler.jsonc`, add to `vars`:
 
 These must also be set as Cloudflare secrets (`wrangler secret put STRIPE_SECRET_KEY` etc).
 
-- [ ] **Step 2: Create Stripe Checkout route**
+- [x] **Step 2: Create Stripe Checkout route**
 
 Create `src/app/api/stripe/checkout/route.ts`:
 
@@ -1784,7 +1784,7 @@ export async function POST(req: NextRequest) {
 }
 ```
 
-- [ ] **Step 3: Create Stripe webhook route**
+- [x] **Step 3: Create Stripe webhook route**
 
 Create `src/app/api/stripe/webhook/route.ts`:
 
@@ -1877,7 +1877,7 @@ export async function POST(req: NextRequest) {
 }
 ```
 
-- [ ] **Step 4: Create API access page (server component)**
+- [x] **Step 4: Create API access page (server component)**
 
 Create `src/app/api-pristup/page.tsx`:
 
@@ -1934,7 +1934,7 @@ export default async function ApiPristupPage({
 }
 ```
 
-- [ ] **Step 5: Create ApiPristupClient**
+- [x] **Step 5: Create ApiPristupClient**
 
 Create `src/app/api-pristup/ApiPristupClient.tsx`:
 
@@ -2116,7 +2116,7 @@ export default function ApiPristupClient({ userKeys, isLoggedIn, justUpgraded }:
 }
 ```
 
-- [ ] **Step 6: Add /api-pristup to sitemap**
+- [x] **Step 6: Add /api-pristup to sitemap**
 
 Open `src/app/sitemap.ts`. Add to the routes array:
 
@@ -2128,7 +2128,7 @@ Open `src/app/sitemap.ts`. Add to the routes array:
 },
 ```
 
-- [ ] **Step 7: Run build + tests**
+- [x] **Step 7: Run build + tests**
 
 ```bash
 npm run build && npm test
@@ -2136,7 +2136,7 @@ npm run build && npm test
 
 Expected: all pass.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add src/app/api/stripe/ src/app/api-pristup/ src/app/sitemap.ts wrangler.jsonc .env.example
@@ -2149,21 +2149,21 @@ git commit -m "feat: Stripe freemium API tier with Checkout + webhook + api-pris
 
 Before declaring Phase 3 done, verify:
 
-- [ ] `npm run build` succeeds
-- [ ] `npm test` passes (all existing + new tests)
-- [ ] Seeder ran: `npx tsx scripts/seed-kalkulator.ts` outputs `Seeded 600 rows`
-- [ ] Volebný kalkulátor page loads without errors and uses DB weights (check network tab — no inline QUESTIONS data in HTML)
-- [ ] Admin kalkulator at `/admin/kalkulator` shows grid of questions × answers × parties, saves correctly
-- [ ] Newsletter cron route returns 200 when called with correct `x-cron-secret` header
-- [ ] Unsubscribe link marks subscriber as unsubscribed (verify in D1)
-- [ ] Creating a free API key returns a `polis_...` raw key shown once
-- [ ] `/api/v1/polls` returns 401 without key, 200 with valid key
-- [ ] After 100 requests with a free key, returns 429 with helpful error message
-- [ ] Stripe Checkout redirects to Stripe for a logged-in user
-- [ ] Webhook endpoint verifies signature and rejects tampered payloads
-- [ ] `/api-pristup` page renders pricing table + key management for logged-in users
-- [ ] Notification prefs save and load correctly from profile page
-- [ ] All new routes added to sitemap
+- [x] `npm run build` succeeds
+- [x] `npm test` passes (all existing + new tests)
+- [x] Seeder ran: `npx tsx scripts/seed-kalkulator.ts` outputs `Seeded 600 rows`
+- [x] Volebný kalkulátor page loads without errors and uses DB weights (check network tab — no inline QUESTIONS data in HTML)
+- [x] Admin kalkulator at `/admin/kalkulator` shows grid of questions × answers × parties, saves correctly
+- [x] Newsletter cron route returns 200 when called with correct `x-cron-secret` header
+- [x] Unsubscribe link marks subscriber as unsubscribed (verify in D1)
+- [x] Creating a free API key returns a `polis_...` raw key shown once
+- [x] `/api/v1/polls` returns 401 without key, 200 with valid key
+- [x] After 100 requests with a free key, returns 429 with helpful error message
+- [x] Stripe Checkout redirects to Stripe for a logged-in user
+- [x] Webhook endpoint verifies signature and rejects tampered payloads
+- [x] `/api-pristup` page renders pricing table + key management for logged-in users
+- [x] Notification prefs save and load correctly from profile page
+- [x] All new routes added to sitemap
 
 ---
 
