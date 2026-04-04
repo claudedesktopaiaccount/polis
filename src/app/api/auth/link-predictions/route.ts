@@ -8,6 +8,13 @@ import { validateSession, SESSION_COOKIE } from "@/lib/auth/session";
 export const runtime = "edge";
 
 export async function POST(req: NextRequest) {
+  // CSRF validation — double-submit cookie pattern
+  const csrfCookie = req.cookies.get("pt_csrf")?.value;
+  const csrfHeader = req.headers.get("x-csrf-token");
+  if (!csrfCookie || !csrfHeader || csrfCookie !== csrfHeader) {
+    return NextResponse.json({ error: "CSRF validation failed" }, { status: 403 });
+  }
+
   const sessionToken = req.cookies.get(SESSION_COOKIE)?.value;
   if (!sessionToken) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
