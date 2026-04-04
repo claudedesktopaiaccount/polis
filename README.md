@@ -21,10 +21,6 @@ Polis gives voters a clear, data-driven picture of the Slovak political landscap
 - **Povolebné plány** — party promise tracker with fulfillment status
 - **Prehľad** — adaptive homepage: quiz funnel for new visitors, data dashboard for returning users
 
-## Live Demo
-
-[polis.pages.dev](https://polis.pages.dev) *(replace with actual deployment URL after deploy)*
-
 ## Tech Stack
 
 - **Framework**: Next.js 16 (App Router) + React 19 + TypeScript
