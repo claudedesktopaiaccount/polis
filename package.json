@@ -5,9 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "build:cf": "npx opennextjs-cloudflare build && node scripts/patch-cf-build.mjs",
-    "deploy": "npx opennextjs-cloudflare build && node scripts/patch-cf-build.mjs && npx opennextjs-cloudflare deploy",
-    "preview": "npx wrangler dev",
+    "deploy": "vercel --prod",
+    "preview": "vercel",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
@@ -21,7 +20,7 @@
     "test:integration": "vitest run --include 'src/**/*.integration.test.ts'"
   },
   "dependencies": {
-    "@opennextjs/cloudflare": "^1.17.1",
+    "@anthropic-ai/sdk": "^0.82.0",
     "cheerio": "^1.2.0",
     "drizzle-orm": "^0.45.1",
     "next": "16.1.6",
