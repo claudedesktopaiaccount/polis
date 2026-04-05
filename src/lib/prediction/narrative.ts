@@ -55,8 +55,7 @@ async function callClaude(
   simulation: SimulationResult[],
   apiKey: string
 ): Promise<string> {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const client = (Anthropic as any)({ apiKey }) as InstanceType<typeof Anthropic>;
+  const client = new Anthropic({ apiKey });
 
   const data = aggregated
     .map((a) => {

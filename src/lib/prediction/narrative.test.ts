@@ -5,13 +5,15 @@ import type { SimulationResult } from "./monte-carlo";
 
 // Mock Anthropic SDK
 vi.mock("@anthropic-ai/sdk", () => ({
-  default: vi.fn().mockImplementation(() => ({
-    messages: {
-      create: vi.fn().mockResolvedValue({
-        content: [{ type: "text", text: "Test narrative text." }],
-      }),
-    },
-  })),
+  default: vi.fn().mockImplementation(function () {
+    return {
+      messages: {
+        create: vi.fn().mockResolvedValue({
+          content: [{ type: "text", text: "Test narrative text." }],
+        }),
+      },
+    };
+  }),
 }));
 
 import Anthropic from "@anthropic-ai/sdk";
