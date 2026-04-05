@@ -129,7 +129,7 @@ export default function PredikciaClient({
           </h3>
           <button
             onClick={() => setShowMethodology(true)}
-            className="w-5 h-5 rounded-full border border-divider flex items-center justify-center text-[10px] font-bold text-text/50 hover:border-ink hover:text-ink transition-colors"
+            className="w-5 h-5 border border-divider flex items-center justify-center text-[10px] font-bold text-text/50 hover:border-ink hover:text-ink transition-colors"
             aria-label="Metodológia výpočtu"
           >
             ?
