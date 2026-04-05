@@ -10,15 +10,17 @@ import ParliamentGrid from "@/components/charts/ParliamentGrid";
 interface PredikciaClientProps {
   simulation: SimulationResult[];
   currentSeats: SeatAllocation[];
-  latestAgency: string;
-  latestDate: string;
+  narrative: string | null;
+  newestPollDate: string;
+  pollCount: number;
 }
 
 export default function PredikciaClient({
   simulation,
   currentSeats,
-  latestAgency,
-  latestDate,
+  narrative,
+  newestPollDate,
+  pollCount,
 }: PredikciaClientProps) {
   const [adjustments, setAdjustments] = useState<Record<string, number>>({});
   const [showMethodology, setShowMethodology] = useState(false);
@@ -31,6 +33,15 @@ export default function PredikciaClient({
 
   return (
     <>
+      {/* AI narrative pull-quote */}
+      {narrative && (
+        <div className="mb-8 pl-4 border-l-[3px] border-ink">
+          <p className="font-serif italic text-base text-ink leading-relaxed">
+            {narrative}
+          </p>
+        </div>
+      )}
+
       {/* Split layout: probabilities left, grid right */}
       <div className="lg:grid lg:grid-cols-2 lg:gap-12 mb-12">
         {/* Win probability bars */}
@@ -63,7 +74,6 @@ export default function PredikciaClient({
                   </div>
                   {/* Bar with confidence interval overlay */}
                   <div className="h-8 bg-hover overflow-hidden relative">
-                    {/* Confidence interval shading */}
                     <div
                       className="absolute top-0 h-full opacity-20"
                       style={{
@@ -72,7 +82,6 @@ export default function PredikciaClient({
                         backgroundColor: party?.color,
                       }}
                     />
-                    {/* Main bar */}
                     <div
                       className="h-full flex items-center px-3 transition-all duration-500 relative"
                       style={{
@@ -114,9 +123,18 @@ export default function PredikciaClient({
 
       {/* Detailed table */}
       <div className="border border-divider bg-surface p-6">
-        <h3 className="font-serif text-xl font-bold text-ink mb-4">
-          Podrobná predikcia
-        </h3>
+        <div className="flex items-center gap-2 mb-4">
+          <h3 className="font-serif text-xl font-bold text-ink">
+            Podrobná predikcia
+          </h3>
+          <button
+            onClick={() => setShowMethodology(true)}
+            className="w-5 h-5 rounded-full border border-divider flex items-center justify-center text-[10px] font-bold text-text/50 hover:border-ink hover:text-ink transition-colors"
+            aria-label="Metodológia výpočtu"
+          >
+            ?
+          </button>
+        </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
@@ -220,27 +238,60 @@ export default function PredikciaClient({
           </table>
         </div>
         <p className="mt-4 text-[10px] text-text/40">
-          Na základe prieskumu: {latestAgency}, {latestDate}. Maximálna odchýlka ±2.5%.
+          Na základe {pollCount} prieskum{pollCount === 1 ? "u" : "ov"}{newestPollDate ? `, posledný ${newestPollDate}` : ""}.
         </p>
-        <button
-          onClick={() => setShowMethodology(!showMethodology)}
-          className="text-xs text-info hover:underline mt-6 block"
-        >
-          {showMethodology ? "Skryť metodológiu ▲" : "Ako funguje predikcia? ▼"}
-        </button>
-        {showMethodology && (
-          <div className="mt-3 text-sm text-text/70 space-y-2 border-t border-divider pt-3">
-            <p>Model spustí <strong>10 000 simulácií</strong> volieb. Každá simulácia náhodne upraví preferencie strán podľa historickej odchýlky prieskumov od reálnych výsledkov.</p>
-            <p>Pre každú simuláciu sa rozdeľujú mandáty <strong>D&apos;Hondtovou metódou</strong> (rovnaká, akú používa slovenský parlament). Strany pod 5% sa do parlamentu nedostanú.</p>
-            <p>Výsledky ukazujú, koľkokrát z 10 000 pokusov každá strana „vyhrala" alebo sa dostala do parlamentu. Čím širší interval spoľahlivosti, tým menej istý je výsledok.</p>
-          </div>
-        )}
         <ShareButtons
           url={typeof window !== "undefined" ? window.location.href : "/predikcia"}
           title="Predikcia volieb | Polis"
           description="Monte Carlo predikcia výsledkov slovenských parlamentných volieb."
         />
       </div>
+
+      {/* Methodology modal */}
+      {showMethodology && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40"
+          onClick={() => setShowMethodology(false)}
+        >
+          <div
+            className="bg-surface border border-divider max-w-md w-full mx-4 p-6"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between mb-4 pb-3 border-b border-divider">
+              <h4 className="font-serif text-lg font-bold text-ink">Metodológia</h4>
+              <button
+                onClick={() => setShowMethodology(false)}
+                className="text-text/50 hover:text-ink text-lg leading-none"
+                aria-label="Zavrieť"
+              >
+                ×
+              </button>
+            </div>
+            <dl className="space-y-3 text-sm text-text/70">
+              <div>
+                <dt className="font-semibold text-ink mb-0.5">Agregácia prieskumov</dt>
+                <dd>Exponenciálny pokles váhy podľa veku prieskumu (30-dňový polčas), okno 12 mesiacov. Staršie prieskumy majú menšiu váhu.</dd>
+              </div>
+              <div className="border-t border-divider pt-3">
+                <dt className="font-semibold text-ink mb-0.5">Monte Carlo simulácia</dt>
+                <dd>10 000 iterácií, každá s náhodnou odchýlkou od priemeru podľa skutočného rozptylu medzi agentúrami.</dd>
+              </div>
+              <div className="border-t border-divider pt-3">
+                <dt className="font-semibold text-ink mb-0.5">Intervaly spoľahlivosti</dt>
+                <dd>5. a 95. percentil výsledkov simulácií.</dd>
+              </div>
+              <div className="border-t border-divider pt-3">
+                <dt className="font-semibold text-ink mb-0.5">AI analýza</dt>
+                <dd>Text generovaný modelom Claude (Anthropic), aktualizovaný pri zmene prieskumov.</dd>
+              </div>
+              <div className="border-t border-divider pt-3">
+                <dt className="font-semibold text-ink mb-0.5">Mandáty</dt>
+                <dd>Metóda D&apos;Hondt, 150 mandátov, 5 % prah.</dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+      )}
     </>
   );
 }
