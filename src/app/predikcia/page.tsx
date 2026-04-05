@@ -5,7 +5,6 @@ import { getAggregatedPolls } from "@/lib/poll-aggregate";
 import { runSimulation, type PartyInput } from "@/lib/prediction/monte-carlo";
 import { allocateSeats } from "@/lib/prediction/dhondt";
 import { getOrGenerateNarrative } from "@/lib/prediction/narrative";
-import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { getDb } from "@/lib/db";
 import PredikciaClient from "./PredikciaClient";
 
@@ -58,10 +57,9 @@ export default async function PredikciaPage() {
 
   let narrative: string | null = null;
   try {
-    const { env } = await getCloudflareContext({ async: true });
-    const db = getDb(env.DB);
+    const db = getDb();
     narrative = aggregated.length > 0
-      ? await getOrGenerateNarrative(db, aggregated, simulation, env.ANTHROPIC_API_KEY)
+      ? await getOrGenerateNarrative(db, aggregated, simulation, process.env.ANTHROPIC_API_KEY)
       : null;
   } catch {
     // narrative unavailable — page renders without it

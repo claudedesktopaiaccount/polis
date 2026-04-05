@@ -11,7 +11,6 @@ import CrowdSentiment from "@/components/CrowdSentiment";
 import CoalitionBadge from "@/components/CoalitionBadge";
 import { getLatestPolls } from "@/lib/poll-data";
 import { getLatestNews } from "@/lib/db/news";
-import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { getDb } from "@/lib/db";
 import { predictionScores, users, crowdAggregates, coalitionScenarios } from "@/lib/db/schema";
 import { desc, eq } from "drizzle-orm";
@@ -25,8 +24,7 @@ export default async function Home({
 }: {
   searchParams: Promise<{ dashboard?: string }>;
 }) {
-  const { env } = await getCloudflareContext({ async: true });
-  const db = getDb(env.DB);
+  const db = getDb();
 
   // Cookie detection
   const cookieStore = await cookies();

@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { getDb } from "@/lib/db";
 import { validateSession } from "@/lib/auth/session";
 import { eq } from "drizzle-orm";
@@ -22,8 +21,7 @@ export default async function ApiPristupPage({
   let userId: string | null = null;
 
   try {
-    const { env } = await getCloudflareContext({ async: true });
-    const db = getDb(env.DB);
+    const db = getDb();
     const cookieStore = await cookies();
     const sessionToken = cookieStore.get("polis_session")?.value;
     if (sessionToken) {

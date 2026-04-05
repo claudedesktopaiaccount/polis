@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import SectionHeading from "@/components/ui/SectionHeading";
-import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { getDb } from "@/lib/db";
 import { crowdAggregates, predictionScores, users } from "@/lib/db/schema";
 import { createSentryWithoutRequest, captureException } from "@/lib/sentry";
@@ -24,8 +23,7 @@ export default async function TipovaniePage() {
   let leaderboard: { rank: number; displayName: string; totalScore: number; winnerScore: number; percentageScore: number; coalitionScore: number }[] = [];
 
   try {
-    const { env } = await getCloudflareContext({ async: true });
-    const db = getDb(env.DB);
+    const db = getDb();
 
     const [aggregates, lbRows] = await Promise.all([
       db.select().from(crowdAggregates),
@@ -62,8 +60,7 @@ export default async function TipovaniePage() {
   } catch (e) {
     console.error("Failed to load crowd data:", e);
     try {
-      const { env } = await getCloudflareContext({ async: true });
-      captureException(createSentryWithoutRequest(env as { SENTRY_DSN?: string }), e);
+      captureException(createSentryWithoutRequest({ SENTRY_DSN: process.env.SENTRY_DSN }), e);
     } catch { /* Sentry reporting best-effort */ }
   }
 

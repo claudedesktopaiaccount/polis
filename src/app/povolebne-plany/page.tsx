@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { getDb } from "@/lib/db";
 import { getAllPartiesWithPromises } from "@/lib/db/party-promises";
 import PovolebnePlanyClient from "./PovolebnePlanyClient";
@@ -16,8 +15,7 @@ export const metadata: Metadata = {
 };
 
 export default async function PovolebnePlanyPage() {
-  const { env } = await getCloudflareContext({ async: true });
-  const db = getDb(env.DB);
+  const db = getDb();
   const partiesWithPromises = await getAllPartiesWithPromises(db).catch(() => []);
   return <PovolebnePlanyClient partiesData={partiesWithPromises} />;
 }
