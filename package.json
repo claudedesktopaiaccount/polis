@@ -21,6 +21,7 @@
     "test:integration": "vitest run --include 'src/**/*.integration.test.ts'"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.82.0",
     "@opennextjs/cloudflare": "^1.17.1",
     "cheerio": "^1.2.0",
     "drizzle-orm": "^0.45.1",

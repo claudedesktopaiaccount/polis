@@ -342,3 +342,14 @@ export const apiUsage = sqliteTable(
     index("api_usage_key_idx").on(table.keyId),
   ]
 );
+
+// ─── Prediction Narrative ─────────────────────────────────
+// Single-row cache for Claude-generated Slovak narrative.
+// id is always 'current'; upserted on hash change.
+
+export const predictionNarrative = sqliteTable("prediction_narrative", {
+  id: text("id").primaryKey(), // always 'current'
+  inputHash: text("input_hash").notNull(),
+  narrative: text("narrative").notNull(),
+  generatedAt: integer("generated_at").notNull(), // unix ms
+});
