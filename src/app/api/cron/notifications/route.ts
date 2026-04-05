@@ -1,39 +1,27 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { getDb } from "@/lib/db";
 import { eq, gte } from "drizzle-orm";
-import {
-  polls,
-  userNotificationPrefs,
-  notificationLog,
-  users,
-} from "@/lib/db/schema";
+import { polls, userNotificationPrefs, notificationLog, users } from "@/lib/db/schema";
 import { sendEmail } from "@/lib/email/resend";
 
-export const runtime = "edge";
-
 export async function GET(req: NextRequest) {
-  const { env } = await getCloudflareContext({ async: true });
-  const secret = req.headers.get("x-cron-secret");
-  if (secret !== env.CRON_SECRET) {
+  const cronSecret = process.env.CRON_SECRET;
+  const xSecret = req.headers.get("x-cron-secret");
+  const authHeader = req.headers.get("authorization");
+  const authorized =
+    (xSecret && xSecret === cronSecret) ||
+    (authHeader && authHeader === `Bearer ${cronSecret}`);
+  if (!authorized) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const db = getDb(env.DB);
+  const db = getDb();
   const oneDayAgo = new Date(Date.now() - 86400_000).toISOString();
   const oneHourAgo = new Date(Date.now() - 3600_000).toISOString();
 
-  // Find polls published in the last hour
-  const newPolls = await db
-    .select()
-    .from(polls)
-    .where(gte(polls.createdAt, oneHourAgo));
+  const newPolls = await db.select().from(polls).where(gte(polls.createdAt, oneHourAgo));
+  if (newPolls.length === 0) return NextResponse.json({ sent: 0, reason: "no new polls" });
 
-  if (newPolls.length === 0) {
-    return NextResponse.json({ sent: 0, reason: "no new polls" });
-  }
-
-  // Find users opted into new poll notifications
   const optedIn = await db
     .select({ userId: userNotificationPrefs.userId })
     .from(userNotificationPrefs)
@@ -43,14 +31,8 @@ export async function GET(req: NextRequest) {
   const siteUrl = "https://polis.sk";
 
   for (const { userId } of optedIn) {
-    // Rate limit: max 1 notification/user/day
-    const recentLog = await db
-      .select()
-      .from(notificationLog)
-      .where(eq(notificationLog.userId, userId));
-    const sentToday = recentLog.some(
-      (l) => l.sentAt >= oneDayAgo && l.type === "new_poll"
-    );
+    const recentLog = await db.select().from(notificationLog).where(eq(notificationLog.userId, userId));
+    const sentToday = recentLog.some((l) => l.sentAt >= oneDayAgo && l.type === "new_poll");
     if (sentToday) continue;
 
     const [user] = await db
@@ -64,23 +46,13 @@ export async function GET(req: NextRequest) {
       await sendEmail(
         {
           to: user.email,
-          subject: `Novy prieskum -- ${poll.agency}, ${poll.publishedDate}`,
-          html: `<p>Bol zverejneny novy prieskum od agentury <strong>${poll.agency}</strong>.</p>
-                 <p><a href="${siteUrl}/prieskumy">Zobrazit prieskumy &rarr;</a></p>
-                 <p style="font-size:11px;color:#999">Odhlasenie z notifikacii: <a href="${siteUrl}/profil">Vas profil</a></p>`,
-          text: `Novy prieskum -- ${poll.agency}, ${poll.publishedDate}\n\n${siteUrl}/prieskumy`,
+          subject: `Novy prieskum — ${poll.agency}, ${poll.publishedDate}`,
+          html: `<p>Bol zverejneny novy prieskum od agentury <strong>${poll.agency}</strong>.</p><p><a href="${siteUrl}/prieskumy">Zobrazit prieskumy</a></p>`,
+          text: `Novy prieskum — ${poll.agency}, ${poll.publishedDate}\n\n${siteUrl}/prieskumy`,
         },
-        env
+        { RESEND_API_KEY: process.env.RESEND_API_KEY! }
       );
-
-      await db
-        .insert(notificationLog)
-        .values({
-          userId,
-          type: "new_poll",
-          sentAt: new Date().toISOString(),
-        });
-
+      await db.insert(notificationLog).values({ userId, type: "new_poll", sentAt: new Date().toISOString() });
       sent++;
     } catch {
       // continue on error

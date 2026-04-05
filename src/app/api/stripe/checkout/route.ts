@@ -1,15 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { getDb } from "@/lib/db";
 import { validateSession } from "@/lib/auth/session";
 import { eq } from "drizzle-orm";
 import { users } from "@/lib/db/schema";
 
-export const runtime = "edge";
-
 export async function POST(req: NextRequest) {
-  const { env } = await getCloudflareContext({ async: true });
-  const db = getDb(env.DB);
+  const db = getDb();
 
   const sessionToken = req.cookies.get("polis_session")?.value;
   if (!sessionToken) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -26,7 +22,7 @@ export async function POST(req: NextRequest) {
 
   // Create Stripe Checkout session via REST (no SDK — Workers compatible)
   const params = new URLSearchParams({
-    "line_items[0][price]": env.STRIPE_PRICE_ID,
+    "line_items[0][price]": process.env.STRIPE_PRICE_ID!,
     "line_items[0][quantity]": "1",
     mode: "subscription",
     success_url: `${siteUrl}/api-pristup?upgraded=1`,
@@ -39,7 +35,7 @@ export async function POST(req: NextRequest) {
   const res = await fetch("https://api.stripe.com/v1/checkout/sessions", {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${env.STRIPE_SECRET_KEY}`,
+      Authorization: `Bearer ${process.env.STRIPE_SECRET_KEY}`,
       "Content-Type": "application/x-www-form-urlencoded",
     },
     body: params.toString(),

@@ -1,8 +1,6 @@
 import { NextRequest } from "next/server";
 import { generateQuizCard, generateScoreCard } from "@/lib/share/templates";
 
-export const runtime = "edge";
-
 export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ type: string }> }

@@ -1,10 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { getDb } from "@/lib/db";
 import { eq } from "drizzle-orm";
 import { apiKeys } from "@/lib/db/schema";
-
-export const runtime = "edge";
 
 async function verifyStripeSignature(
   body: string,
@@ -35,17 +32,16 @@ async function verifyStripeSignature(
 }
 
 export async function POST(req: NextRequest) {
-  const { env } = await getCloudflareContext({ async: true });
   const body = await req.text();
   const signature = req.headers.get("stripe-signature") ?? "";
 
-  const valid = await verifyStripeSignature(body, signature, env.STRIPE_WEBHOOK_SECRET);
+  const valid = await verifyStripeSignature(body, signature, process.env.STRIPE_WEBHOOK_SECRET!);
   if (!valid) {
     return new NextResponse("Invalid signature", { status: 400 });
   }
 
   const event = JSON.parse(body) as { type: string; data: { object: Record<string, unknown> } };
-  const db = getDb(env.DB);
+  const db = getDb();
 
   if (event.type === "checkout.session.completed") {
     const session = event.data.object;
