@@ -1,4 +1,3 @@
-import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { getDb } from "@/lib/db";
 import { getKalkulatorWeights, upsertKalkulatorWeight } from "@/lib/db/kalkulator";
 import { QUESTIONS } from "@/lib/kalkulator/questions";
@@ -9,8 +8,7 @@ export default async function AdminKalkulatorPage({
 }: {
   searchParams: Promise<{ saved?: string }>;
 }) {
-  const { env } = await getCloudflareContext({ async: true });
-  const db = getDb(env.DB);
+  const db = getDb();
   const weights = await getKalkulatorWeights(db);
 
   // Build lookup: [questionId][answerIndex][partyId] = weight
@@ -23,8 +21,7 @@ export default async function AdminKalkulatorPage({
 
   async function saveWeights(formData: FormData) {
     "use server";
-    const { env: serverEnv } = await getCloudflareContext({ async: true });
-    const serverDb = getDb(serverEnv.DB);
+    const serverDb = getDb();
     const entries = Array.from(formData.entries());
     for (const [key, value] of entries) {
       // key format: "q{questionId}_a{answerIndex}_{partyId}"

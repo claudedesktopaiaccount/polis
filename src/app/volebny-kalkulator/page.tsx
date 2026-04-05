@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { getDb } from "@/lib/db";
 import VolebnyKalkulatorClient from "./VolebnyKalkulatorClient";
 import { getKalkulatorWeights } from "@/lib/db/kalkulator";
@@ -21,8 +20,7 @@ export default async function VolebnyKalkulatorPage() {
   let questions: Question[] = QUESTIONS; // fallback to static data
 
   try {
-    const { env } = await getCloudflareContext({ async: true });
-    const db = getDb(env.DB);
+    const db = getDb();
     const rows = await getKalkulatorWeights(db);
 
     if (rows.length > 0) {
