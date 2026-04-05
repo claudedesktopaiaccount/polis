@@ -1,10 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { getDb } from "@/lib/db";
 import { predictionScores, users } from "@/lib/db/schema";
 import { eq, desc } from "drizzle-orm";
-
-export const runtime = "edge";
 
 export async function OPTIONS() {
   return new Response(null, { status: 204 });
@@ -19,8 +16,7 @@ export async function GET(req: NextRequest) {
     );
   }
 
-  const { env } = await getCloudflareContext({ async: true });
-  const db = getDb(env.DB);
+  const db = getDb();
 
   const rows = await db
     .select({

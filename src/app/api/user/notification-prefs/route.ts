@@ -1,15 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { getDb } from "@/lib/db";
 import { eq } from "drizzle-orm";
 import { userNotificationPrefs } from "@/lib/db/schema";
 import { validateSession, SESSION_COOKIE } from "@/lib/auth/session";
 
-export const runtime = "edge";
-
 export async function GET(req: NextRequest) {
-  const { env } = await getCloudflareContext({ async: true });
-  const db = getDb(env.DB);
+  const db = getDb();
   const sessionToken = req.cookies.get(SESSION_COOKIE)?.value;
   if (!sessionToken) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
@@ -31,8 +27,7 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const { env } = await getCloudflareContext({ async: true });
-  const db = getDb(env.DB);
+  const db = getDb();
   const sessionToken = req.cookies.get(SESSION_COOKIE)?.value;
   if (!sessionToken) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 

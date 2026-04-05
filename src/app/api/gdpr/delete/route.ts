@@ -1,13 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { getDb } from "@/lib/db";
 import { userPredictions, crowdAggregates, gdprAuditLog, users, userSessions } from "@/lib/db/schema";
 import { eq, count, or } from "drizzle-orm";
 import { hashString } from "@/lib/hash";
 import { createSentry, captureException } from "@/lib/sentry";
 import { validateSession, SESSION_COOKIE } from "@/lib/auth/session";
-
-export const runtime = "edge";
 
 export async function POST(request: NextRequest) {
   try {
@@ -19,8 +16,7 @@ export async function POST(request: NextRequest) {
     }
 
     const visitorId = request.cookies.get("pt_visitor")?.value;
-    const { env } = await getCloudflareContext({ async: true });
-    const db = getDb(env.DB);
+    const db = getDb();
 
     // Check for authenticated user
     let userId: string | null = null;
@@ -91,8 +87,7 @@ export async function POST(request: NextRequest) {
     return response;
   } catch (e) {
     console.error("GDPR delete error:", e);
-    const { env } = await getCloudflareContext({ async: true }).catch(() => ({ env: {} as Record<string, unknown> }));
-    captureException(createSentry(request, env as { SENTRY_DSN?: string }), e);
+    captureException(createSentry(request, { SENTRY_DSN: process.env.SENTRY_DSN }), e);
     return NextResponse.json({ error: "Delete failed" }, { status: 500 });
   }
 }

@@ -1,17 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { getDb } from "@/lib/db";
 import { deleteSession, SESSION_COOKIE } from "@/lib/auth/session";
-
-export const runtime = "edge";
 
 export async function POST(request: NextRequest) {
   try {
     const token = request.cookies.get(SESSION_COOKIE)?.value;
 
     if (token) {
-      const { env } = await getCloudflareContext({ async: true });
-      const db = getDb(env.DB);
+      const db = getDb();
       await deleteSession(token, db);
     }
 

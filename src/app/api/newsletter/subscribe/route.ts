@@ -1,9 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { getDb } from "@/lib/db";
 import { subscribeEmail } from "@/lib/db/newsletter";
-
-export const runtime = "edge";
 
 function isValidEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -22,8 +19,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "invalid_email" }, { status: 400 });
   }
 
-  const { env } = await getCloudflareContext({ async: true });
-  const db = getDb(env.DB);
+  const db = getDb();
 
   try {
     await subscribeEmail(db, email, body.source ?? "web");

@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { getDb } from "@/lib/db";
 import { isAdminAuthed } from "@/lib/admin-auth";
 import { userPredictions, predictionScores } from "@/lib/db/schema";
@@ -9,8 +8,6 @@ import {
   scoreCoalition,
   computeTotalScore,
 } from "@/lib/prediction/scoring";
-
-export const runtime = "edge";
 
 export async function POST(req: NextRequest) {
   if (!(await isAdminAuthed(req))) {
@@ -29,8 +26,7 @@ export async function POST(req: NextRequest) {
 
   const { electionId, winnerId, results, coalition } = body;
 
-  const { env } = await getCloudflareContext({ async: true });
-  const db = getDb(env.DB);
+  const db = getDb();
 
   const allPredictions = await db.select().from(userPredictions);
   const now = new Date().toISOString();

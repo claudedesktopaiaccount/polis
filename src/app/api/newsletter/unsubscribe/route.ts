@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { getDb } from "@/lib/db";
 import { eq } from "drizzle-orm";
 import { newsletterSubscribers } from "@/lib/db/schema";
@@ -14,10 +13,7 @@ function escapeHtml(str: string): string {
     .replace(/'/g, "&#x27;");
 }
 
-export const runtime = "edge";
-
 export async function GET(req: NextRequest) {
-  const { env } = await getCloudflareContext({ async: true });
   const email = req.nextUrl.searchParams.get("email");
   const token = req.nextUrl.searchParams.get("token");
 
@@ -25,12 +21,12 @@ export async function GET(req: NextRequest) {
     return new NextResponse("Neplatn\u00fd odkaz.", { status: 400 });
   }
 
-  const valid = await verifyUnsubToken(token, email, env.RESEND_API_KEY);
+  const valid = await verifyUnsubToken(token, email, process.env.RESEND_API_KEY);
   if (!valid) {
     return new NextResponse("Neplatn\u00fd alebo expirovan\u00fd odkaz.", { status: 400 });
   }
 
-  const db = getDb(env.DB);
+  const db = getDb();
   await db
     .update(newsletterSubscribers)
     .set({ unsubscribedAt: new Date().toISOString() })

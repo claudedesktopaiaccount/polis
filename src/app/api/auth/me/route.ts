@@ -1,11 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { getDb } from "@/lib/db";
 import { users } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { validateSession, SESSION_COOKIE } from "@/lib/auth/session";
-
-export const runtime = "edge";
 
 export async function GET(request: NextRequest) {
   try {
@@ -14,8 +11,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { env } = await getCloudflareContext({ async: true });
-    const db = getDb(env.DB);
+    const db = getDb();
 
     const sessionData = await validateSession(token, db);
     if (!sessionData) {
