@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getCloudflareContext } from "@opennextjs/cloudflare";
+import { getD1 } from "@/lib/db";
 import { isAdminAuthed } from "@/lib/admin-auth";
-
-export const runtime = "edge";
 
 export async function POST(req: NextRequest) {
   if (!(await isAdminAuthed(req))) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
@@ -17,13 +15,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "missing_fields" }, { status: 400 });
   }
 
-  const { env } = await getCloudflareContext({ async: true });
+  const d1 = getD1();
   const now = new Date().toISOString();
 
-  // Use raw SQL (same pattern as scraper worker) — D1 .returning() is unreliable
-  const insertResult = await env.DB.prepare(
-    "INSERT INTO polls (agency, published_date, created_at) VALUES (?, ?, ?)"
-  )
+  const insertResult = await d1
+    .prepare("INSERT INTO polls (agency, published_date, created_at) VALUES (?, ?, ?)")
     .bind(body.agency, body.publishedDate, now)
     .run();
 
@@ -31,9 +27,8 @@ export async function POST(req: NextRequest) {
 
   for (const [partyId, pct] of Object.entries(body.results)) {
     if (typeof pct === "number" && pct > 0) {
-      await env.DB.prepare(
-        "INSERT INTO poll_results (poll_id, party_id, percentage) VALUES (?, ?, ?)"
-      )
+      await d1
+        .prepare("INSERT INTO poll_results (poll_id, party_id, percentage) VALUES (?, ?, ?)")
         .bind(pollId, partyId, pct)
         .run();
     }

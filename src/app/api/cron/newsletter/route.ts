@@ -1,27 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { getDb } from "@/lib/db";
-import { isNull } from "drizzle-orm";
-import { eq } from "drizzle-orm";
+import { isNull, eq } from "drizzle-orm";
 import { newsletterSubscribers, polls, pollResults } from "@/lib/db/schema";
 import { sendEmail } from "@/lib/email/resend";
 import { buildDigestHtml, buildDigestText, type PollSummary } from "@/lib/email/digest";
 import { generateUnsubToken } from "@/lib/email/tokens";
 
-export const runtime = "edge";
-
 export async function GET(req: NextRequest) {
-  const { env } = await getCloudflareContext({ async: true });
-
-  // Verify cron secret to block external calls
-  const secret = req.headers.get("x-cron-secret");
-  if (secret !== env.CRON_SECRET) {
+  const cronSecret = process.env.CRON_SECRET;
+  const xSecret = req.headers.get("x-cron-secret");
+  const authHeader = req.headers.get("authorization");
+  const authorized =
+    (xSecret && xSecret === cronSecret) ||
+    (authHeader && authHeader === `Bearer ${cronSecret}`);
+  if (!authorized) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const db = getDb(env.DB);
+  const db = getDb();
 
-  // Fetch active subscribers
   const subscribers = await db
     .select()
     .from(newsletterSubscribers)
@@ -32,7 +29,6 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ sent: 0, message: "No active subscribers" });
   }
 
-  // Fetch last 5 polls with results
   const recentPolls = await db
     .select()
     .from(polls)
@@ -49,11 +45,7 @@ export async function GET(req: NextRequest) {
         .all();
       const resultsMap: Record<string, number> = {};
       for (const r of results) resultsMap[r.partyId] = r.percentage;
-      return {
-        agency: poll.agency,
-        publishedDate: poll.publishedDate,
-        results: resultsMap,
-      };
+      return { agency: poll.agency, publishedDate: poll.publishedDate, results: resultsMap };
     })
   );
 
@@ -63,20 +55,13 @@ export async function GET(req: NextRequest) {
 
   for (const subscriber of subscribers) {
     try {
-      const unsubToken = await generateUnsubToken(subscriber.email, env.RESEND_API_KEY);
+      const unsubToken = await generateUnsubToken(subscriber.email, process.env.RESEND_API_KEY!);
       const unsubUrl = `${siteUrl}/api/newsletter/unsubscribe?email=${encodeURIComponent(subscriber.email)}&token=${unsubToken}`;
-
       const html = buildDigestHtml(pollSummaries, siteUrl).replace("{{UNSUB_URL}}", unsubUrl);
       const text = buildDigestText(pollSummaries, siteUrl).replace("{{UNSUB_URL}}", unsubUrl);
-
       await sendEmail(
-        {
-          to: subscriber.email,
-          subject: `Polis Tyzdenn\u00edk \u2014 ${new Date().toLocaleDateString("sk-SK")}`,
-          html,
-          text,
-        },
-        env
+        { to: subscriber.email, subject: `Polis Tyzdenny — ${new Date().toLocaleDateString("sk-SK")}`, html, text },
+        { RESEND_API_KEY: process.env.RESEND_API_KEY! }
       );
       sent++;
     } catch {
