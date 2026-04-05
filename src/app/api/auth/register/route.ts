@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { getDb } from "@/lib/db";
 import { users, rateLimits } from "@/lib/db/schema";
 import { eq, count, and, gte, lt } from "drizzle-orm";
@@ -7,8 +6,6 @@ import { hashPassword } from "@/lib/auth/password";
 import { validateEmail, validatePassword, validateDisplayName } from "@/lib/auth/validate";
 import { createSession, sessionCookieOptions, SESSION_COOKIE } from "@/lib/auth/session";
 import { hashString } from "@/lib/hash";
-
-export const runtime = "edge";
 
 const RATE_LIMIT = 5;
 const RATE_WINDOW_S = 60 * 60; // 1 hour
@@ -46,8 +43,7 @@ export async function POST(request: NextRequest) {
     const email = (body.email as string).trim().toLowerCase();
     const displayName = (body.displayName as string).trim();
 
-    const { env } = await getCloudflareContext({ async: true });
-    const db = getDb(env.DB);
+    const db = getDb();
 
     // Rate limiting — 5 registrations per IP per hour
     const ip =

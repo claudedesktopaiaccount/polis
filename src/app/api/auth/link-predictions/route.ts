@@ -1,11 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { getDb } from "@/lib/db";
 import { userPredictions } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { validateSession, SESSION_COOKIE } from "@/lib/auth/session";
-
-export const runtime = "edge";
 
 export async function POST(req: NextRequest) {
   // CSRF validation — double-submit cookie pattern
@@ -20,8 +17,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
 
-  const { env } = await getCloudflareContext({ async: true });
-  const db = getDb(env.DB);
+  const db = getDb();
 
   const session = await validateSession(sessionToken, db);
   if (!session) {

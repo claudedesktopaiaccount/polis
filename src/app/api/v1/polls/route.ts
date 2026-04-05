@@ -1,12 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { getDb } from "@/lib/db";
 import { polls, pollResults, parties } from "@/lib/db/schema";
 import { desc, eq, inArray } from "drizzle-orm";
 import { lookupApiKey } from "@/lib/api-keys/keys";
 import { checkAndIncrement } from "@/lib/api-keys/rate-limit";
-
-export const runtime = "edge";
 
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": "*",
@@ -30,8 +27,7 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
 
-    const { env } = await getCloudflareContext({ async: true });
-    const db = getDb(env.DB);
+    const db = getDb();
 
     // ── API Key validation ──────────────────────────────────
     const rawKey =

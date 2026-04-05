@@ -1,8 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { createSentry, captureException } from "@/lib/sentry";
-
-export const runtime = "edge";
 
 export async function POST(request: NextRequest) {
   try {
@@ -16,8 +13,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Missing message" }, { status: 400 });
     }
 
-    const { env } = await getCloudflareContext({ async: true });
-    const sentry = createSentry(request, env as { SENTRY_DSN?: string });
+    const sentry = createSentry(request, { SENTRY_DSN: process.env.SENTRY_DSN });
 
     if (sentry) {
       const error = new Error(body.message);

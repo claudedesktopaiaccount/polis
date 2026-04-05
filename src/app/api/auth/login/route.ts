@@ -1,13 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { getDb } from "@/lib/db";
 import { users, rateLimits } from "@/lib/db/schema";
 import { eq, count, and, gte, lt } from "drizzle-orm";
 import { verifyPassword } from "@/lib/auth/password";
 import { createSession, sessionCookieOptions, SESSION_COOKIE } from "@/lib/auth/session";
 import { hashString } from "@/lib/hash";
-
-export const runtime = "edge";
 
 const RATE_LIMIT = 10;
 const RATE_WINDOW_S = 15 * 60; // 15 minutes
@@ -30,8 +27,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "E-mail a heslo sú povinné" }, { status: 400 });
     }
 
-    const { env } = await getCloudflareContext({ async: true });
-    const db = getDb(env.DB);
+    const db = getDb();
 
     // Rate limiting — 10 login attempts per IP per 15 minutes
     const ip =

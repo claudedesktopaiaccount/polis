@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { getDb, type Database } from "@/lib/db";
 import { parties, userPredictions, crowdAggregates, rateLimits } from "@/lib/db/schema";
 import { eq, or, count, sql, lt, and, gte } from "drizzle-orm";
@@ -8,8 +7,6 @@ import { PARTY_LIST } from "@/lib/parties";
 import { hashString } from "@/lib/hash";
 import { createSentry, captureException } from "@/lib/sentry";
 import { validateSession, SESSION_COOKIE } from "@/lib/auth/session";
-
-export const runtime = "edge";
 
 const VALID_PARTY_IDS = new Set(PARTY_LIST.map((p) => p.id));
 
@@ -90,8 +87,7 @@ export async function POST(request: NextRequest) {
       visitorId = crypto.randomUUID();
     }
 
-    const { env } = await getCloudflareContext({ async: true });
-    const db = getDb(env.DB);
+    const db = getDb();
     await ensureSeeded(db);
 
     // Resolve authenticated user if session exists
@@ -186,16 +182,14 @@ export async function POST(request: NextRequest) {
     return response;
   } catch (e) {
     console.error("POST /api/tipovanie error:", e);
-    const { env } = await getCloudflareContext({ async: true }).catch(() => ({ env: {} as Record<string, unknown> }));
-    captureException(createSentry(request, env as { SENTRY_DSN?: string }), e);
+    captureException(createSentry(request, { SENTRY_DSN: process.env.SENTRY_DSN }), e);
     return NextResponse.json({ error: "Invalid request" }, { status: 400 });
   }
 }
 
 export async function GET(request: NextRequest) {
   try {
-    const { env } = await getCloudflareContext({ async: true });
-    const db = getDb(env.DB);
+    const db = getDb();
 
     const aggregates = await db.select().from(crowdAggregates);
     const totalBets = aggregates.reduce((s, a) => s + a.totalBets, 0);
@@ -209,8 +203,7 @@ export async function GET(request: NextRequest) {
     });
   } catch (e) {
     console.error("GET /api/tipovanie error:", e);
-    const { env } = await getCloudflareContext({ async: true }).catch(() => ({ env: {} as Record<string, unknown> }));
-    captureException(createSentry(request, env as { SENTRY_DSN?: string }), e);
+    captureException(createSentry(request, { SENTRY_DSN: process.env.SENTRY_DSN }), e);
     return NextResponse.json({ aggregates: [], totalBets: 0 });
   }
 }
