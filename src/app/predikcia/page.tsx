@@ -60,7 +60,9 @@ export default async function PredikciaPage() {
   try {
     const { env } = await getCloudflareContext({ async: true });
     const db = getDb(env.DB);
-    narrative = await getOrGenerateNarrative(db, aggregated, simulation, env.ANTHROPIC_API_KEY);
+    narrative = aggregated.length > 0
+      ? await getOrGenerateNarrative(db, aggregated, simulation, env.ANTHROPIC_API_KEY)
+      : null;
   } catch {
     // narrative unavailable — page renders without it
   }
