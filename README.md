@@ -1,69 +1,71 @@
-# Polis — Slovak Political Tracker
+# Polis
 
-**Sleduj slovenské voľby 2027 v reálnom čase.**
+Nezávislý agregátor volebných prieskumov a predikcií slovenských parlamentných volieb.
 
-A civic-tech web app tracking Slovak politics ahead of the 2027 parliamentary elections. Built for 18–25 first-time voters — the demographic with the highest abstention rate in Slovakia.
+**Live:** https://polis.sk
 
-[![Next.js](https://img.shields.io/badge/Next.js-16-black)](https://nextjs.org)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)](https://www.typescriptlang.org)
-[![Cloudflare Workers](https://img.shields.io/badge/Cloudflare-Workers-orange)](https://workers.cloudflare.com)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow)](LICENSE)
+## Čo Polis robí
 
-## What It Does
+- Agreguje volebné prieskumy z Wikipedie (automatický scraper)
+- Monte Carlo simulácia rozdelenia mandátov (10 000 iterácií)
+- D'Hondt alokátor mandátov
+- Koaličný simulátor
+- Volebný kalkulátor (20 otázok)
+- Crowd predictions (tipovanie) s D1 perzistenciou
+- AI naratívny komentár (Claude API)
+- Newsletter (Resend)
+- GDPR-compliant s consent management
 
-Polis gives voters a clear, data-driven picture of the Slovak political landscape:
+## Stack
 
-- **Prieskumy** — polls aggregated from all major Slovak polling agencies with trend charts
-- **Predikcia** — Monte Carlo simulation (10 000 iterations) of the 2027 election using D'Hondt seat allocation
-- **Tipovanie** — crowd predictions leaderboard: submit your forecast, track your accuracy score over time
-- **Koaličný simulátor** — build any coalition and see if it has a parliamentary majority
-- **Volebný kalkulátor** — 20-question quiz matching you to the party closest to your positions
-- **Povolebné plány** — party promise tracker with fulfillment status
-- **Prehľad** — adaptive homepage: quiz funnel for new visitors, data dashboard for returning users
+- **Framework:** Next.js 16 (App Router) + React 19 + TypeScript
+- **Styling:** TailwindCSS v4 (CSS-based config, nie tailwind.config.ts)
+- **Charts:** Recharts 3
+- **Database:** Cloudflare D1 (SQLite) via Drizzle ORM
+- **Deployment:** Cloudflare Workers via @opennextjs/cloudflare
+- **Email:** Resend
+- **Payments:** Stripe
+- **Analytics:** Umami Cloud (GDPR consent-gated)
 
-## Tech Stack
-
-- **Framework**: Next.js 16 (App Router) + React 19 + TypeScript
-- **Database**: Cloudflare D1 (SQLite) via Drizzle ORM
-- **Deployment**: Cloudflare Workers via OpenNextJS adapter
-- **Styling**: TailwindCSS 4
-- **Charts**: Recharts 3
-- **Scraping**: Cheerio (news aggregation)
-- **Testing**: Vitest 4
-
-## Local Setup
+## Lokálny vývoj
 
 ```bash
-# 1. Clone the repo
-git clone https://github.com/<your-handle>/polis.git
-cd polis
-
-# 2. Install dependencies
 npm install
-
-# 3. Copy environment variables
-cp .env.example .env
-# Fill in: CLOUDFLARE_ACCOUNT_ID, CLOUDFLARE_DATABASE_ID, CLOUDFLARE_D1_TOKEN
-
-# 4. Apply database migrations
-npm run db:migrate
-
-# 5. Start the dev server
-npm run dev
+npm run dev          # Next.js dev server → http://localhost:3000
+npm run preview      # Cloudflare Workers preview (wrangler)
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+## Databáza
 
-## Data Sources
+```bash
+npm run db:generate  # Generuj Drizzle migrácie
+npm run db:migrate   # Aplikuj migrácie na D1
+npm run db:push      # Push schémy priamo (dev)
+```
 
-- **Polling data**: AKO, Focus, Median, NMS Market Research, IPSOS
-- **Election commission**: [volby.statistics.sk](https://volby.statistics.sk)
-- **Party programs**: Official party manifestos and coalition agreements
+## Testy
 
-## Contributing
+```bash
+npm test             # Vitest unit testy
+npm run test:e2e     # Playwright E2E testy
+```
 
-See [CONTRIBUTING.md](CONTRIBUTING.md).
+## Potrebné Worker secrets
 
-## License
+Nastav pred deploymentom:
 
-[MIT](LICENSE)
+```bash
+npx wrangler secret put ADMIN_SECRET
+npx wrangler secret put CRON_SECRET
+npx wrangler secret put ANTHROPIC_API_KEY
+npx wrangler secret put RESEND_API_KEY
+npx wrangler secret put STRIPE_SECRET_KEY
+npx wrangler secret put STRIPE_PRICE_ID
+npx wrangler secret put STRIPE_WEBHOOK_SECRET
+```
+
+Lokálny vývoj: skopíruj `.env.example` do `.dev.vars` a doplň hodnoty.
+
+## Licencia
+
+Súkromný projekt. Všetky práva vyhradené.
