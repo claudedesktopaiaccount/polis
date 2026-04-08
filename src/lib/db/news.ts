@@ -2,6 +2,29 @@ import { desc } from "drizzle-orm";
 import type { Database } from "./index";
 import { newsItems } from "./schema";
 
+export async function upsertNewsItems(
+  db: Database,
+  items: Array<{ title: string; url: string; source: string; publishedAt: string }>
+): Promise<number> {
+  let inserted = 0;
+  const now = new Date().toISOString();
+  for (const item of items) {
+    const result = await db
+      .insert(newsItems)
+      .values({
+        title: item.title,
+        url: item.url,
+        source: item.source,
+        publishedAt: item.publishedAt,
+        scrapedAt: now,
+      })
+      .onConflictDoNothing()
+      .returning({ id: newsItems.id });
+    if (result.length > 0) inserted++;
+  }
+  return inserted;
+}
+
 export async function getLatestNews(db: Database, limit: number = 10) {
   const raw = await db
     .select({
