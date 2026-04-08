@@ -1,23 +1,25 @@
 import { describe, it, expect } from "vitest";
+import { render, screen } from "@testing-library/react";
 import LeaderboardPreview from "../LeaderboardPreview";
-import React from "react";
 
 describe("LeaderboardPreview", () => {
-  it("renders without crashing with empty entries", () => {
-    const component = React.createElement(LeaderboardPreview, { entries: [] });
-    expect(component).toBeDefined();
+  it("shows empty state when no entries", () => {
+    render(<LeaderboardPreview entries={[]} />);
+    expect(screen.getByText(/Zatiaľ žiadni hráči/)).toBeInTheDocument();
   });
 
-  it("renders without crashing with entries", () => {
-    const component = React.createElement(LeaderboardPreview, {
-      entries: [{ rank: 1, displayName: "Testér", totalScore: 42 }],
-    });
-    expect(component).toBeDefined();
+  it("renders entries when provided", () => {
+    render(
+      <LeaderboardPreview
+        entries={[{ rank: 1, displayName: "Testér", totalScore: 42 }]}
+      />
+    );
+    expect(screen.getByText(/Testér/)).toBeInTheDocument();
+    expect(screen.getByText("42")).toBeInTheDocument();
   });
 
-  it("should have empty state text available in component", () => {
-    // This verifies that the component source includes the empty state message
-    const componentStr = LeaderboardPreview.toString();
-    expect(componentStr).toContain("Zatiaľ žiadni hráči");
+  it("always shows the leaderboard link", () => {
+    render(<LeaderboardPreview entries={[]} />);
+    expect(screen.getByText(/Zobraziť celý rebríček/)).toBeInTheDocument();
   });
 });
