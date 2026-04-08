@@ -69,7 +69,7 @@ export default function CookiesPage() {
         <section>
           <h2 className="font-serif text-base font-bold text-ink mb-2">Ako odmietnuť cookies</h2>
           <p className="text-text/70">
-            Analytické cookies (Umami) môžete odmietnuť cez banner pri prvej návšteve alebo kedykoľvek
+            Analytické sledovanie (Umami) môžete odmietnuť cez banner pri prvej návšteve alebo kedykoľvek
             v nastaveniach súhlasu na stránke{" "}
             <a href="/sukromie" className="text-ink underline underline-offset-2">Súkromie</a>.
             Funkčné cookies nie je možné vypnúť — sú nevyhnutné na základnú prevádzku stránky.
