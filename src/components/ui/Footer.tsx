@@ -31,6 +31,12 @@ export default function Footer() {
             >
               Podmienky používania
             </Link>
+            <Link
+              href="/impressum"
+              className="text-sm text-[#F4F3EE]/70 hover:text-[#F4F3EE] transition-colors"
+            >
+              Impressum
+            </Link>
           </nav>
         </div>
       </div>
