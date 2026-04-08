@@ -160,7 +160,7 @@ export default function VolebnyKalkulatorClient({ questions: questionsProp }: Pr
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
       <SectionHeading
         title="Koho voliť?"
-        subtitle="Odpovedzte na 20 otázok a zistite, ktorá strana vám je najbližšia"
+        subtitle="20 otázok · 2 minúty · Váhy strán sú redakčné odhady"
       />
 
       {/* Progress bar */}
