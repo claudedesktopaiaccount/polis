@@ -82,6 +82,33 @@ export default function VolebnyKalkulatorClient({ questions: questionsProp }: Pr
           <p className="text-sm text-text/60 mt-1">{top.party?.leader}</p>
         </div>
 
+        {/* Share button */}
+        <div className="flex justify-center mb-6">
+          <button
+            onClick={() => {
+              const shareText = `Môj výsledok volebnej kalkulačky: ${top.score}% zhoda s ${top.party?.name ?? ""} — polis.sk`;
+              if (typeof navigator !== "undefined" && navigator.share) {
+                navigator.share({
+                  title: "Volebný kalkulátor · Polis",
+                  text: shareText,
+                  url: "https://polis.sk/volebny-kalkulator",
+                }).catch(() => {/* user cancelled */});
+              } else {
+                const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
+                window.open(twitterUrl, "_blank", "noopener");
+              }
+            }}
+            className="flex items-center gap-2 border border-divider bg-surface px-5 py-2.5 text-sm font-semibold text-ink hover:bg-hover transition-colors"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+              <polyline points="16 6 12 2 8 6"/>
+              <line x1="12" y1="2" x2="12" y2="15"/>
+            </svg>
+            Zdieľať môj výsledok
+          </button>
+        </div>
+
         {/* All results */}
         <div className="border border-divider bg-surface divide-y divide-divider">
           {results.map((r) => {
