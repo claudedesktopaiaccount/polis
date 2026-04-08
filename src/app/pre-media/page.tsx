@@ -40,7 +40,7 @@ export default function PreMediaPage() {
           <p className="text-sm mb-4">
             Všetky údaje o volebných prieskumoch sú dostupné cez REST API bez potreby autentifikácie:
           </p>
-          <div className="bg-zinc-100 p-4 border border-divider mb-4 font-mono text-xs">
+          <div className="bg-zinc-100 dark:bg-zinc-800 p-4 border border-divider mb-4 font-mono text-xs">
             <code>https://polis.sk/api/v1/polls</code>
           </div>
           <p className="text-sm mb-3">
