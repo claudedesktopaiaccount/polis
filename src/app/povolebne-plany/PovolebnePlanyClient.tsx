@@ -29,6 +29,7 @@ const PREVIEW_COUNT = 5;
 interface ProgramData {
   name: string;
   promises: PartyPromise[];
+  isStub?: boolean;
 }
 
 // Party programs — each party can have multiple programs
@@ -39,6 +40,7 @@ const PARTY_PROGRAMS: Record<string, ProgramData[]> = {
   ],
   "smer-sd": [{
     name: "",
+    isStub: true,
     promises: [
       { text: "Konsolidácia verejných financií", category: "Ekonomika", isPro: true },
       { text: "Zachovanie sociálnych istôt", category: "Sociálne veci", isPro: true },
@@ -49,6 +51,7 @@ const PARTY_PROGRAMS: Record<string, ProgramData[]> = {
   }],
   "hlas-sd": [{
     name: "",
+    isStub: true,
     promises: [
       { text: "Zvýšenie minimálnej mzdy", category: "Sociálne veci", isPro: true },
       { text: "Modernizácia nemocníc", category: "Zdravotníctvo", isPro: true },
@@ -57,6 +60,7 @@ const PARTY_PROGRAMS: Record<string, ProgramData[]> = {
   }],
   kdh: [{
     name: "",
+    isStub: true,
     promises: [
       { text: "Ochrana tradičnej rodiny", category: "Sociálne veci", isPro: true },
       { text: "Podpora vidieka a poľnohospodárstva", category: "Ekonomika", isPro: true },
@@ -65,6 +69,7 @@ const PARTY_PROGRAMS: Record<string, ProgramData[]> = {
   }],
   sas: [{
     name: "",
+    isStub: true,
     promises: [
       { text: "Zníženie daní a odvodov", category: "Ekonomika", isPro: true },
       { text: "Zrušenie zbytočnej byrokracie", category: "Ekonomika", isPro: true },
@@ -73,6 +78,7 @@ const PARTY_PROGRAMS: Record<string, ProgramData[]> = {
   }],
   republika: [{
     name: "",
+    isStub: true,
     promises: [
       { text: "Ochrana národnej suverenity a odmietanie federalizácie EÚ", category: "Zahraničná politika", isPro: true },
       { text: "Prísna migračná politika a ochrana hraníc", category: "Bezpečnosť", isPro: true },
@@ -82,6 +88,7 @@ const PARTY_PROGRAMS: Record<string, ProgramData[]> = {
   }],
   sns: [{
     name: "",
+    isStub: true,
     promises: [
       { text: "Ochrana slovenského jazyka a národnej identity", category: "Školstvo", isPro: true },
       { text: "Posilnenie obranyschopnosti SR", category: "Bezpečnosť", isPro: true },
@@ -91,6 +98,7 @@ const PARTY_PROGRAMS: Record<string, ProgramData[]> = {
   }],
   demokrati: [{
     name: "",
+    isStub: true,
     promises: [
       { text: "Posilnenie právneho štátu a nezávislosti justície", category: "Bezpečnosť", isPro: true },
       { text: "Transparentnosť verejných financií", category: "Ekonomika", isPro: true },
@@ -100,6 +108,7 @@ const PARTY_PROGRAMS: Record<string, ProgramData[]> = {
   }],
   aliancia: [{
     name: "",
+    isStub: true,
     promises: [
       { text: "Ochrana práv národnostných menšín", category: "Sociálne veci", isPro: true },
       { text: "Podpora dvojjazyčného vzdelávania", category: "Školstvo", isPro: true },
@@ -109,6 +118,7 @@ const PARTY_PROGRAMS: Record<string, ProgramData[]> = {
   }],
   slovensko: [{
     name: "",
+    isStub: true,
     promises: [
       { text: "Boj proti korupcii a oligarchom", category: "Bezpečnosť", isPro: true },
       { text: "Podpora rodín s deťmi a zvýšenie prídavkov", category: "Sociálne veci", isPro: true },
@@ -140,7 +150,7 @@ function ProgramSection({
   partyColor: string;
   searchQuery: string;
 }) {
-  const { name, promises } = program;
+  const { name, promises, isStub } = program;
   const isLargeProgram = promises.length > 10;
   const categories = useMemo(() => getCategories(promises), [promises]);
 
@@ -233,6 +243,14 @@ function ProgramSection({
             <p className="text-sm font-bold text-ink">{name}</p>
             <p className="text-xs text-text/50">{promises.length} programových bodov</p>
           </div>
+        </div>
+      )}
+
+      {isStub && (
+        <div className="border border-divider bg-hover px-4 py-3 mb-4">
+          <p className="text-xs text-text/50">
+            Programové body tejto strany sa dopĺňajú. Vráťte sa neskôr.
+          </p>
         </div>
       )}
 
