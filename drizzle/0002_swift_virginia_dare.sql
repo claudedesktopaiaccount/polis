@@ -26,9 +26,9 @@ CREATE TABLE `rate_limits` (
 --> statement-breakpoint
 CREATE INDEX `rate_limits_ip_hash_idx` ON `rate_limits` (`ip_hash`);--> statement-breakpoint
 CREATE INDEX `rate_limits_created_at_idx` ON `rate_limits` (`created_at`);--> statement-breakpoint
-DROP INDEX `user_predictions_visitor_idx`;--> statement-breakpoint
+DROP INDEX IF EXISTS `user_predictions_visitor_idx`;--> statement-breakpoint
 ALTER TABLE `user_predictions` ADD `fingerprint` text;--> statement-breakpoint
-CREATE UNIQUE INDEX `user_predictions_visitor_unique` ON `user_predictions` (`visitor_id`);--> statement-breakpoint
+CREATE UNIQUE INDEX IF NOT EXISTS `user_predictions_visitor_unique` ON `user_predictions` (`visitor_id`);--> statement-breakpoint
 CREATE INDEX `user_predictions_fingerprint_idx` ON `user_predictions` (`fingerprint`);--> statement-breakpoint
 ALTER TABLE `user_predictions` DROP COLUMN `region`;--> statement-breakpoint
 CREATE UNIQUE INDEX `crowd_aggregates_party_id_unique` ON `crowd_aggregates` (`party_id`);
