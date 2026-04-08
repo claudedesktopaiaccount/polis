@@ -35,6 +35,10 @@ export default function GdprBanner() {
           <Link href="/sukromie" className="text-ink underline underline-offset-2 hover:text-text transition-colors">
             Ochrana súkromia
           </Link>
+          {" "}alebo{" "}
+          <Link href="/cookies" className="text-ink underline underline-offset-2 hover:text-text transition-colors">
+            Zásady cookies
+          </Link>
           .
         </p>
         <div className="flex gap-3 shrink-0">

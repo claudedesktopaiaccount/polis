@@ -21,6 +21,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${SITE_URL}/profil`, lastModified: new Date(), changeFrequency: "yearly", priority: 0.3 },
     { url: `${SITE_URL}/sukromie`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.3 },
     { url: `${SITE_URL}/podmienky`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.3 },
+    { url: `${SITE_URL}/cookies`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.3 },
     { url: `${SITE_URL}/impressum`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.3 },
   ];
 }
