@@ -49,7 +49,7 @@ export default function PreMediaPage() {
           </p>
           <p className="text-sm">
             Podrobná dokumentácia API vrátane všetkých dostupných endpointov a parametrov je dostupná na{" "}
-            <a href="/api/docs" className="text-ink underline underline-offset-2 hover:text-text transition-colors">
+            <a href="/api-docs" className="text-ink underline underline-offset-2 hover:text-text transition-colors">
               stránke dokumentácie API
             </a>
             .
