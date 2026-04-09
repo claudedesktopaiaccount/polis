@@ -23,8 +23,8 @@
   "d1_databases": [
     {
       "binding": "DB",
-      "database_name": "progresivny-tracker",
-      "database_id": "3988aa54-17b6-4286-b815-eac8ff6ab636",
+      "database_name": "polis",
+      "database_id": "e8f96076-c25f-42a6-a98e-7d927136783e",
       "migrations_dir": "drizzle"
     }
   ]
