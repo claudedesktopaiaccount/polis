@@ -34,6 +34,15 @@ export function parseClaudeResponse(raw: string): ExtractedPromise[] {
 }
 
 async function fetchPageText(url: string): Promise<string> {
+  let parsed: URL;
+  try {
+    parsed = new URL(url);
+  } catch {
+    throw new Error("Invalid URL");
+  }
+  if (parsed.protocol !== "https:") {
+    throw new Error("Only https:// URLs allowed");
+  }
   const res = await fetch(url, {
     signal: AbortSignal.timeout(10_000),
     headers: { "User-Agent": "Mozilla/5.0 (compatible; Polis/1.0)" },
@@ -101,14 +110,15 @@ export async function POST(req: NextRequest) {
 
   let text: string;
 
-  if (body.rawText) {
+  if (body.rawText && typeof body.rawText === "string") {
     text = body.rawText.slice(0, 12_000);
   } else {
     try {
       text = await fetchPageText(body.url!);
     } catch (err) {
+      console.error(err);
       return NextResponse.json(
-        { error: "fetch_failed", message: String(err) },
+        { error: "fetch_failed", message: "Nepodarilo sa načítať URL." },
         { status: 422 }
       );
     }
@@ -122,8 +132,9 @@ export async function POST(req: NextRequest) {
     const promises = await callClaude(text, apiKey);
     return NextResponse.json({ promises });
   } catch (err) {
+    console.error(err);
     return NextResponse.json(
-      { error: "extraction_failed", message: String(err) },
+      { error: "extraction_failed", message: "Extrakcia zlyhala." },
       { status: 500 }
     );
   }
