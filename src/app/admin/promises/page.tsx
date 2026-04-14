@@ -87,8 +87,8 @@ export default function AdminPromises() {
 
   async function handleSaveAll() {
     setSaving(true);
-    for (const row of preview) {
-      await fetch("/api/admin/promises", {
+    await Promise.all(preview.map(row =>
+      fetch("/api/admin/promises", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -98,8 +98,8 @@ export default function AdminPromises() {
           isPro: row.isPro,
           sourceUrl: importUrl || null,
         }),
-      });
-    }
+      })
+    ));
     setSaving(false);
     setPreview([]);
     setImportUrl("");
