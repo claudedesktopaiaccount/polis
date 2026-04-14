@@ -25,9 +25,12 @@ export function parseClaudeResponse(raw: string): ExtractedPromise[] {
     if (typeof obj.text !== "string" || typeof obj.category !== "string") {
       throw new Error("Invalid promise shape");
     }
+    const category = CATEGORIES.includes(obj.category as string)
+      ? (obj.category as string)
+      : "Ekonomika";
     return {
       text: obj.text,
-      category: obj.category,
+      category,
       isPro: obj.isPro !== false,
     };
   });
@@ -44,6 +47,7 @@ async function fetchPageText(url: string): Promise<string> {
     throw new Error("Only https:// URLs allowed");
   }
   const res = await fetch(url, {
+    redirect: "error",
     signal: AbortSignal.timeout(10_000),
     headers: { "User-Agent": "Mozilla/5.0 (compatible; Polis/1.0)" },
   });

@@ -55,6 +55,7 @@ export default function AdminPromises() {
       ? { rawText: importText }
       : { url: importUrl };
 
+    try {
     const res = await fetch("/api/admin/import-promises", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -75,6 +76,10 @@ export default function AdminPromises() {
     }
 
     setPreview(data.promises ?? []);
+    } catch {
+      setImporting(false);
+      setImportError("Chyba siete. Skús znova.");
+    }
   }
 
   function updatePreviewRow(index: number, patch: Partial<PreviewRow>) {
@@ -87,25 +92,35 @@ export default function AdminPromises() {
 
   async function handleSaveAll() {
     setSaving(true);
-    await Promise.all(preview.map(row =>
-      fetch("/api/admin/promises", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          partyId: importPartyId,
-          promiseText: row.text,
-          category: row.category,
-          isPro: row.isPro,
-          sourceUrl: importUrl || null,
-        }),
-      })
-    ));
-    setSaving(false);
-    setPreview([]);
-    setImportUrl("");
-    setImportText("");
-    setShowTextarea(false);
-    load();
+    try {
+      const results = await Promise.all(preview.map(row =>
+        fetch("/api/admin/promises", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            partyId: importPartyId,
+            promiseText: row.text,
+            category: row.category,
+            isPro: row.isPro,
+            sourceUrl: importUrl || null,
+          }),
+        })
+      ));
+      const failed = results.filter(r => !r.ok).length;
+      if (failed > 0) {
+        setImportError(`${failed} sľubov sa nepodarilo uložiť. Skús znova.`);
+        return;
+      }
+      setPreview([]);
+      setImportUrl("");
+      setImportText("");
+      setShowTextarea(false);
+      load();
+    } catch {
+      setImportError("Chyba pri ukladaní. Skús znova.");
+    } finally {
+      setSaving(false);
+    }
   }
 
   return (
