@@ -1,0 +1,137 @@
+{
+  "source": "https://en.wikipedia.org/wiki/Opinion_polling_for_the_next_Slovak_parliamentary_election",
+  "dateAnalyzed": "2026-03-17",
+  "tables": {
+    "mainVotingIntention": {
+      "sectionHeading": "Electoral polling > Voting intention estimates",
+      "description": "Main table with percentage-based voting intention estimates from ESOMAR/SAVA polling firms",
+      "cssClasses": "wikitable (standard Wikipedia table class)",
+      "columns": {
+        "metadata": [
+          "Polling firm",
+          "Date",
+          "Sample size"
+        ],
+        "parties": [
+          { "abbr": "Smer", "fullName": "Direction - Social Democracy", "wikiLink": "/wiki/Direction_%E2%80%93_Social_Democracy" },
+          { "abbr": "PS", "fullName": "Progressive Slovakia", "wikiLink": "/wiki/Progressive_Slovakia" },
+          { "abbr": "Hlas", "fullName": "Voice - Social Democracy", "wikiLink": "/wiki/Voice_%E2%80%93_Social_Democracy" },
+          { "abbr": "OĽaNO and Friends", "fullName": "OĽaNO and Friends", "wikiLink": "/wiki/O%C4%BDaNO_and_Friends" },
+          { "abbr": "Slovakia", "fullName": "Slovakia (political party)", "wikiLink": "/wiki/Slovakia_(political_party)" },
+          { "abbr": "ZĽ", "fullName": "For the People", "wikiLink": "/wiki/For_the_People_(Slovakia)" },
+          { "abbr": "KDH", "fullName": "Christian Democratic Movement", "wikiLink": "/wiki/Christian_Democratic_Movement" },
+          { "abbr": "SaS", "fullName": "Freedom and Solidarity", "wikiLink": "/wiki/Freedom_and_Solidarity" },
+          { "abbr": "SNS", "fullName": "Slovak National Party", "wikiLink": "/wiki/Slovak_National_Party" },
+          { "abbr": "Republika", "fullName": "Republic (Slovakia)", "wikiLink": "/wiki/Republic_(Slovakia)" },
+          { "abbr": "Hungarian Alliance", "fullName": "Hungarian Alliance", "wikiLink": "/wiki/Hungarian_Alliance_(Slovak_political_party)" },
+          { "abbr": "Democrats", "fullName": "Democrats (Slovakia)", "wikiLink": "/wiki/Democrats_(Slovakia)" },
+          { "abbr": "KÚ", "fullName": "Christian Union (Slovakia)", "wikiLink": "/wiki/Christian_Union_(Slovakia)" }
+        ],
+        "trailing": [
+          "Others",
+          "Lead"
+        ]
+      },
+      "headerFormat": "Party abbreviations are wrapped in Wikipedia links, e.g. [PS](/wiki/Progressive_Slovakia). Some parties use multi-word names like 'OĽaNO and Friends' or 'Hungarian Alliance'.",
+      "sampleRows": [
+        {
+          "pollingFirm": "NMS",
+          "date": "4-9 Mar 2026",
+          "sampleSize": "1,005",
+          "Smer": "16.7",
+          "PS": "21.4",
+          "Hlas": "7.6",
+          "OĽaNO": "7.1",
+          "Slovakia": "1.6",
+          "ZĽ": "0.9",
+          "KDH": "4.8",
+          "SaS": "7.6",
+          "SNS": "2.3",
+          "Republika": "13.5",
+          "HungarianAlliance": "4.2",
+          "Democrats": "5.1",
+          "KÚ": "3.6",
+          "Others": "1.1",
+          "Lead": "4.7"
+        },
+        {
+          "pollingFirm": "Ipsos",
+          "date": "16-20 Feb 2026",
+          "sampleSize": "1,037",
+          "Smer": "18.4",
+          "PS": "18.8",
+          "Hlas": "7.4",
+          "OĽaNO": "8.8",
+          "Slovakia": "-",
+          "ZĽ": "-",
+          "KDH": "6.0",
+          "SaS": "8.4",
+          "SNS": "2.8",
+          "Republika": "11.7",
+          "HungarianAlliance": "4.7",
+          "Democrats": "6.2",
+          "KÚ": "2.5",
+          "Others": "-",
+          "Lead": "0.4"
+        },
+        {
+          "pollingFirm": "AKO",
+          "date": "10-19 Feb 2026",
+          "sampleSize": "1,000",
+          "Smer": "16.4",
+          "PS": "20.6",
+          "Hlas": "8.8",
+          "OĽaNO": "9.3",
+          "Slovakia": "-",
+          "ZĽ": "-",
+          "KDH": "7.4",
+          "SaS": "7.9",
+          "SNS": "4.8",
+          "Republika": "8.7",
+          "HungarianAlliance": "4.6",
+          "Democrats": "6.2",
+          "KÚ": "2.9",
+          "Others": "-",
+          "Lead": "4.2"
+        }
+      ],
+      "dataFormat": {
+        "dateFormat": "D-D Mon YYYY (e.g. '4-9 Mar 2026', '16-20 Feb 2026'). Uses en-dash for date ranges.",
+        "sampleSize": "Comma-separated integer (e.g. '1,005', '1,037')",
+        "pollValues": "Decimal percentages with 1 decimal place (e.g. '16.7', '21.4'). No % sign. Leading party value is bold.",
+        "missingData": "Represented by en-dash '-' character",
+        "leadColumn": "Difference between top two parties, always bold"
+      }
+    },
+    "seatProjections": {
+      "sectionHeading": "Seat projections",
+      "description": "Projected parliamentary seats based on polls",
+      "columns": "Same polling firm/date/sample columns, then party seat counts as integers, plus Lead, Gov., Opp. columns",
+      "sampleRow": {
+        "pollingFirm": "NMS",
+        "date": "4-9 Mar 2026",
+        "sampleSize": "1,005",
+        "Smer": "32",
+        "PS": "41",
+        "Hlas": "14",
+        "note": "Values are integer seat counts. Leading party is bold. Gov/Opp columns show coalition totals."
+      }
+    },
+    "scenarioPolls": {
+      "sectionHeading": "Electoral polling > Voting intention estimates > Scenario Polls",
+      "description": "Hypothetical scenario polls (e.g. joint party lists, new parties). Multiple sub-tables exist.",
+      "subTables": [
+        "Scenarios with joint lists including Smer, Hlas, SNS and Republika",
+        "Scenarios involving Ivan Korcok"
+      ],
+      "note": "Baseline comparison rows have light yellow background. Column structure varies per scenario."
+    }
+  },
+  "pollingFirms": ["NMS", "Ipsos", "AKO", "Focus", "Median"],
+  "timeRange": "From 30 September 2023 (last election) to present (March 2026)",
+  "notes": {
+    "electoralThreshold": "5% for single party, 7% for 2-3 party alliances, 10% for 4+ party alliances",
+    "absoluteMajority": "76 seats required in the National Council (150 seats total)",
+    "tableCoverage": "All polls are in one continuous table (not split by year). The table spans from Oct 2023 to present."
+  }
+}
