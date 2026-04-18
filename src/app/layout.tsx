@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Newsreader, Dancing_Script, JetBrains_Mono } from "next/font/google";
+import { DM_Sans, DM_Serif_Display } from "next/font/google";
 import { cookies } from "next/headers";
 import "./globals.css";
 import Navbar from "@/components/ui/Navbar";
@@ -12,28 +12,18 @@ import { ViewTransition } from "react";
 import PageNumber from "@/components/PageNumber";
 import { SITE_URL, SITE_NAME, SITE_DESCRIPTION, SITE_LOCALE } from "@/lib/site-config";
 
-const inter = Inter({
-  variable: "--font-inter",
+const dmSans = DM_Sans({
+  variable: "--font-dm-sans",
   subsets: ["latin", "latin-ext"],
-});
-
-const dancingScript = Dancing_Script({
-  variable: "--font-dancing",
-  subsets: ["latin", "latin-ext"],
-  weight: ["700"],
-});
-
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
-  variable: "--font-jetbrains-mono",
+  weight: ["400", "500", "600", "700", "800"],
   display: "swap",
 });
 
-const newsreader = Newsreader({
-  variable: "--font-newsreader",
+const dmSerifDisplay = DM_Serif_Display({
+  variable: "--font-dm-serif",
   subsets: ["latin", "latin-ext"],
-  style: ["normal", "italic"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["400"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -68,7 +58,11 @@ export default async function RootLayout({
   const theme = (cookieStore.get("theme")?.value as "light" | "dark") || "light";
 
   return (
-    <html lang="sk" className={theme}>
+    <html
+      lang="sk"
+      className={`${theme} ${dmSans.variable} ${dmSerifDisplay.variable}`}
+      suppressHydrationWarning
+    >
       <head>
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#111110" />
@@ -102,7 +96,7 @@ export default async function RootLayout({
           }}
         />
       </head>
-      <body className={`${inter.variable} ${newsreader.variable} ${dancingScript.variable} ${jetbrainsMono.variable} font-sans antialiased`}>
+      <body className="antialiased">
         <ThemeProvider initialTheme={theme}>
           <AuthProvider>
             <a href="#main-content" className="skip-link">
