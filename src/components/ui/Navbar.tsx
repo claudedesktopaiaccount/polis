@@ -19,7 +19,6 @@ const NAV_LINKS = [
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
-  const [logoHovered, setLogoHovered] = useState(false);
   const [score, setScore] = useState<{ total: number; rank: number } | null>(null);
 
   useEffect(() => {
@@ -43,16 +42,11 @@ export default function Navbar() {
 
   return (
     <>
-      <header className="sticky top-0 z-50 bg-surface/95 backdrop-blur-sm border-b border-border" style={{viewTransitionName:"navbar"}}>
+      <header className="sticky top-0 z-50 bg-surface/95 backdrop-blur-sm border-b-3 border-ink" style={{viewTransitionName:"navbar"}}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-[52px]">
-          <Link
-            href="/"
-            className="group text-xl font-bold text-ink tracking-tight font-serif relative"
-            onMouseEnter={() => setLogoHovered(true)}
-            onMouseLeave={() => setLogoHovered(false)}
-          >
-            <span className={`transition-opacity duration-300 ${logoHovered ? "opacity-0" : "opacity-100"}`}>Polis</span>
-            <span className={`absolute inset-0 transition-opacity duration-300 ${logoHovered ? "opacity-100" : "opacity-0"}`}>πόλις</span>
+          <Link href="/" className="group text-xl font-bold text-ink tracking-tight font-serif relative">
+            <span className="transition-opacity duration-300 group-hover:opacity-0">Polis</span>
+            <span className="absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100">πόλις</span>
           </Link>
 
           <div className="flex items-center gap-2">
@@ -62,10 +56,10 @@ export default function Navbar() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`text-[14px] font-medium px-3 py-2 transition-colors ${
+                  className={`px-3 py-2 text-sm font-medium transition-colors ${
                     pathname === item.href
-                      ? "text-[#1a1a1a] font-semibold"
-                      : "text-[#444444] hover:text-[#1a1a1a] hover:bg-[#f0ede6]"
+                      ? "text-ink font-semibold"
+                      : "text-text hover:text-ink hover:bg-hover"
                   }`}
                 >
                   {item.label}
@@ -157,8 +151,8 @@ export default function Navbar() {
                 onClick={() => setOpen(false)}
                 className={`block px-3 py-3 text-base font-medium transition-colors ${
                   pathname === item.href
-                    ? "text-[#1a1a1a] font-semibold"
-                    : "text-[#444444] hover:text-[#1a1a1a] hover:bg-[#f0ede6]"
+                    ? "text-ink font-semibold"
+                    : "text-text hover:text-ink hover:bg-hover"
                 }`}
               >
                 {item.label}
