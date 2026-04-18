@@ -5,6 +5,7 @@ import { runSimulation, type PartyInput } from "@/lib/prediction/monte-carlo";
 import { allocateSeats } from "@/lib/prediction/dhondt";
 import { getOrGenerateNarrative } from "@/lib/prediction/narrative";
 import { getDb } from "@/lib/db";
+import { getCandidates } from "@/lib/db/candidates";
 import PredikciaClient from "./PredikciaClient";
 
 export const metadata: Metadata = {
@@ -64,6 +65,14 @@ export default async function PredikciaPage() {
     // narrative unavailable — page renders without it
   }
 
+  let candidates: Awaited<ReturnType<typeof getCandidates>> = [];
+  try {
+    const db = getDb();
+    candidates = await getCandidates(db);
+  } catch {
+    // candidates unavailable — PoslanciSection renders empty
+  }
+
   return (
     <div className="max-w-[1100px] mx-auto px-6 py-8">
       {/* Page header */}
@@ -82,6 +91,7 @@ export default async function PredikciaPage() {
         narrative={narrative}
         newestPollDate={newestPollDate}
         pollCount={pollCount}
+        candidates={candidates}
       />
     </div>
   );
