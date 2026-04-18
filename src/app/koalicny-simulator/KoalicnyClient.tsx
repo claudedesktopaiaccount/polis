@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { PARTIES, PARTY_LIST } from "@/lib/parties";
-import ShareButtons from "@/components/ShareButtons";
 import { allocateSeats } from "@/lib/prediction/dhondt";
 import Hemicycle from "@/components/charts/Hemicycle";
 
@@ -68,151 +67,150 @@ export default function KoalicnyClient({ pollResults }: KoalicnyClientProps) {
   }
 
   return (
-    <>
-      {/* Top section: hemicycle + result */}
-      <div className="border border-divider bg-surface p-6 mb-8">
-        <div className="flex flex-col md:flex-row items-center gap-6">
-          {/* Seat count */}
-          <div className="text-center md:text-left shrink-0">
-            <p className="text-xs font-medium uppercase tracking-widest text-text/50 mb-1">
-              Zloženie parlamentu
+    <div className="max-w-[1100px] mx-auto px-6 py-8">
+      <div className="bg-white border border-[#e8e3db] rounded-[12px] overflow-hidden">
+
+        {/* Arc area: seat count + hemicycle */}
+        <div className="flex gap-6 p-6 pb-0">
+          {/* Left col: seat count */}
+          <div className="w-[160px] shrink-0">
+            <p className="text-[11px] text-[#bbbbbb] uppercase tracking-[0.1em] mb-2">
+              ZLOŽENIE PARLAMENTU
             </p>
-            <p className="text-ink">
-              <span className="text-6xl font-bold tabular-nums">{coalitionSeats}</span>
-              <span className="text-2xl text-text/40">/{MAJORITY}</span>
-            </p>
-            {selected.size > 0 && hasMajority && (
-              <div className="mt-3 border-2 border-ink px-4 py-2 inline-block">
-                <span className="font-serif text-2xl font-bold text-ink tracking-tight">
-                  VÄČŠINA
-                </span>
-              </div>
-            )}
-            {selected.size > 0 && !hasMajority && (
-              <p className="mt-3 text-sm text-danger font-medium">
-                Chýba {MAJORITY - coalitionSeats} mandátov
-              </p>
-            )}
+            <div className="flex items-baseline gap-1">
+              <span className="text-[40px] font-extrabold text-[#1a1a1a] leading-none">
+                {coalitionSeats}
+              </span>
+              <span className="text-[20px] text-[#bbbbbb]">/{MAJORITY}</span>
+            </div>
+            <div
+              className="mt-2 text-[13px] font-semibold"
+              style={{ color: hasMajority ? "#16a34a" : "#dc2626" }}
+            >
+              {selected.size === 0
+                ? "\u00a0"
+                : hasMajority
+                  ? "✓ Väčšina"
+                  : `${MAJORITY - coalitionSeats} chýba`}
+            </div>
           </div>
 
-          {/* Hemicycle */}
+          {/* Right: SVG arc */}
           <div className="flex-1 w-full max-w-md">
             <Hemicycle seats={allSeats} selectedParties={selected} />
           </div>
         </div>
 
-        {/* Share */}
-        <ShareButtons
-          url={shareUrl}
-          title="Koaličný simulátor | Polis"
-          description="Simulácia koaličných scenárov pre slovenské parlamentné voľby."
-        />
-
-        {/* Copy share URL */}
-        {shareUrl && (
-          <div className="mt-3">
+        {/* Share row */}
+        <div className="flex items-center gap-2 px-6 py-3 border-t border-[#e8e3db] mt-4 flex-wrap">
+          <span className="text-[11px] text-[#888888] uppercase tracking-[0.08em] font-semibold mr-2">
+            ZDIEĽAŤ
+          </span>
+          {["Facebook", "X", "LinkedIn"].map((btn) => (
             <button
-              onClick={handleCopyUrl}
-              className="text-xs text-info hover:underline"
+              key={btn}
+              className="px-3 py-1.5 text-[12px] font-medium text-[#444444] bg-[#f8f5f0] border border-[#e8e3db] rounded-[6px] hover:border-[#d0cbc3] transition-colors"
             >
-              Kopírovať odkaz →
+              {btn}
             </button>
-          </div>
-        )}
-
-        {/* Preset buttons */}
-        <div className="mt-6 border-t border-divider pt-4">
-          <p className="micro-label mb-2">Rýchle scenáre</p>
-          <div className="flex flex-wrap gap-2">
-            {PRESETS.map((preset) => (
-              <button
-                key={preset.label}
-                onClick={() => applyPreset(preset.parties)}
-                className="text-xs px-3 py-1.5 border border-divider hover:bg-hover transition-colors"
-              >
-                {preset.label}
-              </button>
-            ))}
-            <button
-              onClick={() => setSelected(new Set())}
-              className="text-xs px-3 py-1.5 border border-divider text-text/50 hover:bg-hover transition-colors"
-            >
-              Zmazať výber
-            </button>
-          </div>
+          ))}
+          <button
+            onClick={handleCopyUrl}
+            className="px-3 py-1.5 text-[12px] font-medium text-[#444444] bg-[#f8f5f0] border border-[#e8e3db] rounded-[6px] hover:border-[#d0cbc3] transition-colors"
+          >
+            Kopírovať odkaz
+          </button>
         </div>
-      </div>
 
-      {/* Party table with checkboxes */}
-      <div className="border border-divider bg-surface p-6" role="group" aria-label="Výber strán pre koalíciu">
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b-2 border-ink">
-                <th className="text-left py-2 px-2 w-10"></th>
-                <th className="text-left py-2 px-2 font-semibold text-ink text-xs uppercase tracking-wider">
-                  Strana
-                </th>
-                <th className="text-right py-2 px-2 font-semibold text-ink text-xs uppercase tracking-wider">
-                  %
-                </th>
-                <th className="text-right py-2 px-2 font-semibold text-ink text-xs uppercase tracking-wider">
-                  Mandáty
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {PARTY_LIST.map((party) => {
-                const seats = seatMap[party.id] ?? 0;
-                const isSelected = selected.has(party.id);
-                const isInParliament = inParliament.includes(party.id);
-                const pct = pollResults.find((p) => p.partyId === party.id)?.percentage ?? 0;
+        {/* Preset pills row */}
+        <div className="flex gap-2 px-6 py-3 border-t border-[#e8e3db] flex-wrap">
+          {PRESETS.map((preset) => (
+            <button
+              key={preset.label}
+              onClick={() => applyPreset(preset.parties)}
+              className="px-4 py-1.5 text-[13px] font-medium text-[#1a1a1a] border border-[#d0cbc3] rounded-[20px] hover:bg-[#f0ede6] transition-colors"
+            >
+              {preset.label}
+            </button>
+          ))}
+          <button
+            onClick={() => setSelected(new Set())}
+            className="px-4 py-1.5 text-[13px] font-medium text-[#888888] border border-[#e8e3db] rounded-[20px] hover:bg-[#f0ede6] transition-colors"
+          >
+            Zmazať výber
+          </button>
+        </div>
 
-                return (
-                  <tr
-                    key={party.id}
-                    className={`border-b border-divider transition-colors cursor-pointer ${
-                      !isInParliament
-                        ? "opacity-40"
-                        : isSelected
-                          ? "bg-hover"
-                          : "hover:bg-hover"
-                    }`}
-                    onClick={() => isInParliament && toggleParty(party.id)}
-                  >
-                    <td className="py-3 px-2">
-                      <input
-                        type="checkbox"
-                        checked={isSelected}
-                        disabled={!isInParliament}
-                        onChange={() => {}}
-                        aria-pressed={isSelected}
-                        aria-label={`${party.name}, ${seats} mandátov`}
-                        className="accent-ink w-4 h-4 cursor-pointer"
+        {/* Party table */}
+        <table className="w-full border-t border-[#e8e3db]" role="group" aria-label="Výber strán pre koalíciu">
+          <thead>
+            <tr className="text-[11px] text-[#888888] uppercase tracking-[0.08em]">
+              <th className="px-6 py-3 text-left w-10"></th>
+              <th className="px-2 py-3 text-left">STRANA</th>
+              <th className="px-4 py-3 text-right">%</th>
+              <th className="px-6 py-3 text-right">MANDÁTY</th>
+            </tr>
+          </thead>
+          <tbody>
+            {PARTY_LIST.map((party) => {
+              const seats = seatMap[party.id] ?? 0;
+              const isSelected = selected.has(party.id);
+              const isInParliament = inParliament.includes(party.id);
+              const pct = pollResults.find((p) => p.partyId === party.id)?.percentage ?? 0;
+
+              return (
+                <tr
+                  key={party.id}
+                  onClick={() => isInParliament && toggleParty(party.id)}
+                  className={`border-t border-[#e8e3db] transition-colors ${
+                    !isInParliament
+                      ? "opacity-40 cursor-not-allowed"
+                      : "cursor-pointer"
+                  } ${isSelected ? "bg-[#f0f7ff]" : isInParliament ? "hover:bg-[#f8f5f0]" : ""}`}
+                >
+                  <td className="px-6 py-3">
+                    <div
+                      className="w-[18px] h-[18px] rounded-[3px] border-2 flex items-center justify-center transition-colors"
+                      style={{
+                        borderColor: isSelected ? (party.color ?? "#1a6eb5") : "#d0cbc3",
+                        background: isSelected ? (party.color ?? "#1a6eb5") : "transparent",
+                      }}
+                    >
+                      {isSelected && (
+                        <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+                          <path
+                            d="M1 4L3.5 6.5L9 1"
+                            stroke="white"
+                            strokeWidth="1.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      )}
+                    </div>
+                  </td>
+                  <td className="px-2 py-3 text-[14px] font-medium text-[#1a1a1a]">
+                    <div className="flex items-center gap-2">
+                      <div
+                        className="w-3 h-3 rounded-[2px] shrink-0"
+                        style={{ background: party.color ?? "#aaa" }}
                       />
-                    </td>
-                    <td className="py-3 px-2">
-                      <div className="flex items-center gap-2">
-                        <div
-                          className="w-3 h-3 shrink-0"
-                          style={{ backgroundColor: party.color }}
-                        />
-                        <span className="font-medium text-ink">{party.name}</span>
-                      </div>
-                    </td>
-                    <td className="text-right py-3 px-2 tabular-nums text-text/60">
-                      {pct.toFixed(1)}%
-                    </td>
-                    <td className="text-right py-3 px-2 tabular-nums font-bold text-ink">
-                      {seats}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
+                      {party.name}
+                    </div>
+                  </td>
+                  <td className="px-4 py-3 text-[14px] text-right text-[#444444]">
+                    {pct.toFixed(1)}%
+                  </td>
+                  <td className="px-6 py-3 text-[14px] font-semibold text-right text-[#1a1a1a]">
+                    {seats}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+
       </div>
-    </>
+    </div>
   );
 }
