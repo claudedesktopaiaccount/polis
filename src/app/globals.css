@@ -1,71 +1,89 @@
 @import "tailwindcss";
 
 @theme inline {
-  /* Editorial palette */
-  --color-ink: var(--ink);
-  --color-paper: var(--paper);
-  --color-surface: var(--surface);
-  --color-divider: var(--divider);
-  --color-hover: var(--hover);
-  --color-text: var(--text);
+  /* Map new tokens to Tailwind */
+  --color-page: var(--bg-page);
+  --color-card: var(--bg-card);
+  --color-subtle: var(--bg-subtle);
+  --color-muted-bg: var(--bg-muted);
+  --color-border: var(--border-color);
+  --color-border-strong: var(--border-strong);
+  --color-ink: var(--text-primary);
+  --color-secondary: var(--text-secondary);
+  --color-muted: var(--text-muted);
+  --color-faint: var(--text-faint);
+  --color-xfaint: var(--text-xfaint);
+  --color-accent: var(--accent-blue);
+  --color-success: #16a34a;
+  --color-success-bg: #dcfce7;
+  --color-danger: #dc2626;
+  --color-danger-bg: #fee2e2;
+  --color-btn-primary: var(--btn-primary-bg);
+  --color-btn-primary-text: var(--btn-primary-text);
+  --color-footer: var(--footer-bg);
 
-  /* Semantic */
-  --color-success: #10B981;
-  --color-danger: #EF4444;
-  --color-warning: #F59E0B;
-  --color-info: #3B82F6;
-
-  /* Party brand colors (Wikipedia-verified, March 2026) */
-  --color-party-ps: #00BDFF;
-  --color-party-smer: #D82222;
-  --color-party-hlas: #FA0F18;
-  --color-party-republika: #174194;
-  --color-party-sas: #9BC31C;
-  --color-party-kdh: #173A70;
-  --color-party-sns: #252E70;
-  --color-party-demokrati: #FC0C5D;
-  --color-party-aliancia: #F48B24;
-  --color-party-slovensko: #42B5C2;
+  /* Party colours */
+  --color-party-ps: #1a6eb5;
+  --color-party-smer: #c0392b;
+  --color-party-rep: #2c3e50;
+  --color-party-slov: #16a085;
+  --color-party-hlas: #e74c3c;
+  --color-party-sas: #27ae60;
+  --color-party-kdh: #1a3a6b;
+  --color-party-dem: #d63384;
+  --color-party-al: #e67e22;
+  --color-party-sns: #95a5a6;
 
   /* Typography */
-  --font-sans: var(--font-inter);
-  --font-serif: var(--font-newsreader);
-  --font-mono: var(--font-jetbrains-mono, ui-monospace, "JetBrains Mono", "Fira Code", monospace);
+  --font-sans: var(--font-dm-sans);
+  --font-serif: var(--font-dm-serif);
+
+  /* Spacing */
+  --max-width-content: 1100px;
+  --nav-height: 52px;
+  --radius-card: 12px;
+  --radius-btn: 6px;
+  --radius-pill: 20px;
 }
 
 :root {
-  --ink: #111110;
-  --paper: #F4F3EE;
-  --surface: #FFFFFF;
-  --text: #2C2C2A;
-  --divider: #D6D5CF;
-  --hover: #EBEBE6;
-}
+  /* Warm editorial palette */
+  --bg-page: #f8f5f0;
+  --bg-card: #ffffff;
+  --bg-subtle: #f0ede6;
+  --bg-muted: #f8f5f0;
+  --border-color: #e8e3db;
+  --border-strong: #d0cbc3;
+  --text-primary: #1a1a1a;
+  --text-secondary: #444444;
+  --text-muted: #888888;
+  --text-faint: #aaaaaa;
+  --text-xfaint: #bbbbbb;
+  --accent-blue: #1a6eb5;
+  --btn-primary-bg: #1a1a1a;
+  --btn-primary-text: #ffffff;
+  --footer-bg: #1a1a1a;
 
-.dark {
-  --ink: #E8E8E3;
-  --paper: #101622;
-  --surface: #1A1F2E;
-  --text: #E8E8E3;
-  --divider: #2A2F3E;
-  --hover: #252A38;
+  /* Legacy aliases (keep for components not yet migrated) */
+  --ink: #1a1a1a;
+  --paper: #f8f5f0;
+  --surface: #ffffff;
+  --text: #444444;
+  --divider: #e8e3db;
+  --hover: #f0ede6;
 }
 
 body {
-  background: var(--paper);
-  color: var(--text);
+  background: var(--bg-page);
+  color: var(--text-primary);
+  font-family: var(--font-dm-sans), 'DM Sans', sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Editorial typography — serif headings */
 h1, h2, h3 {
-  font-family: var(--font-serif), Georgia, serif;
+  font-family: var(--font-dm-sans), 'DM Sans', sans-serif;
+  color: var(--text-primary);
   letter-spacing: -0.02em;
-  color: var(--ink);
-}
-
-/* Remove all rounded corners globally */
-*, *::before, *::after {
-  border-radius: 0 !important;
 }
 
 /* Focus indicators — WCAG 2.1 AA */
