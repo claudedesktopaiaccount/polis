@@ -113,9 +113,9 @@ h1, h2, h3 {
   font-variant-numeric: tabular-nums;
 }
 
-/* Data typography — monospace for numbers */
+/* Data typography */
 .data-value {
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.02em;
 }
@@ -131,7 +131,7 @@ h1, h2, h3 {
 /* Semantic delta colors */
 .delta-positive { color: #00E676; }
 .delta-negative { color: #FF5252; }
-.delta-neutral { color: var(--color-text); opacity: 0.4; }
+.delta-neutral { color: var(--color-ink); opacity: 0.4; }
 
 /* Live pulse indicator */
 @keyframes pulse-dot {
