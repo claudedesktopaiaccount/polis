@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import SectionHeading from "@/components/ui/SectionHeading";
 import { getLatestPolls } from "@/lib/poll-data";
 import { getAggregatedPolls } from "@/lib/poll-aggregate";
 import { runSimulation, type PartyInput } from "@/lib/prediction/monte-carlo";
@@ -66,11 +65,16 @@ export default async function PredikciaPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-      <SectionHeading
-        title="Predikcia volieb"
-        subtitle={`Monte Carlo simulácia (10 000 iterácií) na základe ${pollCount} prieskum${pollCount === 1 ? "u" : "ov"}`}
-      />
+    <div className="max-w-[1100px] mx-auto px-6 py-8">
+      {/* Page header */}
+      <div className="mb-6">
+        <h1 className="text-[28px] font-extrabold text-[#1a1a1a]" style={{ letterSpacing: "-0.5px" }}>
+          Predikcia volieb
+        </h1>
+        <p className="text-[13px] text-[#888888] uppercase tracking-[0.08em] mt-1">
+          MONTE CARLO SIMULÁCIA (10 000 ITERÁCIÍ) NA ZÁKLADE {pollCount} PRIESKUM{pollCount === 1 ? "U" : "OV"}
+        </p>
+      </div>
 
       <PredikciaClient
         simulation={simulation}
