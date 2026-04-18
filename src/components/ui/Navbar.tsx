@@ -19,15 +19,6 @@ const SECONDARY_NAV = [
   { href: "/povolebne-plany", label: "Povolebné plány" },
 ];
 
-function getNavIcon(href: string): string {
-  switch (href) {
-    case "/": return "◉";
-    case "/prieskumy": return "▥";
-    case "/predikcia": return "◈";
-    case "/tipovanie": return "⚑";
-    default: return "•";
-  }
-}
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
@@ -68,11 +59,10 @@ export default function Navbar() {
 
   return (
     <>
-      <header className="sticky top-0 z-50 bg-surface/95 backdrop-blur-sm border-b-3 border-ink" style={{ viewTransitionName: "navbar" }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-[60px]">
-          <Link href="/" className="group text-xl font-bold text-ink tracking-tight font-serif relative">
-            <span className="transition-opacity duration-300 group-hover:opacity-0">Polis</span>
-            <span className="absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100">πόλις</span>
+      <header className="sticky top-0 z-40 h-[52px] bg-white border-b border-[#e8e3db] flex items-center">
+        <div className="max-w-[1100px] mx-auto px-6 w-full flex items-center justify-between">
+          <Link href="/" className="font-[family-name:var(--font-dm-serif)] text-[20px] text-[#1a1a1a] leading-none tracking-normal">
+            Polis
           </Link>
 
           <div className="flex items-center gap-2">
@@ -82,10 +72,10 @@ export default function Navbar() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`px-3 py-2 text-sm font-medium transition-colors ${
+                  className={`transition-colors ${
                     pathname === item.href
-                      ? "text-ink font-semibold"
-                      : "text-text hover:text-ink hover:bg-hover"
+                      ? "text-[14px] text-[#1a1a1a] font-semibold px-3 py-2"
+                      : "text-[14px] text-[#444444] hover:text-[#1a1a1a] font-medium transition-colors px-3 py-2"
                   }`}
                 >
                   {item.label}
@@ -93,33 +83,29 @@ export default function Navbar() {
               ))}
 
               {/* "Viac" dropdown for secondary nav */}
-              <div className="relative" ref={moreRef}>
+              <div
+                className="relative"
+                ref={moreRef}
+                onMouseLeave={() => setMoreOpen(false)}
+              >
                 <button
                   onClick={() => setMoreOpen(!moreOpen)}
-                  className="px-3 py-2 text-sm font-medium text-text hover:text-ink hover:bg-hover transition-colors flex items-center gap-1"
+                  className="flex items-center gap-1 text-[14px] text-[#444444] hover:text-[#1a1a1a] font-medium px-3 py-2 transition-colors"
                 >
                   Viac
-                  <svg
-                    className={`w-3 h-3 transition-transform ${moreOpen ? "rotate-180" : ""}`}
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    strokeWidth={2}
-                  >
+                  <svg className={`w-3 h-3 transition-transform ${moreOpen ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                   </svg>
                 </button>
                 {moreOpen && (
-                  <div className="absolute top-full right-0 mt-1 bg-surface border border-divider min-w-[180px] z-50">
+                  <div className="absolute top-full right-0 mt-1 bg-white border border-[#e8e3db] rounded-[8px] shadow-[0_4px_16px_rgba(0,0,0,0.10)] min-w-[200px] py-1 z-50">
                     {SECONDARY_NAV.map((item) => (
                       <Link
                         key={item.href}
                         href={item.href}
                         onClick={() => setMoreOpen(false)}
-                        className={`block px-4 py-2 text-sm font-medium transition-colors ${
-                          pathname === item.href
-                            ? "text-ink font-semibold bg-hover"
-                            : "text-text hover:text-ink hover:bg-hover"
+                        className={`block px-4 py-[9px] text-[14px] transition-colors hover:bg-[#f8f5f0] ${
+                          pathname === item.href ? "text-[#1a1a1a] font-medium" : "text-[#333333]"
                         }`}
                       >
                         {item.label}
@@ -162,7 +148,7 @@ export default function Navbar() {
                 ) : (
                   <Link
                     href="/prihlasenie"
-                    className="px-3 py-2 text-sm font-medium text-text hover:text-ink hover:bg-hover transition-colors"
+                    className="text-[14px] text-[#1a1a1a] border border-[#d0cbc3] rounded-[6px] px-3 py-[5px] hover:bg-[#f0ede6] transition-colors"
                   >
                     Prihlásiť sa
                   </Link>
@@ -255,16 +241,15 @@ export default function Navbar() {
       </header>
 
       {/* Mobile bottom tab bar */}
-      <nav className="fixed bottom-0 left-0 right-0 bg-surface border-t border-divider flex justify-around py-2 lg:hidden z-50">
+      <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#e8e3db] flex justify-around py-2 lg:hidden z-50">
         {PRIMARY_NAV.map((item) => (
           <Link
             key={item.href}
             href={item.href}
-            className={`flex flex-col items-center text-[10px] ${
-              pathname === item.href ? "text-ink font-semibold" : "text-text/50"
+            className={`flex flex-col items-center text-[11px] py-1 ${
+              pathname === item.href ? "text-[#1a1a1a] font-semibold" : "text-[#888888]"
             }`}
           >
-            <span className="text-lg">{getNavIcon(item.href)}</span>
             <span>{item.label}</span>
           </Link>
         ))}
