@@ -27,30 +27,38 @@ export default function GdprBanner() {
   }
 
   return (
-    <div role="dialog" aria-label="Súhlas s cookies" className="fixed bottom-0 left-0 right-0 z-50 p-4 bg-surface border-t border-divider">
-      <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center gap-4">
-        <p className="text-sm text-text flex-1">
+    <div
+      role="dialog"
+      aria-label="Súhlas s cookies"
+      className="fixed bottom-0 left-0 right-0 z-[500] bg-white border-t border-[#e8e3db]"
+      style={{ boxShadow: "0 -4px 20px rgba(0,0,0,0.08)" }}
+    >
+      <div className="max-w-[1100px] mx-auto px-6 py-4 flex flex-col sm:flex-row items-center gap-4">
+        {/* Avatar circle */}
+        <div className="shrink-0 w-9 h-9 rounded-full bg-[#f0ede6] flex items-center justify-center text-[16px]">
+          🍪
+        </div>
+        <p className="text-[13px] text-[#444444] flex-1 leading-relaxed">
           Táto stránka používa cookies a fingerprinting na zabránenie duplicitným hlasom v sekcii Tipovanie.
           Viac informácií nájdete na stránke{" "}
-          <Link href="/sukromie" className="text-ink underline underline-offset-2 hover:text-text transition-colors">
+          <Link href="/sukromie" className="text-[#1a6eb5] underline underline-offset-2">
             Ochrana súkromia
           </Link>
           {" "}alebo{" "}
-          <Link href="/cookies" className="text-ink underline underline-offset-2 hover:text-text transition-colors">
+          <Link href="/cookies" className="text-[#1a6eb5] underline underline-offset-2">
             Zásady cookies
-          </Link>
-          .
+          </Link>.
         </p>
         <div className="flex gap-3 shrink-0">
           <button
             onClick={handleReject}
-            className="px-4 py-2 text-sm font-medium text-text border border-divider hover:bg-hover transition-colors"
+            className="px-4 py-2 text-[13px] font-medium text-[#444444] border border-[#d0cbc3] rounded-[6px] hover:bg-[#f0ede6] transition-colors"
           >
             Odmietnuť
           </button>
           <button
             onClick={handleAccept}
-            className="px-4 py-2 text-sm font-semibold bg-ink text-paper border border-ink hover:bg-transparent hover:text-ink transition-colors"
+            className="px-4 py-2 text-[13px] font-medium text-white bg-[#1a1a1a] rounded-[6px] hover:opacity-90 transition-opacity"
           >
             Prijať
           </button>
