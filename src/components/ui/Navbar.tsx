@@ -1,56 +1,40 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useTheme } from "@/components/ThemeProvider";
 import { useAuth } from "@/components/AuthProvider";
 
-const PRIMARY_NAV = [
-  { href: "/", label: "Prehľad" },
+const NAV_LINKS = [
+  { href: "/", label: "Domov" },
   { href: "/prieskumy", label: "Prieskumy" },
   { href: "/predikcia", label: "Predikcia" },
-  { href: "/tipovanie", label: "Tipovanie" },
-];
-
-const SECONDARY_NAV = [
-  { href: "/koalicny-simulator", label: "Koaličný simulátor" },
-  { href: "/volebny-kalkulator", label: "Koho voliť?" },
   { href: "/povolebne-plany", label: "Povolebné plány" },
+  { href: "/koalicny-simulator", label: "Koaličný simulátor" },
+  { href: "/tipovanie", label: "Tipovanie" },
+  { href: "/volebny-kalkulator", label: "Koho voliť?" },
 ];
 
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
-  const [moreOpen, setMoreOpen] = useState(false);
-  const [score] = useState<{ total: number; rank: number } | null>(() => {
-    if (typeof document === "undefined") return null;
+  const [logoHovered, setLogoHovered] = useState(false);
+  const [score, setScore] = useState<{ total: number; rank: number } | null>(null);
+
+  useEffect(() => {
     const raw = document.cookie.split("; ").find((c) => c.startsWith("polis_score="));
-    if (!raw) return null;
+    if (!raw) return;
     try {
-      return JSON.parse(decodeURIComponent(raw.split("=")[1]));
+      setScore(JSON.parse(decodeURIComponent(raw.split("=")[1])));
     } catch {
-      return null;
+      // invalid cookie — leave null
     }
-  });
+  }, []);
   const { theme, toggleTheme } = useTheme();
   const { user, isLoading, logout } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
-  const moreRef = useRef<HTMLDivElement>(null);
-
-  // Close "Viac" dropdown on outside click
-  useEffect(() => {
-    function handleClickOutside(e: MouseEvent) {
-      if (moreRef.current && !moreRef.current.contains(e.target as Node)) {
-        setMoreOpen(false);
-      }
-    }
-    if (moreOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [moreOpen]);
 
   async function handleLogout() {
     await logout();
@@ -59,61 +43,34 @@ export default function Navbar() {
 
   return (
     <>
-      <header className="sticky top-0 z-40 h-[52px] bg-white border-b border-[#e8e3db] flex items-center">
-        <div className="max-w-[1100px] mx-auto px-6 w-full flex items-center justify-between">
-          <Link href="/" className="font-[family-name:var(--font-dm-serif)] text-[20px] text-[#1a1a1a] leading-none tracking-normal">
-            Polis
+      <header className="sticky top-0 z-50 bg-surface/95 backdrop-blur-sm border-b border-border" style={{viewTransitionName:"navbar"}}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-[52px]">
+          <Link
+            href="/"
+            className="group text-xl font-bold text-ink tracking-tight font-serif relative"
+            onMouseEnter={() => setLogoHovered(true)}
+            onMouseLeave={() => setLogoHovered(false)}
+          >
+            <span className={`transition-opacity duration-300 ${logoHovered ? "opacity-0" : "opacity-100"}`}>Polis</span>
+            <span className={`absolute inset-0 transition-opacity duration-300 ${logoHovered ? "opacity-100" : "opacity-0"}`}>πόλις</span>
           </Link>
 
           <div className="flex items-center gap-2">
-            {/* Desktop primary nav */}
+            {/* Desktop nav — flat */}
             <nav className="hidden lg:flex items-center gap-1">
-              {PRIMARY_NAV.map((item) => (
+              {NAV_LINKS.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`transition-colors ${
+                  className={`text-[14px] font-medium px-3 py-2 transition-colors ${
                     pathname === item.href
-                      ? "text-[14px] text-[#1a1a1a] font-semibold px-3 py-2"
-                      : "text-[14px] text-[#444444] hover:text-[#1a1a1a] font-medium transition-colors px-3 py-2"
+                      ? "text-[#1a1a1a] font-semibold"
+                      : "text-[#444444] hover:text-[#1a1a1a] hover:bg-[#f0ede6]"
                   }`}
                 >
                   {item.label}
                 </Link>
               ))}
-
-              {/* "Viac" dropdown for secondary nav */}
-              <div
-                className="relative"
-                ref={moreRef}
-                onMouseLeave={() => setMoreOpen(false)}
-              >
-                <button
-                  onClick={() => setMoreOpen(!moreOpen)}
-                  className="flex items-center gap-1 text-[14px] text-[#444444] hover:text-[#1a1a1a] font-medium px-3 py-2 transition-colors"
-                >
-                  Viac
-                  <svg className={`w-3 h-3 transition-transform ${moreOpen ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                  </svg>
-                </button>
-                {moreOpen && (
-                  <div className="absolute top-full right-0 mt-1 bg-white border border-[#e8e3db] rounded-[8px] shadow-[0_4px_16px_rgba(0,0,0,0.10)] min-w-[200px] py-1 z-50">
-                    {SECONDARY_NAV.map((item) => (
-                      <Link
-                        key={item.href}
-                        href={item.href}
-                        onClick={() => setMoreOpen(false)}
-                        className={`block px-4 py-[9px] text-[14px] transition-colors hover:bg-[#f8f5f0] ${
-                          pathname === item.href ? "text-[#1a1a1a] font-medium" : "text-[#333333]"
-                        }`}
-                      >
-                        {item.label}
-                      </Link>
-                    ))}
-                  </div>
-                )}
-              </div>
             </nav>
 
             {/* Score badge */}
@@ -148,7 +105,7 @@ export default function Navbar() {
                 ) : (
                   <Link
                     href="/prihlasenie"
-                    className="text-[14px] text-[#1a1a1a] border border-[#d0cbc3] rounded-[6px] px-3 py-[5px] hover:bg-[#f0ede6] transition-colors"
+                    className="text-[14px] text-ink border border-border-strong rounded-[6px] px-3 py-[5px] hover:bg-hover transition-colors"
                   >
                     Prihlásiť sa
                   </Link>
@@ -190,18 +147,18 @@ export default function Navbar() {
           </div>
         </div>
 
-        {/* Mobile drawer — secondary nav + auth */}
+        {/* Mobile drawer */}
         {open && (
-          <nav className="lg:hidden bg-surface border-t border-divider px-4 pb-4">
-            {SECONDARY_NAV.map((item) => (
+          <nav className="lg:hidden bg-white border-t border-[#e8e3db] px-4 pb-4">
+            {NAV_LINKS.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
                 onClick={() => setOpen(false)}
                 className={`block px-3 py-3 text-base font-medium transition-colors ${
                   pathname === item.href
-                    ? "text-ink font-semibold"
-                    : "text-text hover:text-ink hover:bg-hover"
+                    ? "text-[#1a1a1a] font-semibold"
+                    : "text-[#444444] hover:text-[#1a1a1a] hover:bg-[#f0ede6]"
                 }`}
               >
                 {item.label}
@@ -242,7 +199,7 @@ export default function Navbar() {
 
       {/* Mobile bottom tab bar */}
       <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#e8e3db] flex justify-around py-2 lg:hidden z-50">
-        {PRIMARY_NAV.map((item) => (
+        {NAV_LINKS.slice(0, 4).map((item) => (
           <Link
             key={item.href}
             href={item.href}
