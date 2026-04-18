@@ -232,23 +232,23 @@ function ProgramSection({
 
   return (
     <div>
-      {/* Program header */}
+      {/* Program header with accent bar */}
       {name && (
-        <div className="mb-4 flex items-center gap-3">
+        <div className="flex items-center gap-3 mb-4">
           <div
-            className="w-1 h-8 shrink-0"
-            style={{ backgroundColor: partyColor }}
+            className="w-1 rounded-[2px] self-stretch shrink-0"
+            style={{ background: partyColor, minHeight: "24px" }}
           />
           <div>
-            <p className="text-sm font-bold text-ink">{name}</p>
-            <p className="text-xs text-text/50">{promises.length} programových bodov</p>
+            <h2 className="text-[18px] font-bold text-[#1a1a1a]">{name}</h2>
+            <p className="text-[12px] text-[#888888]">{promises.length} programových bodov</p>
           </div>
         </div>
       )}
 
       {isStub && (
-        <div className="border border-divider bg-hover px-4 py-3 mb-4">
-          <p className="text-xs text-text/50">
+        <div className="border border-[#e8e3db] bg-[#f8f5f0] px-4 py-3 mb-4">
+          <p className="text-xs text-[#888888]">
             Programové body tejto strany sa dopĺňajú. Vráťte sa neskôr.
           </p>
         </div>
@@ -262,7 +262,7 @@ function ProgramSection({
             className={`px-3 py-1.5 text-xs font-medium transition-colors border ${
               !searchQuery && categories.every((cat) => expandedCategories.has(cat))
                 ? "bg-ink text-paper border-ink"
-                : "border-divider text-text/50 hover:bg-hover"
+                : "border-[#d0cbc3] text-[#888888] hover:bg-[#f8f5f0]"
             }`}
           >
             {categories.every((cat) => expandedCategories.has(cat)) ? "Zbaliť všetky" : "Rozbaliť všetky"}
@@ -280,7 +280,7 @@ function ProgramSection({
             <button
               key={cat}
               onClick={() => isLargeProgram ? handleCategoryNav(cat) : undefined}
-              className={`px-3 py-1.5 text-xs font-medium transition-colors border border-divider text-text/50 hover:bg-hover ${
+              className={`px-3 py-1.5 text-xs font-medium transition-colors border border-[#d0cbc3] text-[#888888] hover:bg-[#f8f5f0] ${
                 displayCount === 0 ? "opacity-30" : ""
               }`}
               disabled={displayCount === 0}
@@ -291,15 +291,15 @@ function ProgramSection({
         })}
       </div>
 
-      {/* Accordion sections */}
+      {/* Expandable category sections */}
       {Object.keys(grouped).length === 0 ? (
-        <div className="border border-divider bg-surface text-center py-12">
-          <p className="text-sm text-text/40">
+        <div className="border border-[#e8e3db] bg-[#f8f5f0] text-center py-12">
+          <p className="text-sm text-[#888888]">
             {searchQuery ? "Žiadne výsledky pre hľadaný výraz" : "Žiadne sľuby v tejto kategórii"}
           </p>
         </div>
       ) : (
-        <div className="space-y-2">
+        <div className="border-t border-[#e8e3db]">
           {categories.filter((cat) => grouped[cat]).map((cat) => {
             const items = grouped[cat];
             const expanded = isCategoryExpanded(cat);
@@ -311,62 +311,58 @@ function ProgramSection({
               <div
                 key={cat}
                 ref={(el) => { sectionRefs.current[cat] = el; }}
-                className="border border-divider bg-surface"
+                className="border-b border-[#e8e3db]"
               >
                 <button
                   onClick={() => isLargeProgram ? toggleCategory(cat) : undefined}
-                  className={`w-full flex items-center gap-3 p-4 text-left transition-colors ${
-                    isLargeProgram ? "hover:bg-hover cursor-pointer" : "cursor-default"
+                  className={`w-full flex items-center justify-between py-4 px-1 text-left transition-colors ${
+                    isLargeProgram ? "hover:bg-[#f8f5f0] cursor-pointer" : "cursor-default"
                   }`}
                 >
-                  <div
-                    className="w-1 h-6 shrink-0"
-                    style={{ backgroundColor: partyColor }}
-                  />
-                  <span className="text-sm font-bold text-ink flex-1">{cat}</span>
-                  <span className="text-xs text-text/40 tabular-nums">
-                    {items.length} {items.length === 1 ? "bod" : items.length < 5 ? "body" : "bodov"}
-                  </span>
-                  {isLargeProgram && (
-                    <svg
-                      className={`w-4 h-4 text-text/30 transition-transform ${expanded ? "rotate-180" : ""}`}
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
-                  )}
+                  <span className="text-[15px] font-semibold text-[#1a1a1a]">{cat}</span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[12px] text-[#888888]">
+                      {items.length} {items.length === 1 ? "bod" : items.length < 5 ? "body" : "bodov"}
+                    </span>
+                    {isLargeProgram && (
+                      <svg
+                        className="w-4 h-4 text-[#888888]"
+                        style={{
+                          transition: "transform .2s",
+                          transform: expanded ? "rotate(180deg)" : "none",
+                        }}
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        strokeWidth={2}
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                      </svg>
+                    )}
+                  </div>
                 </button>
 
                 {expanded && (
-                  <div className="border-t border-divider">
-                    <div className="divide-y divide-divider">
-                      {visibleItems.map((promise, i) => (
-                        <div key={i} className="px-4 py-3 hover:bg-hover transition-colors">
-                          <div className="flex items-start gap-3">
-                            <span className="mt-0.5 w-5 h-5 shrink-0 flex items-center justify-center text-xs font-bold tabular-nums text-text/30">
-                              {i + 1}.
-                            </span>
-                            <div
-                              className="mt-0.5 w-5 h-5 shrink-0 flex items-center justify-center text-xs font-bold"
-                              style={{ backgroundColor: partyColor, color: "#fff" }}
-                            >
-                              {promise.isPro ? "+" : "−"}
-                            </div>
-                            <div className="flex flex-col gap-1">
-                              <p className="text-sm text-ink">{promise.text}</p>
-                              {promise.status && <StatusBadge status={promise.status} />}
-                            </div>
-                          </div>
+                  <div className="pb-4 space-y-3 px-1">
+                    {visibleItems.map((promise, i) => (
+                      <div key={i} className="flex gap-3 items-start">
+                        <span
+                          className="shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold text-white"
+                          style={{ background: partyColor }}
+                        >
+                          {i + 1}
+                        </span>
+                        <div className="flex flex-col gap-1 pt-0.5">
+                          <p className="text-[13px] text-[#444444] leading-[1.55]">{promise.text}</p>
+                          {promise.status && <StatusBadge status={promise.status} />}
                         </div>
-                      ))}
-                    </div>
+                      </div>
+                    ))}
 
                     {!showAll && hiddenCount > 0 && (
                       <button
                         onClick={() => toggleShowAll(cat)}
-                        className="w-full py-3 text-xs font-medium transition-colors hover:bg-hover border-t border-divider"
+                        className="w-full py-2 text-xs font-medium transition-colors hover:opacity-80"
                         style={{ color: partyColor }}
                       >
                         Zobraziť všetkých {items.length} bodov (+{hiddenCount})
@@ -376,7 +372,7 @@ function ProgramSection({
                     {showAll && items.length > PREVIEW_COUNT && (
                       <button
                         onClick={() => toggleShowAll(cat)}
-                        className="w-full py-3 text-xs font-medium text-text/40 transition-colors hover:bg-hover border-t border-divider"
+                        className="w-full py-2 text-xs font-medium text-[#888888] transition-colors hover:text-[#1a1a1a]"
                       >
                         Zobraziť menej
                       </button>
@@ -439,7 +435,7 @@ export default function PovolebnePlanyClient({ partiesData }: Props) {
   const totalPromises = programs.reduce((sum, p) => sum + p.promises.length, 0);
   const hasLargeProgram = programs.some((p) => p.promises.length > 10);
   const activePartyData = PARTY_LIST.find((p) => p.id === activeParty);
-  const partyColor = activePartyData?.color ?? "var(--ink)";
+  const partyColor = activePartyData?.color ?? "#1a1a1a";
 
   const handlePartyChange = useCallback((partyId: string) => {
     setActiveParty(partyId);
@@ -453,24 +449,20 @@ export default function PovolebnePlanyClient({ partiesData }: Props) {
         subtitle="Čo sľubujú politické strany pred voľbami"
       />
 
-      {/* Party tabs */}
-      <div className="flex flex-wrap gap-1 mb-6 border-b border-divider pb-4">
+      {/* Party tabs as pills */}
+      <div className="flex gap-2 flex-wrap mb-6">
         {PARTY_LIST.map((party) => {
           const isActive = activeParty === party.id;
           return (
             <button
               key={party.id}
               onClick={() => handlePartyChange(party.id)}
-              className={`px-3 py-2 text-xs font-medium transition-colors border ${
-                isActive
-                  ? "border-ink text-paper"
-                  : "border-divider text-text hover:bg-hover"
-              }`}
-              style={
-                isActive
-                  ? { backgroundColor: party.color, borderColor: party.color, color: "#fff" }
-                  : undefined
-              }
+              className="px-4 py-1.5 text-[13px] font-semibold rounded-[20px] border transition-all"
+              style={{
+                background: isActive ? (party.color ?? "#1a1a1a") : "transparent",
+                color: isActive ? "#fff" : "#333",
+                borderColor: isActive ? (party.color ?? "#1a1a1a") : "#d0cbc3",
+              }}
             >
               {party.abbreviation}
             </button>
@@ -480,18 +472,18 @@ export default function PovolebnePlanyClient({ partiesData }: Props) {
 
       {/* Search input — only when there's a large program */}
       {hasLargeProgram && (
-        <div className="relative mb-6">
+        <div className="relative mb-5">
           <svg
-            className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text/30"
+            className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#888888] pointer-events-none"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
+            strokeWidth={2}
           >
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
-              strokeWidth={2}
-              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              d="M21 21l-4.35-4.35M17 11A6 6 0 111 11a6 6 0 0116 0z"
             />
           </svg>
           <input
@@ -499,12 +491,13 @@ export default function PovolebnePlanyClient({ partiesData }: Props) {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder={`Hľadaj v ${totalPromises} programových bodoch...`}
-            className="w-full pl-10 pr-4 py-2.5 text-sm bg-surface border border-divider text-ink placeholder:text-text/30 focus:outline-none focus:border-text/30 transition-colors"
+            className="w-full text-[14px] text-[#1a1a1a] bg-white border border-[#e8e3db] rounded-[8px] outline-none focus:border-[#d0cbc3] transition-colors"
+            style={{ padding: "9px 14px 9px 36px" }}
           />
           {searchQuery && (
             <button
               onClick={() => setSearchQuery("")}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-text/40 hover:text-ink transition-colors"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-[#888888] hover:text-[#1a1a1a] transition-colors"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
