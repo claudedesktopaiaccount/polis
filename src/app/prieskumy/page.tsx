@@ -69,11 +69,13 @@ export default async function PrieskumyPage() {
   })).sort((a, b) => (latest?.results[b.id] ?? 0) - (latest?.results[a.id] ?? 0));
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-      <SectionHeading
-        title="Prieskumy verejnej mienky"
-        subtitle={`${polls.length} prieskumov zo Wikipedie — posledný: ${latest?.agency ?? "N/A"}, ${latest?.publishedDate ?? ""}`}
-      />
+    <>
+      <div className="max-w-[1100px] mx-auto px-6 pt-8">
+        <SectionHeading
+          title="Prieskumy verejnej mienky"
+          subtitle={`${polls.length} prieskumov zo Wikipedie — posledný: ${latest?.agency ?? "N/A"}, ${latest?.publishedDate ?? ""}`}
+        />
+      </div>
 
       <PrieskumyClient
         chartData={chartData}
@@ -81,6 +83,6 @@ export default async function PrieskumyPage() {
         agencies={agencies}
         partyMeta={partyMeta}
       />
-    </div>
+    </>
   );
 }
