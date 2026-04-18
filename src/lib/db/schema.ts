@@ -353,3 +353,23 @@ export const predictionNarrative = sqliteTable("prediction_narrative", {
   narrative: text("narrative").notNull(),
   generatedAt: integer("generated_at").notNull(), // unix ms
 });
+
+// ─── Candidates (parliamentary candidate lists) ───────────
+
+export const candidates = sqliteTable(
+  "candidates",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    partyId: text("party_id")
+      .notNull()
+      .references(() => parties.id),
+    name: text("name").notNull(),
+    listRank: integer("list_rank").notNull(),
+    role: text("role"),              // e.g. "Predseda vlády", "Minister vnútra"
+    portraitUrl: text("portrait_url"), // e.g. "/portraits/smer-fico.jpg"
+  },
+  (table) => [
+    index("candidates_party_id_idx").on(table.partyId),
+    uniqueIndex("candidates_party_rank_unique").on(table.partyId, table.listRank),
+  ]
+);

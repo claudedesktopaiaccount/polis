@@ -43,6 +43,13 @@
       "when": 1775379295164,
       "tag": "0005_material_skrulls",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1776540406731,
+      "tag": "0006_gifted_obadiah_stane",
+      "breakpoints": true
     }
   ]
 }
