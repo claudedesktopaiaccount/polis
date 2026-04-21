@@ -99,7 +99,7 @@ export default function Navbar() {
                 ) : (
                   <Link
                     href="/prihlasenie"
-                    className="text-[14px] text-ink border border-border-strong rounded-[6px] px-3 py-[5px] hover:bg-hover transition-colors"
+                    className="text-[14px] text-ink border border-border-strong rounded-md px-3 py-[5px] hover:bg-hover transition-colors"
                   >
                     Prihlásiť sa
                   </Link>
@@ -143,7 +143,7 @@ export default function Navbar() {
 
         {/* Mobile drawer */}
         {open && (
-          <nav className="lg:hidden bg-white border-t border-[#e8e3db] px-4 pb-4">
+          <nav className="lg:hidden bg-card border-t border-border px-4 pb-4">
             {NAV_LINKS.map((item) => (
               <Link
                 key={item.href}
@@ -192,13 +192,13 @@ export default function Navbar() {
       </header>
 
       {/* Mobile bottom tab bar */}
-      <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#e8e3db] flex justify-around py-2 lg:hidden z-50">
+      <nav className="fixed bottom-0 left-0 right-0 bg-card border-t border-border flex justify-around py-2 lg:hidden z-50">
         {NAV_LINKS.slice(0, 4).map((item) => (
           <Link
             key={item.href}
             href={item.href}
             className={`flex flex-col items-center text-[11px] py-1 ${
-              pathname === item.href ? "text-[#1a1a1a] font-semibold" : "text-[#888888]"
+              pathname === item.href ? "text-ink font-semibold" : "text-muted"
             }`}
           >
             <span>{item.label}</span>

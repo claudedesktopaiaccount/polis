@@ -21,6 +21,10 @@
   --color-btn-primary: var(--btn-primary-bg);
   --color-btn-primary-text: var(--btn-primary-text);
   --color-footer: var(--footer-bg);
+  --color-hover: var(--hover);
+  --color-surface: var(--surface);
+  --color-text: var(--text);
+  --color-divider: var(--divider);
 
   /* Party colours */
   --color-party-ps: #1a6eb5;
@@ -71,6 +75,34 @@
   --text: #444444;
   --divider: #e8e3db;
   --hover: #f0ede6;
+}
+
+.dark {
+  --bg-page: #0f0f0f;
+  --bg-card: #1a1a1a;
+  --bg-subtle: #242424;
+  --bg-muted: #141414;
+  --border-color: #2a2a2a;
+  --border-strong: #383838;
+  --text-primary: #f0ede6;
+  --text-secondary: #b0a898;
+  --text-muted: #6b6560;
+  --text-faint: #4a4540;
+  --text-xfaint: #3a3530;
+  --accent-blue: #4d9de0;
+  --btn-primary-bg: #f0ede6;
+  --btn-primary-text: #0f0f0f;
+  --footer-bg: #0a0a0a;
+
+  /* Legacy aliases */
+  --ink: #f0ede6;
+  --paper: #0f0f0f;
+  --surface: #1a1a1a;
+  --text: #b0a898;
+  --divider: #2a2a2a;
+  --hover: #242424;
+
+  color-scheme: dark;
 }
 
 body {
@@ -161,14 +193,17 @@ h1, h2, h3 {
   .animate-count { animation: none; }
 }
 
-/* 3px thick border utility */
-.border-b-3 {
+/* Custom utilities — registered so Tailwind handles specificity correctly */
+@utility border-b-3 {
   border-bottom-width: 3px;
 }
 
-/* Parliament grid: 15 columns */
-.grid-cols-15 {
+@utility grid-cols-15 {
   grid-template-columns: repeat(15, minmax(0, 1fr));
+}
+
+@utility max-w-content {
+  max-width: var(--max-width-content);
 }
 
 /* === View Transitions === */

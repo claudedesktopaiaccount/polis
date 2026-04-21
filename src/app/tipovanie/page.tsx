@@ -64,10 +64,10 @@ export default async function TipovaniePage() {
   }
 
   return (
-    <div className="max-w-[1100px] mx-auto px-6 py-8">
+    <div className="max-w-content mx-auto px-6 py-8">
       <div className="mb-6">
-        <h1 className="text-[28px] font-extrabold text-[#1a1a1a]">Tipovanie</h1>
-        <p className="text-[11px] text-[#888888] uppercase tracking-[0.1em] mt-1">
+        <h1 className="text-[28px] font-extrabold text-ink">Tipovanie</h1>
+        <p className="text-[11px] text-muted uppercase tracking-[0.1em] mt-1">
           TIPNITE SI, KTO VYHRÁ VOĽBY — POROVNAJTE SVOJ TIP S HLASOM ĽUDU
         </p>
       </div>

@@ -36,8 +36,8 @@ export default function PredikciaClient({
     <>
       {/* AI narrative */}
       {narrative && (
-        <div className="mb-6 pl-4 border-l-[3px] border-[#1a6eb5]">
-          <p className="font-serif italic text-base text-[#1a1a1a] leading-relaxed">{narrative}</p>
+        <div className="mb-6 pl-4 border-l-[3px] border-accent">
+          <p className="font-serif italic text-base text-ink leading-relaxed">{narrative}</p>
         </div>
       )}
 
@@ -51,10 +51,10 @@ export default function PredikciaClient({
           {/* Winner card */}
           {winner && winnerParty && (
             <div
-              className="bg-white border border-[#e8e3db] rounded-[8px] p-4 flex items-center gap-4"
+              className="bg-card border border-border rounded-lg p-4 flex items-center gap-4"
               style={{ borderLeft: `4px solid ${winnerParty.color}` }}
             >
-              <div className="text-[10px] font-bold text-[#888] uppercase tracking-[0.1em] bg-[#f0ede6] border border-[#e8e3db] px-2 py-0.5 rounded-[3px] flex-shrink-0">
+              <div className="text-[10px] font-bold text-muted uppercase tracking-[0.1em] bg-subtle border border-border px-2 py-0.5 rounded-[3px] flex-shrink-0">
                 #1 · Víťaz
               </div>
               <div
@@ -70,7 +70,7 @@ export default function PredikciaClient({
                 >
                   {winner.meanPct.toFixed(1)}%
                 </div>
-                <div className="text-[11px] text-[#888] mt-0.5">
+                <div className="text-[11px] text-muted mt-0.5">
                   {seatMap[winner.partyId] ?? 0} mandátov · {(winner.winProbability * 100).toFixed(0)} % šanca
                 </div>
               </div>
@@ -90,17 +90,17 @@ export default function PredikciaClient({
               return (
                 <div
                   key={result.partyId}
-                  className={`bg-white border border-[#e8e3db] rounded-[8px] overflow-hidden flex items-center ${!inParliament ? "opacity-40" : ""}`}
+                  className={`bg-card border border-border rounded-lg overflow-hidden flex items-center ${!inParliament ? "opacity-40" : ""}`}
                 >
                   <div className="w-1 self-stretch flex-shrink-0" style={{ background: party?.color }} />
                   <div className="flex-1 px-3 py-2.5 flex items-center gap-2.5">
-                    <span className="text-[11px] text-[#aaa] font-bold w-3.5 flex-shrink-0">
+                    <span className="text-[11px] text-faint font-bold w-3.5 flex-shrink-0">
                       {inParliament ? rank : "—"}
                     </span>
-                    <span className="text-[13px] font-bold text-[#1a1a1a] flex-1 min-w-0 truncate">
+                    <span className="text-[13px] font-bold text-ink flex-1 min-w-0 truncate">
                       {party?.abbreviation ?? party?.name}
                     </span>
-                    <div className="flex-[2] h-[5px] bg-[#f0ede6] rounded-full overflow-hidden relative">
+                    <div className="flex-[2] h-[5px] bg-subtle rounded-full overflow-hidden relative">
                       <div
                         className="absolute inset-y-0 left-0 rounded-full"
                         style={{ width: `${barWidth}%`, background: party?.color }}
@@ -112,7 +112,7 @@ export default function PredikciaClient({
                     >
                       {result.meanPct.toFixed(1)}%
                     </span>
-                    <span className="text-[11px] text-[#888] w-12 text-right flex-shrink-0">
+                    <span className="text-[11px] text-muted w-12 text-right flex-shrink-0">
                       {seats > 0 ? `${seats} m.` : "—"}
                     </span>
                     <span
@@ -132,12 +132,12 @@ export default function PredikciaClient({
           </div>
 
           {/* Confidence note */}
-          <div className="bg-[#f0ede6] border border-[#e8e3db] rounded-[6px] px-3.5 py-2.5 text-[12px] text-[#444] leading-[1.65]">
-            <strong className="text-[#1a1a1a] font-semibold">Ako čítať percentá:</strong>{" "}
+          <div className="bg-subtle border border-border rounded-md px-3.5 py-2.5 text-[12px] text-secondary leading-[1.65]">
+            <strong className="text-ink font-semibold">Ako čítať percentá:</strong>{" "}
             Čísla sú priemery naprieč 10 000 simulovanými voľbami. Skutočný výsledok bude s 90 % pravdepodobnosťou v intervale uvedenom v detailnej tabuľke nižšie.
           </div>
 
-          <div className="text-[11px] text-[#aaa] leading-[1.7]">
+          <div className="text-[11px] text-faint leading-[1.7]">
             Na základe {pollCount} prieskum{pollCount === 1 ? "u" : "ov"}{newestPollDate ? ` · posledný ${newestPollDate}` : ""} · interval spoľahlivosti 90. percentil · mandáty metódou D&apos;Hondt · 5 % prah
           </div>
 

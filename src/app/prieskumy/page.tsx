@@ -70,7 +70,7 @@ export default async function PrieskumyPage() {
 
   return (
     <>
-      <div className="max-w-[1100px] mx-auto px-6 pt-8">
+      <div className="max-w-content mx-auto px-6 pt-8">
         <SectionHeading
           title="Prieskumy verejnej mienky"
           subtitle={`${polls.length} prieskumov zo Wikipedie — posledný: ${latest?.agency ?? "N/A"}, ${latest?.publishedDate ?? ""}`}

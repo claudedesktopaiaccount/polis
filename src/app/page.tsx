@@ -16,14 +16,14 @@ function PredikciaMini() {
     <div className="p-4 space-y-2">
       {bars.map((b) => (
         <div key={b.label} className="flex items-center gap-2">
-          <span className="text-[11px] text-[#888888] w-10 shrink-0">{b.label}</span>
+          <span className="text-[11px] text-muted w-10 shrink-0">{b.label}</span>
           <div className="flex-1 h-2 bg-[#eeeeee] rounded-[4px] overflow-hidden">
             <div
               className="h-full rounded-[4px]"
               style={{ width: `${b.pct}%`, background: b.color }}
             />
           </div>
-          <span className="text-[11px] font-semibold text-[#1a1a1a] w-8 text-right">
+          <span className="text-[11px] font-semibold text-ink w-8 text-right">
             {b.pct}%
           </span>
         </div>
@@ -134,25 +134,25 @@ export default async function Home() {
     <main>
       {/* Hero */}
       <section
-        className="border-b border-[#e8e3db] text-center"
+        className="border-b border-border text-center"
         style={{ background: "#f0ede6", padding: "64px 24px 56px" }}
       >
-        <div className="max-w-[1100px] mx-auto">
-          <p className="text-[11px] text-[#999999] tracking-[0.12em] font-semibold uppercase mb-4">
+        <div className="max-w-content mx-auto">
+          <p className="text-[11px] text-muted tracking-[0.12em] font-semibold uppercase mb-4">
             SLOVENSKÉ VOĽBY 2026
           </p>
           <h1
-            className="text-[42px] font-extrabold text-[#1a1a1a] mb-4 leading-[1.15] [text-wrap:balance]"
+            className="text-[42px] font-extrabold text-ink mb-4 leading-[1.15] [text-wrap:balance]"
             style={{ letterSpacing: "-1px" }}
           >
             Kde stojíš v slovenskej politike?
           </h1>
-          <p className="text-[16px] text-[#666666] mb-8 leading-[1.6] max-w-lg mx-auto">
+          <p className="text-[16px] text-secondary mb-8 leading-[1.6] max-w-lg mx-auto">
             20 otázok. 2 minúty. Zisti, ktoré strany zastupujú tvoje hodnoty.
           </p>
           <Link
             href="/volebny-kalkulator"
-            className="inline-block bg-[#1a1a1a] text-white text-[15px] font-semibold rounded-[8px] hover:opacity-90 transition-opacity"
+            className="inline-block bg-ink text-white text-[15px] font-semibold rounded-lg hover:opacity-90 transition-opacity"
             style={{ padding: "13px 28px" }}
           >
             Spustiť kalkulačku →
@@ -170,7 +170,7 @@ export default async function Home() {
       )}
 
       {/* Feature cards */}
-      <section className="max-w-[1100px] mx-auto" style={{ padding: "48px 24px" }}>
+      <section className="max-w-content mx-auto" style={{ padding: "48px 24px" }}>
         <div
           className="grid gap-5"
           style={{ gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))" }}
@@ -179,24 +179,24 @@ export default async function Home() {
             <Link
               key={card.href}
               href={card.href}
-              className="group block bg-white border border-[#e8e3db] rounded-[12px] overflow-hidden transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)]"
+              className="group block bg-card border border-border rounded-[12px] overflow-hidden transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)]"
             >
               {/* Preview area */}
               <div
-                className="border-b border-[#e8e3db] min-h-[90px] flex items-center justify-center"
+                className="border-b border-border min-h-[90px] flex items-center justify-center"
                 style={{ background: "#f8f5f0" }}
               >
                 {card.preview}
               </div>
               {/* Content */}
               <div style={{ padding: "20px 22px 22px" }}>
-                <h3 className="text-[17px] font-bold text-[#1a1a1a] mb-2">
+                <h3 className="text-[17px] font-bold text-ink mb-2">
                   {card.title}
                 </h3>
-                <p className="text-[13px] text-[#666666] leading-[1.55] mb-3">
+                <p className="text-[13px] text-secondary leading-[1.55] mb-3">
                   {card.desc}
                 </p>
-                <span className="text-[13px] font-semibold text-[#1a6eb5]">
+                <span className="text-[13px] font-semibold text-accent">
                   Otvoriť →
                 </span>
               </div>

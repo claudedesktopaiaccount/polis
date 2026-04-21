@@ -67,21 +67,21 @@ export default function KoalicnyClient({ pollResults }: KoalicnyClientProps) {
   }
 
   return (
-    <div className="max-w-[1100px] mx-auto px-6 py-8">
-      <div className="bg-white border border-[#e8e3db] rounded-[12px] overflow-hidden">
+    <div className="max-w-content mx-auto px-6 py-8">
+      <div className="bg-card border border-border rounded-[12px] overflow-hidden">
 
         {/* Arc area: seat count + hemicycle */}
         <div className="flex gap-6 p-6 pb-0">
           {/* Left col: seat count */}
           <div className="w-[160px] shrink-0">
-            <p className="text-[11px] text-[#bbbbbb] uppercase tracking-[0.1em] mb-2">
+            <p className="text-[11px] text-xfaint uppercase tracking-[0.1em] mb-2">
               ZLOŽENIE PARLAMENTU
             </p>
             <div className="flex items-baseline gap-1">
-              <span className="text-[40px] font-extrabold text-[#1a1a1a] leading-none">
+              <span className="text-[40px] font-extrabold text-ink leading-none">
                 {coalitionSeats}
               </span>
-              <span className="text-[20px] text-[#bbbbbb]">/{MAJORITY}</span>
+              <span className="text-[20px] text-xfaint">/{MAJORITY}</span>
             </div>
             <div
               className="mt-2 text-[13px] font-semibold"
@@ -102,49 +102,49 @@ export default function KoalicnyClient({ pollResults }: KoalicnyClientProps) {
         </div>
 
         {/* Share row */}
-        <div className="flex items-center gap-2 px-6 py-3 border-t border-[#e8e3db] mt-4 flex-wrap">
-          <span className="text-[11px] text-[#888888] uppercase tracking-[0.08em] font-semibold mr-2">
+        <div className="flex items-center gap-2 px-6 py-3 border-t border-border mt-4 flex-wrap">
+          <span className="text-[11px] text-muted uppercase tracking-[0.08em] font-semibold mr-2">
             ZDIEĽAŤ
           </span>
           {["Facebook", "X", "LinkedIn"].map((btn) => (
             <button
               key={btn}
-              className="px-3 py-1.5 text-[12px] font-medium text-[#444444] bg-[#f8f5f0] border border-[#e8e3db] rounded-[6px] hover:border-[#d0cbc3] transition-colors"
+              className="px-3 py-1.5 text-[12px] font-medium text-secondary bg-page border border-border rounded-md hover:border-border-strong transition-colors"
             >
               {btn}
             </button>
           ))}
           <button
             onClick={handleCopyUrl}
-            className="px-3 py-1.5 text-[12px] font-medium text-[#444444] bg-[#f8f5f0] border border-[#e8e3db] rounded-[6px] hover:border-[#d0cbc3] transition-colors"
+            className="px-3 py-1.5 text-[12px] font-medium text-secondary bg-page border border-border rounded-md hover:border-border-strong transition-colors"
           >
             Kopírovať odkaz
           </button>
         </div>
 
         {/* Preset pills row */}
-        <div className="flex gap-2 px-6 py-3 border-t border-[#e8e3db] flex-wrap">
+        <div className="flex gap-2 px-6 py-3 border-t border-border flex-wrap">
           {PRESETS.map((preset) => (
             <button
               key={preset.label}
               onClick={() => applyPreset(preset.parties)}
-              className="px-4 py-1.5 text-[13px] font-medium text-[#1a1a1a] border border-[#d0cbc3] rounded-[20px] hover:bg-[#f0ede6] transition-colors"
+              className="px-4 py-1.5 text-[13px] font-medium text-ink border border-border-strong rounded-[20px] hover:bg-subtle transition-colors"
             >
               {preset.label}
             </button>
           ))}
           <button
             onClick={() => setSelected(new Set())}
-            className="px-4 py-1.5 text-[13px] font-medium text-[#888888] border border-[#e8e3db] rounded-[20px] hover:bg-[#f0ede6] transition-colors"
+            className="px-4 py-1.5 text-[13px] font-medium text-muted border border-border rounded-[20px] hover:bg-subtle transition-colors"
           >
             Zmazať výber
           </button>
         </div>
 
         {/* Party table */}
-        <table className="w-full border-t border-[#e8e3db]" role="group" aria-label="Výber strán pre koalíciu">
+        <table className="w-full border-t border-border" role="group" aria-label="Výber strán pre koalíciu">
           <thead>
-            <tr className="text-[11px] text-[#888888] uppercase tracking-[0.08em]">
+            <tr className="text-[11px] text-muted uppercase tracking-[0.08em]">
               <th className="px-6 py-3 text-left w-10"></th>
               <th className="px-2 py-3 text-left">STRANA</th>
               <th className="px-4 py-3 text-right">%</th>
@@ -162,11 +162,11 @@ export default function KoalicnyClient({ pollResults }: KoalicnyClientProps) {
                 <tr
                   key={party.id}
                   onClick={() => isInParliament && toggleParty(party.id)}
-                  className={`border-t border-[#e8e3db] transition-colors ${
+                  className={`border-t border-border transition-colors ${
                     !isInParliament
                       ? "opacity-40 cursor-not-allowed"
                       : "cursor-pointer"
-                  } ${isSelected ? "bg-[#f0f7ff]" : isInParliament ? "hover:bg-[#f8f5f0]" : ""}`}
+                  } ${isSelected ? "bg-[#f0f7ff]" : isInParliament ? "hover:bg-page" : ""}`}
                 >
                   <td className="px-6 py-3">
                     <div
@@ -189,7 +189,7 @@ export default function KoalicnyClient({ pollResults }: KoalicnyClientProps) {
                       )}
                     </div>
                   </td>
-                  <td className="px-2 py-3 text-[14px] font-medium text-[#1a1a1a]">
+                  <td className="px-2 py-3 text-[14px] font-medium text-ink">
                     <div className="flex items-center gap-2">
                       <div
                         className="w-3 h-3 rounded-[2px] shrink-0"
@@ -198,10 +198,10 @@ export default function KoalicnyClient({ pollResults }: KoalicnyClientProps) {
                       {party.name}
                     </div>
                   </td>
-                  <td className="px-4 py-3 text-[14px] text-right text-[#444444]">
+                  <td className="px-4 py-3 text-[14px] text-right text-secondary">
                     {pct.toFixed(1)}%
                   </td>
-                  <td className="px-6 py-3 text-[14px] font-semibold text-right text-[#1a1a1a]">
+                  <td className="px-6 py-3 text-[14px] font-semibold text-right text-ink">
                     {seats}
                   </td>
                 </tr>
