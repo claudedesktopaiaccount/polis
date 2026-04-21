@@ -118,12 +118,12 @@ export default function PrieskumyClient({
   };
 
   return (
-    <div className="max-w-[1100px] mx-auto px-6 py-8">
+    <div className="max-w-content mx-auto px-6 py-8">
       <div className="flex gap-10">
         {/* Sidebar 160px */}
         <aside className="w-[160px] shrink-0 sticky top-[52px] self-start">
           <div className="mb-6">
-            <p className="text-[11px] text-[#888888] tracking-[0.1em] uppercase font-semibold mb-2">
+            <p className="text-[11px] text-muted tracking-[0.1em] uppercase font-semibold mb-2">
               AGENTÚRY
             </p>
             <div className="space-y-2">
@@ -142,7 +142,7 @@ export default function PrieskumyClient({
           </div>
 
           <div className="mb-6">
-            <p className="text-[11px] text-[#888888] tracking-[0.1em] uppercase font-semibold mt-5 mb-2">
+            <p className="text-[11px] text-muted tracking-[0.1em] uppercase font-semibold mt-5 mb-2">
               ČASOVÉ OBDOBIE
             </p>
             <div>
@@ -152,8 +152,8 @@ export default function PrieskumyClient({
                   onClick={() => setTimeRange(range.months)}
                   className={
                     timeRange === range.months
-                      ? "w-full text-left px-3 py-2 text-[13px] font-medium bg-[#1a1a1a] text-white rounded-[6px] mb-1"
-                      : "w-full text-left px-3 py-2 text-[13px] font-medium text-[#444444] hover:bg-[#f0ede6] rounded-[6px] mb-1 transition-colors"
+                      ? "w-full text-left px-3 py-2 text-[13px] font-medium bg-ink text-white rounded-md mb-1"
+                      : "w-full text-left px-3 py-2 text-[13px] font-medium text-secondary hover:bg-subtle rounded-md mb-1 transition-colors"
                   }
                 >
                   {range.label}
@@ -176,7 +176,7 @@ export default function PrieskumyClient({
         {/* Main content */}
         <div className="flex-1 min-w-0">
           {/* Tabs — underline style */}
-          <div className="flex gap-0 border-b border-[#e8e3db] mb-5">
+          <div className="flex gap-0 border-b border-border mb-5">
             {(["polls", "model", "crowd"] as const).map((mode) => {
               const label = mode === "polls" ? "Prieskumy" : mode === "model" ? "Model" : "Dav";
               return (
@@ -185,8 +185,8 @@ export default function PrieskumyClient({
                   onClick={() => setViewMode(mode)}
                   className={`px-4 py-2 text-[14px] transition-colors ${
                     viewMode === mode
-                      ? "font-medium text-[#1a1a1a] border-b-2 border-[#1a1a1a] -mb-px"
-                      : "text-[#444444] hover:text-[#1a1a1a]"
+                      ? "font-medium text-ink border-b-2 border-ink -mb-px"
+                      : "text-secondary hover:text-ink"
                   }`}
                 >
                   {label}
@@ -196,7 +196,7 @@ export default function PrieskumyClient({
           </div>
 
           {/* Chart card */}
-          <div className="bg-white border border-[#e8e3db] rounded-[10px] p-[22px] mb-5">
+          <div className="bg-card border border-border rounded-[10px] p-[22px] mb-5">
             {viewMode === "polls" && (
               <>
                 <h3 className="font-serif text-xl font-bold text-ink mb-1">
@@ -228,14 +228,14 @@ export default function PrieskumyClient({
             )}
 
             {/* Share buttons row */}
-            <div className="flex items-center gap-2 mt-4 pt-4 border-t border-[#e8e3db]">
-              <span className="text-[11px] text-[#888888] uppercase tracking-[0.08em] font-semibold mr-2">
+            <div className="flex items-center gap-2 mt-4 pt-4 border-t border-border">
+              <span className="text-[11px] text-muted uppercase tracking-[0.08em] font-semibold mr-2">
                 ZDIEĽAŤ
               </span>
               {["Facebook", "X", "LinkedIn", "Kopírovať odkaz"].map((btn) => (
                 <button
                   key={btn}
-                  className="px-3 py-1.5 text-[12px] font-medium text-[#444444] bg-[#f8f5f0] border border-[#e8e3db] rounded-[6px] hover:border-[#d0cbc3] transition-colors"
+                  className="px-3 py-1.5 text-[12px] font-medium text-secondary bg-page border border-border rounded-md hover:border-border-strong transition-colors"
                 >
                   {btn}
                 </button>
@@ -244,7 +244,7 @@ export default function PrieskumyClient({
           </div>
 
           {/* Raw data table card */}
-          <div className="bg-white border border-[#e8e3db] rounded-[10px] p-[22px]">
+          <div className="bg-card border border-border rounded-[10px] p-[22px]">
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-serif text-xl font-bold text-ink">Surové dáta</h3>
               <button

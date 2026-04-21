@@ -74,13 +74,13 @@ export default async function PredikciaPage() {
   }
 
   return (
-    <div className="max-w-[1100px] mx-auto px-6 py-8">
+    <div className="max-w-content mx-auto px-6 py-8">
       {/* Page header */}
       <div className="mb-6">
-        <h1 className="text-[28px] font-extrabold text-[#1a1a1a]" style={{ letterSpacing: "-0.5px" }}>
+        <h1 className="text-[28px] font-extrabold text-ink" style={{ letterSpacing: "-0.5px" }}>
           Predikcia volieb
         </h1>
-        <p className="text-[13px] text-[#888888] uppercase tracking-[0.08em] mt-1">
+        <p className="text-[13px] text-muted uppercase tracking-[0.08em] mt-1">
           MONTE CARLO SIMULÁCIA (10 000 ITERÁCIÍ) NA ZÁKLADE {pollCount} PRIESKUM{pollCount === 1 ? "U" : "OV"}
         </p>
       </div>

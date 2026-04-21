@@ -113,8 +113,8 @@ export default function TipovanieClient({ initialCrowd, initialTotalBets, leader
     <>
       <div className="grid gap-6" style={{ gridTemplateColumns: "1fr 1fr" }}>
         {/* Left: Voting panel */}
-        <div className="bg-white border border-[#e8e3db] rounded-[12px] p-5">
-          <h2 className="text-[18px] font-bold text-[#1a1a1a] mb-4">Kto vyhrá voľby?</h2>
+        <div className="bg-card border border-border rounded-[12px] p-5">
+          <h2 className="text-[18px] font-bold text-ink mb-4">Kto vyhrá voľby?</h2>
 
           {!submitted ? (
             <>
@@ -136,8 +136,8 @@ export default function TipovanieClient({ initialCrowd, initialTotalBets, leader
                       }}
                     >
                       <div className="w-2.5 h-2.5 rounded-[2px] shrink-0" style={{ background: party.color }} />
-                      <span className="text-[14px] font-medium text-[#1a1a1a] flex-1 text-left">{party.name}</span>
-                      <span className="text-[11px] text-[#aaaaaa]">{party.leader}</span>
+                      <span className="text-[14px] font-medium text-ink flex-1 text-left">{party.name}</span>
+                      <span className="text-[11px] text-faint">{party.leader}</span>
                       {isSelected && (
                         <svg className="w-4 h-4 shrink-0" style={{ color: party.color }} fill="currentColor" viewBox="0 0 20 20">
                           <circle cx="10" cy="10" r="9" fill="currentColor" opacity="0.15" />
@@ -168,7 +168,7 @@ export default function TipovanieClient({ initialCrowd, initialTotalBets, leader
                   <div className="mt-3">
                     <button
                       onClick={() => setShowAdvanced(!showAdvanced)}
-                      className="text-[11px] text-[#888888] hover:text-[#1a1a1a] underline transition-colors"
+                      className="text-[11px] text-muted hover:text-ink underline transition-colors"
                     >
                       {showAdvanced ? "Skryť rozšírené tipovanie" : "Rozšírené tipovanie (percentá, koalícia)"}
                     </button>
@@ -176,8 +176,8 @@ export default function TipovanieClient({ initialCrowd, initialTotalBets, leader
                     {showAdvanced && (
                       <div className="mt-4 space-y-4">
                         {/* Percentage predictions */}
-                        <div className="border border-[#e8e3db] rounded-[8px] p-4">
-                          <h4 className="text-[11px] font-semibold uppercase tracking-wider text-[#444444] mb-3">
+                        <div className="border border-border rounded-lg p-4">
+                          <h4 className="text-[11px] font-semibold uppercase tracking-wider text-secondary mb-3">
                             Tipnite percentá strán
                           </h4>
                           <div className="grid grid-cols-2 gap-2">
@@ -198,7 +198,7 @@ export default function TipovanieClient({ initialCrowd, initialTotalBets, leader
                                       [party.id]: e.target.value,
                                     }))
                                   }
-                                  className="w-16 px-2 py-1 text-[11px] text-right border border-[#e8e3db] rounded-[4px] bg-transparent tabular-nums focus:border-[#1a1a1a] focus:outline-none"
+                                  className="w-16 px-2 py-1 text-[11px] text-right border border-border rounded-[4px] bg-transparent tabular-nums focus:border-ink focus:outline-none"
                                 />
                               </div>
                             ))}
@@ -206,8 +206,8 @@ export default function TipovanieClient({ initialCrowd, initialTotalBets, leader
                         </div>
 
                         {/* Coalition prediction */}
-                        <div className="border border-[#e8e3db] rounded-[8px] p-4">
-                          <h4 className="text-[11px] font-semibold uppercase tracking-wider text-[#444444] mb-3">
+                        <div className="border border-border rounded-lg p-4">
+                          <h4 className="text-[11px] font-semibold uppercase tracking-wider text-secondary mb-3">
                             Tipnite koalíciu
                           </h4>
                           <div className="flex flex-wrap gap-2">
@@ -238,7 +238,7 @@ export default function TipovanieClient({ initialCrowd, initialTotalBets, leader
                             })}
                           </div>
                           {coalitionPick.size > 0 && (
-                            <p className="text-[11px] text-[#aaaaaa] mt-2">
+                            <p className="text-[11px] text-faint mt-2">
                               {coalitionPick.size} {coalitionPick.size === 1 ? "strana" : coalitionPick.size < 5 ? "strany" : "strán"}
                             </p>
                           )}
@@ -256,15 +256,15 @@ export default function TipovanieClient({ initialCrowd, initialTotalBets, leader
                 <span>{alreadyVotedParty ? "Už ste tipovali." : "Váš tip bol zaznamenaný."}</span>
               </div>
               <div className="mt-4 text-center">
-                <p className="text-[13px] text-[#444444]">
+                <p className="text-[13px] text-secondary">
                   Tipujete výhru:{" "}
                   <strong style={{ color: selectedParty?.color }}>{selectedParty?.name}</strong>
                 </p>
                 {user ? (
-                  <p className="text-[11px] text-[#aaaaaa] mt-2">Prihlásený ako {user.displayName}</p>
+                  <p className="text-[11px] text-faint mt-2">Prihlásený ako {user.displayName}</p>
                 ) : (
-                  <p className="text-[11px] text-[#888888] mt-3">
-                    <Link href="/prihlasenie" className="underline hover:text-[#1a1a1a]">
+                  <p className="text-[11px] text-muted mt-3">
+                    <Link href="/prihlasenie" className="underline hover:text-ink">
                       Prihláste sa
                     </Link>{" "}
                     pre uloženie tipu naprieč zariadeniami
@@ -277,7 +277,7 @@ export default function TipovanieClient({ initialCrowd, initialTotalBets, leader
                 />
                 <Link
                   href="/tipovanie/rebricek"
-                  className="inline-block mt-3 text-[12px] text-[#888888] hover:text-[#1a1a1a] underline"
+                  className="inline-block mt-3 text-[12px] text-muted hover:text-ink underline"
                 >
                   Pozrite si rebríček predpovedí →
                 </Link>
@@ -287,11 +287,11 @@ export default function TipovanieClient({ initialCrowd, initialTotalBets, leader
         </div>
 
         {/* Right: Community results */}
-        <div className="bg-white border border-[#e8e3db] rounded-[12px] p-5">
+        <div className="bg-card border border-border rounded-[12px] p-5">
           <div className="flex items-baseline justify-between mb-4">
-            <h2 className="text-[15px] font-semibold text-[#444444]">Hlas ľudu</h2>
+            <h2 className="text-[15px] font-semibold text-secondary">Hlas ľudu</h2>
             {totalBets > 0 && (
-              <span className="text-[11px] text-[#aaaaaa] tabular-nums">
+              <span className="text-[11px] text-faint tabular-nums">
                 {totalBets.toLocaleString("sk-SK")} tipov
               </span>
             )}
@@ -305,7 +305,7 @@ export default function TipovanieClient({ initialCrowd, initialTotalBets, leader
                 <circle cx="31" cy="21" r="3" fill="#d0cbc3" />
                 <path d="M16 32c2-3 14-3 16 0" stroke="#d0cbc3" strokeWidth="2" strokeLinecap="round" />
               </svg>
-              <p className="text-[13px] text-[#888888] text-center">Najprv tipnite, potom uvidíte výsledky komunity.</p>
+              <p className="text-[13px] text-muted text-center">Najprv tipnite, potom uvidíte výsledky komunity.</p>
             </div>
           ) : (
             <div className="space-y-3">
@@ -316,7 +316,7 @@ export default function TipovanieClient({ initialCrowd, initialTotalBets, leader
                 const isMyVote = submitted && selectedWinner === item.partyId;
                 return (
                   <div key={item.partyId} className="flex items-center gap-3">
-                    <span className="text-[12px] text-[#444444] w-12 shrink-0">{party.abbreviation}</span>
+                    <span className="text-[12px] text-secondary w-12 shrink-0">{party.abbreviation}</span>
                     <div className="flex-1 h-[7px] bg-[#eeeeee] rounded-[4px] overflow-hidden">
                       <div
                         className="h-full rounded-[4px] transition-all duration-500"
@@ -327,7 +327,7 @@ export default function TipovanieClient({ initialCrowd, initialTotalBets, leader
                         }}
                       />
                     </div>
-                    <span className="text-[12px] font-semibold text-[#1a1a1a] w-10 text-right tabular-nums">
+                    <span className="text-[12px] font-semibold text-ink w-10 text-right tabular-nums">
                       {pct.toFixed(1)}%
                     </span>
                     {isMyVote && (
@@ -348,38 +348,38 @@ export default function TipovanieClient({ initialCrowd, initialTotalBets, leader
 
       {/* Leaderboard section — full width below grid */}
       {leaderboard.length > 0 && (
-        <section className="mt-8 border-t border-[#e8e3db] pt-6">
-          <h2 className="text-[20px] font-bold text-[#1a1a1a] mb-1">Rebríček prediktorov</h2>
-          <p className="text-[12px] text-[#888888] mb-4">Kto najlepšie predpovedá voľby?</p>
+        <section className="mt-8 border-t border-border pt-6">
+          <h2 className="text-[20px] font-bold text-ink mb-1">Rebríček prediktorov</h2>
+          <p className="text-[12px] text-muted mb-4">Kto najlepšie predpovedá voľby?</p>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b-2 border-[#1a1a1a] text-left">
-                  <th className="py-2 pr-3 text-[11px] font-semibold uppercase tracking-wider text-[#444444]">#</th>
-                  <th className="py-2 pr-3 text-[11px] font-semibold uppercase tracking-wider text-[#444444]">Meno</th>
-                  <th className="py-2 pr-3 text-[11px] font-semibold uppercase tracking-wider text-[#444444] text-right">Víťaz</th>
-                  <th className="py-2 pr-3 text-[11px] font-semibold uppercase tracking-wider text-[#444444] text-right">Percentá</th>
-                  <th className="py-2 pr-3 text-[11px] font-semibold uppercase tracking-wider text-[#444444] text-right">Koalícia</th>
-                  <th className="py-2 text-[11px] font-semibold uppercase tracking-wider text-[#444444] text-right">Celkom</th>
+                <tr className="border-b-2 border-ink text-left">
+                  <th className="py-2 pr-3 text-[11px] font-semibold uppercase tracking-wider text-secondary">#</th>
+                  <th className="py-2 pr-3 text-[11px] font-semibold uppercase tracking-wider text-secondary">Meno</th>
+                  <th className="py-2 pr-3 text-[11px] font-semibold uppercase tracking-wider text-secondary text-right">Víťaz</th>
+                  <th className="py-2 pr-3 text-[11px] font-semibold uppercase tracking-wider text-secondary text-right">Percentá</th>
+                  <th className="py-2 pr-3 text-[11px] font-semibold uppercase tracking-wider text-secondary text-right">Koalícia</th>
+                  <th className="py-2 text-[11px] font-semibold uppercase tracking-wider text-secondary text-right">Celkom</th>
                 </tr>
               </thead>
               <tbody>
                 {leaderboard.map((e) => (
-                  <tr key={e.rank} className="border-b border-[#e8e3db] hover:bg-[#faf9f7] transition-colors">
-                    <td className="py-2.5 pr-3 text-[12px] font-mono text-[#888888]">{e.rank}.</td>
-                    <td className="py-2.5 pr-3 text-[13px] text-[#1a1a1a]">{e.displayName}</td>
-                    <td className="py-2.5 pr-3 text-[12px] tabular-nums text-right text-[#444444]">{e.winnerScore.toFixed(0)}</td>
-                    <td className="py-2.5 pr-3 text-[12px] tabular-nums text-right text-[#444444]">{e.percentageScore.toFixed(0)}</td>
-                    <td className="py-2.5 pr-3 text-[12px] tabular-nums text-right text-[#444444]">{e.coalitionScore.toFixed(0)}</td>
-                    <td className="py-2.5 text-[12px] tabular-nums text-right font-bold text-[#1a1a1a]">{e.totalScore.toFixed(0)}</td>
+                  <tr key={e.rank} className="border-b border-border hover:bg-[#faf9f7] transition-colors">
+                    <td className="py-2.5 pr-3 text-[12px] font-mono text-muted">{e.rank}.</td>
+                    <td className="py-2.5 pr-3 text-[13px] text-ink">{e.displayName}</td>
+                    <td className="py-2.5 pr-3 text-[12px] tabular-nums text-right text-secondary">{e.winnerScore.toFixed(0)}</td>
+                    <td className="py-2.5 pr-3 text-[12px] tabular-nums text-right text-secondary">{e.percentageScore.toFixed(0)}</td>
+                    <td className="py-2.5 pr-3 text-[12px] tabular-nums text-right text-secondary">{e.coalitionScore.toFixed(0)}</td>
+                    <td className="py-2.5 text-[12px] tabular-nums text-right font-bold text-ink">{e.totalScore.toFixed(0)}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
           {!user && (
-            <div className="mt-4 p-3 rounded-[8px] bg-[#faf9f7] border border-[#e8e3db] text-[13px] text-center">
-              <Link href="/registracia" className="text-[#1a6ef5] font-medium hover:underline">
+            <div className="mt-4 p-3 rounded-lg bg-[#faf9f7] border border-border text-[13px] text-center">
+              <Link href="/registracia" className="text-accent font-medium hover:underline">
                 Zaregistruj sa
               </Link>
               {" "}a sleduj svoje skóre v rebríčku.
@@ -390,8 +390,8 @@ export default function TipovanieClient({ initialCrowd, initialTotalBets, leader
 
       {/* Crowd consensus — avg predicted percentages */}
       {crowdData.some((c) => (c.avgPct ?? 0) > 0) && (
-        <section className="mt-8 border-t border-[#e8e3db] pt-6">
-          <h2 className="text-[18px] font-bold text-[#1a1a1a] mb-4">Čo tipuje dav?</h2>
+        <section className="mt-8 border-t border-border pt-6">
+          <h2 className="text-[18px] font-bold text-ink mb-4">Čo tipuje dav?</h2>
           <div className="space-y-3">
             {[...crowdData]
               .filter((c) => (c.avgPct ?? 0) > 0)
@@ -401,7 +401,7 @@ export default function TipovanieClient({ initialCrowd, initialTotalBets, leader
                 if (!party) return null;
                 return (
                   <div key={c.partyId} className="flex items-center gap-3">
-                    <span className="w-12 text-[12px] font-semibold text-[#444444]">{party.abbreviation}</span>
+                    <span className="w-12 text-[12px] font-semibold text-secondary">{party.abbreviation}</span>
                     <div className="flex-1 h-[7px] bg-[#eeeeee] rounded-[4px] overflow-hidden">
                       <div
                         className="h-full rounded-[4px] transition-all duration-500"
@@ -411,7 +411,7 @@ export default function TipovanieClient({ initialCrowd, initialTotalBets, leader
                         }}
                       />
                     </div>
-                    <span className="text-[12px] font-bold tabular-nums w-14 text-right text-[#1a1a1a]">
+                    <span className="text-[12px] font-bold tabular-nums w-14 text-right text-ink">
                       {(c.avgPct ?? 0).toFixed(1)}%
                     </span>
                   </div>

@@ -20,25 +20,37 @@ export default function PollStrip({ parties, agency, date }: PollStripProps) {
     .slice(0, 8);
 
   return (
-    <div className="bg-white border-b border-[#e8e3db]">
-      <div className="max-w-[1100px] mx-auto px-6 py-5 flex items-center gap-6 flex-wrap">
-        <span className="text-[10px] text-[#bbbbbb] tracking-[0.12em] font-semibold uppercase shrink-0">
+    <div className="bg-card border-b border-border">
+      <div className="max-w-content mx-auto px-6 pt-4 pb-1">
+        <span className="text-[10px] text-xfaint tracking-[0.12em] font-semibold uppercase">
           AKTUÁLNE PRIESKUMY
         </span>
-        <div className="flex items-center gap-5 flex-wrap">
-          {visible.map((p) => (
-            <div key={p.partyId} className="flex items-center gap-2">
-              <div
-                className="w-7 h-7 rounded-[5px] shrink-0"
-                style={{ background: p.color }}
-              />
-              <div>
-                <span className="text-[15px] font-semibold text-[#1a1a1a]">
-                  {p.percentage.toFixed(1)}%
-                </span>
+      </div>
+      <div className="max-w-content mx-auto px-6 py-3 flex items-center gap-3 flex-wrap">
+        {visible.map((p) => (
+          <div
+            key={p.partyId}
+            className="flex items-center gap-3.5 border border-border rounded-lg px-3 py-2"
+          >
+            <div
+              className="w-9 h-9 rounded-[7px] shrink-0 flex items-center justify-center"
+              style={{ background: p.color }}
+            >
+              <span
+                className="font-bold text-white leading-none text-center"
+                style={{ fontSize: (p.abbreviation ?? p.partyId).length > 3 ? "8px" : "10px" }}
+              >
+                {p.abbreviation ?? p.partyId}
+              </span>
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <div className="text-[16px] font-bold text-ink leading-none">
+                {p.percentage.toFixed(1)}%
+              </div>
+              <div className="flex items-center gap-0.5">
                 {p.trend !== undefined && (
                   <span
-                    className="ml-1 text-[12px]"
+                    className="text-[11px]"
                     style={{
                       color: p.trend > 0 ? "#16a34a" : p.trend < 0 ? "#dc2626" : "#aaaaaa",
                     }}
@@ -46,22 +58,22 @@ export default function PollStrip({ parties, agency, date }: PollStripProps) {
                     {p.trend > 0 ? "↑" : p.trend < 0 ? "↓" : "→"}
                   </span>
                 )}
-                <span className="ml-1 text-[12px] text-[#888888]">
+                <span className="text-[11px] text-muted">
                   {p.abbreviation ?? p.partyId}
                 </span>
               </div>
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
         <a
           href="/prieskumy"
-          className="ml-auto text-[13px] font-semibold text-[#1a6eb5] shrink-0"
+          className="ml-auto text-[13px] font-semibold text-accent shrink-0"
         >
           Všetky strany →
         </a>
       </div>
-      <div className="max-w-[1100px] mx-auto px-6 pb-2">
-        <span className="text-[11px] text-[#aaaaaa]">
+      <div className="max-w-content mx-auto px-6 pb-2">
+        <span className="text-[11px] text-faint">
           Zdroj: {agency} · {date}
         </span>
       </div>

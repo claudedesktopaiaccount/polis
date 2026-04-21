@@ -71,14 +71,14 @@ export default function VolebnyKalkulatorClient({ questions: questionsProp }: Pr
         <SectionHeading title="Váš výsledok" subtitle="Na základe vašich odpovedí vám najviac vyhovuje:" />
 
         {/* Top match */}
-        <div className="bg-[#f8f5f0] rounded-[12px] p-6 flex items-center gap-5 mb-6">
+        <div className="bg-page rounded-[12px] p-6 flex items-center gap-5 mb-6">
           <div
             className="w-14 h-14 rounded-[12px] shrink-0"
             style={{ background: top.party?.color ?? "#1a6eb5" }}
           />
           <div>
-            <h2 className="text-[24px] font-extrabold text-[#1a1a1a]">{top.party?.name}</h2>
-            <p className="text-[15px] text-[#888888]">{top.score}% zhoda</p>
+            <h2 className="text-[24px] font-extrabold text-ink">{top.party?.name}</h2>
+            <p className="text-[15px] text-muted">{top.score}% zhoda</p>
           </div>
         </div>
 
@@ -98,7 +98,7 @@ export default function VolebnyKalkulatorClient({ questions: questionsProp }: Pr
                 window.open(twitterUrl, "_blank", "noopener");
               }
             }}
-            className="flex items-center gap-2 border border-[#e8e3db] bg-white px-5 py-2.5 text-sm font-semibold text-[#1a1a1a] hover:bg-[#f0ede6] transition-colors rounded-[8px]"
+            className="flex items-center gap-2 border border-border bg-card px-5 py-2.5 text-sm font-semibold text-ink hover:bg-subtle transition-colors rounded-lg"
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
@@ -113,14 +113,14 @@ export default function VolebnyKalkulatorClient({ questions: questionsProp }: Pr
         <div className="space-y-3 mb-6">
           {results.map((r) => (
             <div key={r.partyId} className="flex items-center gap-3">
-              <span className="text-[13px] text-[#444444] w-32 shrink-0">{r.party?.name}</span>
+              <span className="text-[13px] text-secondary w-32 shrink-0">{r.party?.name}</span>
               <div className="flex-1 h-[6px] bg-[#eeeeee] rounded-[3px] overflow-hidden">
                 <div
                   className="h-full rounded-[3px] transition-all duration-700"
                   style={{ width: `${r.score}%`, background: r.party?.color ?? "#1a6eb5" }}
                 />
               </div>
-              <span className="text-[13px] font-semibold w-10 text-right text-[#1a1a1a]">
+              <span className="text-[13px] font-semibold w-10 text-right text-ink">
                 {r.score}%
               </span>
             </div>
@@ -134,15 +134,15 @@ export default function VolebnyKalkulatorClient({ questions: questionsProp }: Pr
             setShowResults(false);
             setSelectedAnswer(null);
           }}
-          className="px-5 py-2.5 text-[14px] font-semibold bg-[#1a1a1a] text-white rounded-[8px]"
+          className="px-5 py-2.5 text-[14px] font-semibold bg-ink text-white rounded-lg"
         >
           Začať znova
         </button>
 
         {/* Post-quiz funnel */}
-        <div className="mt-8 border-t border-[#e8e3db] pt-6 space-y-4">
-          <div className="bg-[#f8f5f0] p-4 border border-[#e8e3db] rounded-[8px]">
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-[#888888] mb-1">Tvoja najväčšia zhoda</p>
+        <div className="mt-8 border-t border-border pt-6 space-y-4">
+          <div className="bg-page p-4 border border-border rounded-lg">
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-muted mb-1">Tvoja najväčšia zhoda</p>
             <p className="text-xl font-bold" style={{ color: top.party?.color ?? "var(--ink)" }}>
               {top.party?.name} — {top.score.toFixed(0)}%
             </p>
@@ -151,17 +151,17 @@ export default function VolebnyKalkulatorClient({ questions: questionsProp }: Pr
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <Link
               href="/prieskumy"
-              className="block p-4 border border-[#e8e3db] hover:bg-[#f8f5f0] transition-colors rounded-[8px]"
+              className="block p-4 border border-border hover:bg-page transition-colors rounded-lg"
             >
               <p className="font-semibold text-sm mb-1">Ako sa darí {top.party?.abbreviation}?</p>
-              <p className="text-xs text-[#888888]">Pozri si aktuálne prieskumy →</p>
+              <p className="text-xs text-muted">Pozri si aktuálne prieskumy →</p>
             </Link>
             <Link
               href="/tipovanie"
-              className="block p-4 border border-[#e8e3db] hover:bg-[#f8f5f0] transition-colors rounded-[8px]"
+              className="block p-4 border border-border hover:bg-page transition-colors rounded-lg"
             >
               <p className="font-semibold text-sm mb-1">Tipni si výsledok volieb</p>
-              <p className="text-xs text-[#888888]">Ako dopadnú voľby podľa teba? →</p>
+              <p className="text-xs text-muted">Ako dopadnú voľby podľa teba? →</p>
             </Link>
           </div>
         </div>
@@ -181,12 +181,12 @@ export default function VolebnyKalkulatorClient({ questions: questionsProp }: Pr
 
       {/* Progress bar */}
       <div className="mb-6">
-        <div className="flex justify-between text-[13px] text-[#aaaaaa] mb-2">
+        <div className="flex justify-between text-[13px] text-faint mb-2">
           <span>Otázka {currentQ + 1} z {questions.length}</span>
           <span>{Math.round(progress)}%</span>
         </div>
         <div
-          className="h-[3px] bg-[#f0ede6] rounded-full overflow-hidden"
+          className="h-[3px] bg-subtle rounded-full overflow-hidden"
           role="progressbar"
           aria-valuenow={Math.round(progress)}
           aria-valuemin={0}
@@ -194,7 +194,7 @@ export default function VolebnyKalkulatorClient({ questions: questionsProp }: Pr
           aria-label="Postup v dotazníku"
         >
           <div
-            className="h-full bg-[#1a1a1a] transition-all duration-300"
+            className="h-full bg-ink transition-all duration-300"
             style={{ width: `${progress}%` }}
           />
         </div>
@@ -202,11 +202,11 @@ export default function VolebnyKalkulatorClient({ questions: questionsProp }: Pr
 
       {/* Question card */}
       <div
-        className="bg-white border border-[#e8e3db] rounded-[12px] mb-4"
+        className="bg-card border border-border rounded-[12px] mb-4"
         style={{ padding: "28px 26px" }}
       >
         <h2
-          className="text-[20px] font-bold text-[#1a1a1a] mb-6 leading-[1.4] [text-wrap:balance]"
+          className="text-[20px] font-bold text-ink mb-6 leading-[1.4] [text-wrap:balance]"
           style={{ letterSpacing: "-0.3px" }}
         >
           {question.text}
@@ -236,7 +236,7 @@ export default function VolebnyKalkulatorClient({ questions: questionsProp }: Pr
       {currentQ > 0 && (
         <button
           onClick={() => setCurrentQ(currentQ - 1)}
-          className="text-sm text-[#888888] hover:text-[#1a1a1a] transition-colors"
+          className="text-sm text-muted hover:text-ink transition-colors"
         >
           ← Predchádzajúca otázka
         </button>

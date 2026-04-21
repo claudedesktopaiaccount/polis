@@ -100,7 +100,7 @@ export default function ApiPristupClient({ userKeys, isLoggedIn, justUpgraded }:
           {newRawKey && (
             <div className="border border-ink bg-ink/5 p-4 mb-4 text-sm">
               <p className="font-semibold mb-1">{"V\u00E1š nov\u00FD k\u013E\u00FA\u010D (zobraz\u00ED sa iba raz):"}</p>
-              <code className="block font-mono text-xs bg-white border border-divider p-2 break-all">
+              <code className="block font-mono text-xs bg-card border border-divider p-2 break-all">
                 {newRawKey}
               </code>
               <p className="text-ink/50 mt-2 text-xs">{"Uložte si ho \u2014 znova ho nebudete m\u00F4c\u0165 zobrazi\u0165."}</p>

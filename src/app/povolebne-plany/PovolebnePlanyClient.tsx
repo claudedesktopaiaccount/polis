@@ -5,6 +5,17 @@ import SectionHeading from "@/components/ui/SectionHeading";
 import { PARTY_LIST } from "@/lib/parties";
 import { PS_PROMISES, PS_PROGRAM_NAME, KNK_PROMISES, KNK_PROGRAM_NAME } from "@/lib/ps-promises";
 import type { PartyPromise } from "@/lib/ps-promises";
+import {
+  SMER_PROMISES, SMER_PROGRAM_NAME,
+  HLAS_PROMISES, HLAS_PROGRAM_NAME,
+  KDH_PROMISES, KDH_PROGRAM_NAME,
+  SAS_PROMISES, SAS_PROGRAM_NAME,
+  REPUBLIKA_PROMISES, REPUBLIKA_PROGRAM_NAME,
+  SNS_PROMISES, SNS_PROGRAM_NAME,
+  DEMOKRATI_PROMISES, DEMOKRATI_PROGRAM_NAME,
+  ALIANCIA_PROMISES, ALIANCIA_PROGRAM_NAME,
+  SLOVENSKO_PROMISES, SLOVENSKO_PROGRAM_NAME,
+} from "@/lib/party-promises";
 
 interface DbPartyData {
   id: string;
@@ -38,94 +49,15 @@ const PARTY_PROGRAMS: Record<string, ProgramData[]> = {
     { name: PS_PROGRAM_NAME, promises: PS_PROMISES },
     { name: KNK_PROGRAM_NAME, promises: KNK_PROMISES },
   ],
-  "smer-sd": [{
-    name: "",
-    isStub: true,
-    promises: [
-      { text: "Konsolidácia verejných financií", category: "Ekonomika", isPro: true },
-      { text: "Zachovanie sociálnych istôt", category: "Sociálne veci", isPro: true },
-      { text: "Posilnenie suverenity SR", category: "Zahraničná politika", isPro: true },
-      { text: "Boj proti nelegálnej migrácii", category: "Bezpečnosť", isPro: true },
-      { text: "Regulácia cien energií", category: "Ekonomika", isPro: true },
-    ],
-  }],
-  "hlas-sd": [{
-    name: "",
-    isStub: true,
-    promises: [
-      { text: "Zvýšenie minimálnej mzdy", category: "Sociálne veci", isPro: true },
-      { text: "Modernizácia nemocníc", category: "Zdravotníctvo", isPro: true },
-      { text: "Podpora rodín s deťmi", category: "Sociálne veci", isPro: true },
-    ],
-  }],
-  kdh: [{
-    name: "",
-    isStub: true,
-    promises: [
-      { text: "Ochrana tradičnej rodiny", category: "Sociálne veci", isPro: true },
-      { text: "Podpora vidieka a poľnohospodárstva", category: "Ekonomika", isPro: true },
-      { text: "Zvýšenie platov učiteľov", category: "Školstvo", isPro: true },
-    ],
-  }],
-  sas: [{
-    name: "",
-    isStub: true,
-    promises: [
-      { text: "Zníženie daní a odvodov", category: "Ekonomika", isPro: true },
-      { text: "Zrušenie zbytočnej byrokracie", category: "Ekonomika", isPro: true },
-      { text: "Reforma školstva podľa fínskeho modelu", category: "Školstvo", isPro: true },
-    ],
-  }],
-  republika: [{
-    name: "",
-    isStub: true,
-    promises: [
-      { text: "Ochrana národnej suverenity a odmietanie federalizácie EÚ", category: "Zahraničná politika", isPro: true },
-      { text: "Prísna migračná politika a ochrana hraníc", category: "Bezpečnosť", isPro: true },
-      { text: "Podpora tradičnej rodiny a demografický rast", category: "Sociálne veci", isPro: true },
-      { text: "Zníženie závislosti na zahraničných dodávateľoch energií", category: "Ekonomika", isPro: true },
-    ],
-  }],
-  sns: [{
-    name: "",
-    isStub: true,
-    promises: [
-      { text: "Ochrana slovenského jazyka a národnej identity", category: "Školstvo", isPro: true },
-      { text: "Posilnenie obranyschopnosti SR", category: "Bezpečnosť", isPro: true },
-      { text: "Podpora domáceho poľnohospodárstva", category: "Ekonomika", isPro: true },
-      { text: "Zachovanie tradičných hodnôt v školstve", category: "Školstvo", isPro: true },
-    ],
-  }],
-  demokrati: [{
-    name: "",
-    isStub: true,
-    promises: [
-      { text: "Posilnenie právneho štátu a nezávislosti justície", category: "Bezpečnosť", isPro: true },
-      { text: "Transparentnosť verejných financií", category: "Ekonomika", isPro: true },
-      { text: "Proeurópska zahraničná politika", category: "Zahraničná politika", isPro: true },
-      { text: "Boj proti korupcii a klientelizmu", category: "Bezpečnosť", isPro: true },
-    ],
-  }],
-  aliancia: [{
-    name: "",
-    isStub: true,
-    promises: [
-      { text: "Ochrana práv národnostných menšín", category: "Sociálne veci", isPro: true },
-      { text: "Podpora dvojjazyčného vzdelávania", category: "Školstvo", isPro: true },
-      { text: "Rozvoj regiónov a infraštruktúry na juhu Slovenska", category: "Ekonomika", isPro: true },
-      { text: "Proeurópska orientácia a spolupráca s V4", category: "Zahraničná politika", isPro: true },
-    ],
-  }],
-  slovensko: [{
-    name: "",
-    isStub: true,
-    promises: [
-      { text: "Boj proti korupcii a oligarchom", category: "Bezpečnosť", isPro: true },
-      { text: "Podpora rodín s deťmi a zvýšenie prídavkov", category: "Sociálne veci", isPro: true },
-      { text: "Reforma verejnej správy a zníženie byrokracie", category: "Ekonomika", isPro: true },
-      { text: "Dostupné bývanie pre mladé rodiny", category: "Sociálne veci", isPro: true },
-    ],
-  }],
+  "smer-sd": [{ name: SMER_PROGRAM_NAME, promises: SMER_PROMISES }],
+  "hlas-sd": [{ name: HLAS_PROGRAM_NAME, promises: HLAS_PROMISES }],
+  kdh: [{ name: KDH_PROGRAM_NAME, promises: KDH_PROMISES }],
+  sas: [{ name: SAS_PROGRAM_NAME, promises: SAS_PROMISES }],
+  republika: [{ name: REPUBLIKA_PROGRAM_NAME, promises: REPUBLIKA_PROMISES }],
+  sns: [{ name: SNS_PROGRAM_NAME, promises: SNS_PROMISES }],
+  demokrati: [{ name: DEMOKRATI_PROGRAM_NAME, promises: DEMOKRATI_PROMISES }],
+  aliancia: [{ name: ALIANCIA_PROGRAM_NAME, promises: ALIANCIA_PROMISES }],
+  slovensko: [{ name: SLOVENSKO_PROGRAM_NAME, promises: SLOVENSKO_PROMISES }],
 };
 
 // Extract unique categories from promises
@@ -240,15 +172,15 @@ function ProgramSection({
             style={{ background: partyColor, minHeight: "24px" }}
           />
           <div>
-            <h2 className="text-[18px] font-bold text-[#1a1a1a]">{name}</h2>
-            <p className="text-[12px] text-[#888888]">{promises.length} programových bodov</p>
+            <h2 className="text-[18px] font-bold text-ink">{name}</h2>
+            <p className="text-[12px] text-muted">{promises.length} programových bodov</p>
           </div>
         </div>
       )}
 
       {isStub && (
-        <div className="border border-[#e8e3db] bg-[#f8f5f0] px-4 py-3 mb-4">
-          <p className="text-xs text-[#888888]">
+        <div className="border border-border bg-page px-4 py-3 mb-4">
+          <p className="text-xs text-muted">
             Programové body tejto strany sa dopĺňajú. Vráťte sa neskôr.
           </p>
         </div>
@@ -259,16 +191,12 @@ function ProgramSection({
         {isLargeProgram ? (
           <button
             onClick={toggleExpandAll}
-            className={`px-3 py-1.5 text-xs font-medium transition-colors border ${
-              !searchQuery && categories.every((cat) => expandedCategories.has(cat))
-                ? "bg-ink text-paper border-ink"
-                : "border-[#d0cbc3] text-[#888888] hover:bg-[#f8f5f0]"
-            }`}
+            className="px-3 py-1.5 text-xs font-medium transition-colors border border-border-strong text-muted hover:bg-page focus-visible:outline-none"
           >
             {categories.every((cat) => expandedCategories.has(cat)) ? "Zbaliť všetky" : "Rozbaliť všetky"}
           </button>
         ) : (
-          <span className="px-3 py-1.5 text-xs font-medium bg-ink text-paper border border-ink">
+          <span className="px-3 py-1.5 text-xs font-medium border border-border-strong text-muted">
             Všetky ({promises.length})
           </span>
         )}
@@ -280,7 +208,7 @@ function ProgramSection({
             <button
               key={cat}
               onClick={() => isLargeProgram ? handleCategoryNav(cat) : undefined}
-              className={`px-3 py-1.5 text-xs font-medium transition-colors border border-[#d0cbc3] text-[#888888] hover:bg-[#f8f5f0] ${
+              className={`px-3 py-1.5 text-xs font-medium transition-colors border border-border-strong text-muted hover:bg-page ${
                 displayCount === 0 ? "opacity-30" : ""
               }`}
               disabled={displayCount === 0}
@@ -293,13 +221,13 @@ function ProgramSection({
 
       {/* Expandable category sections */}
       {Object.keys(grouped).length === 0 ? (
-        <div className="border border-[#e8e3db] bg-[#f8f5f0] text-center py-12">
-          <p className="text-sm text-[#888888]">
+        <div className="border border-border bg-page text-center py-12">
+          <p className="text-sm text-muted">
             {searchQuery ? "Žiadne výsledky pre hľadaný výraz" : "Žiadne sľuby v tejto kategórii"}
           </p>
         </div>
       ) : (
-        <div className="border-t border-[#e8e3db]">
+        <div className="border-t border-border">
           {categories.filter((cat) => grouped[cat]).map((cat) => {
             const items = grouped[cat];
             const expanded = isCategoryExpanded(cat);
@@ -311,22 +239,22 @@ function ProgramSection({
               <div
                 key={cat}
                 ref={(el) => { sectionRefs.current[cat] = el; }}
-                className="border-b border-[#e8e3db]"
+                className="border-b border-border"
               >
                 <button
                   onClick={() => isLargeProgram ? toggleCategory(cat) : undefined}
                   className={`w-full flex items-center justify-between py-4 px-1 text-left transition-colors ${
-                    isLargeProgram ? "hover:bg-[#f8f5f0] cursor-pointer" : "cursor-default"
+                    isLargeProgram ? "hover:bg-page cursor-pointer" : "cursor-default"
                   }`}
                 >
-                  <span className="text-[15px] font-semibold text-[#1a1a1a]">{cat}</span>
+                  <span className="text-[15px] font-semibold text-ink">{cat}</span>
                   <div className="flex items-center gap-2">
-                    <span className="text-[12px] text-[#888888]">
+                    <span className="text-[12px] text-muted">
                       {items.length} {items.length === 1 ? "bod" : items.length < 5 ? "body" : "bodov"}
                     </span>
                     {isLargeProgram && (
                       <svg
-                        className="w-4 h-4 text-[#888888]"
+                        className="w-4 h-4 text-muted"
                         style={{
                           transition: "transform .2s",
                           transform: expanded ? "rotate(180deg)" : "none",
@@ -353,7 +281,7 @@ function ProgramSection({
                           {i + 1}
                         </span>
                         <div className="flex flex-col gap-1 pt-0.5">
-                          <p className="text-[13px] text-[#444444] leading-[1.55]">{promise.text}</p>
+                          <p className="text-[13px] text-secondary leading-[1.55]">{promise.text}</p>
                           {promise.status && <StatusBadge status={promise.status} />}
                         </div>
                       </div>
@@ -372,7 +300,7 @@ function ProgramSection({
                     {showAll && items.length > PREVIEW_COUNT && (
                       <button
                         onClick={() => toggleShowAll(cat)}
-                        className="w-full py-2 text-xs font-medium text-[#888888] transition-colors hover:text-[#1a1a1a]"
+                        className="w-full py-2 text-xs font-medium text-muted transition-colors hover:text-ink"
                       >
                         Zobraziť menej
                       </button>
@@ -474,7 +402,7 @@ export default function PovolebnePlanyClient({ partiesData }: Props) {
       {hasLargeProgram && (
         <div className="relative mb-5">
           <svg
-            className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#888888] pointer-events-none"
+            className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted pointer-events-none"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -491,13 +419,13 @@ export default function PovolebnePlanyClient({ partiesData }: Props) {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder={`Hľadaj v ${totalPromises} programových bodoch...`}
-            className="w-full text-[14px] text-[#1a1a1a] bg-white border border-[#e8e3db] rounded-[8px] outline-none focus:border-[#d0cbc3] transition-colors"
+            className="w-full text-[14px] text-ink bg-card border border-border rounded-[8px] outline-none focus:border-border-strong transition-colors"
             style={{ padding: "9px 14px 9px 36px" }}
           />
           {searchQuery && (
             <button
               onClick={() => setSearchQuery("")}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-[#888888] hover:text-[#1a1a1a] transition-colors"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-ink transition-colors"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
