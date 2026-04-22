@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import Anthropic from "@anthropic-ai/sdk";
 import { predictionNarrative } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import type { Database } from "@/lib/db";
@@ -66,37 +67,25 @@ async function callClaude(
         odhadovaneMandaty: sim ? Math.round(sim.meanSeats) : 0,
       };
     })
-    .slice(0, 10); // cap payload size
+    .slice(0, 10);
 
-  const response = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: {
-      "x-api-key": apiKey,
-      "anthropic-version": "2023-06-01",
-      "content-type": "application/json",
-    },
-    body: JSON.stringify({
-      model: "claude-haiku-4-5-20251001",
-      max_tokens: 200,
-      messages: [
-        {
-          role: "user",
-          content:
-            `Si analytik slovenských volieb. Na základe nasledujúcich dát napíš 2-3 vety` +
-            ` neutrálnej, novinárskej analýzy aktuálneho stavu prieskumov a predikcie.` +
-            ` Buď stručný a faktický. Nepoužívaj hodnotové súdy.\n\n` +
-            `Dáta: ${JSON.stringify(data)}`,
-        },
-      ],
-    }),
+  const client = new Anthropic({ apiKey });
+  const response = await client.messages.create({
+    model: "claude-haiku-4-5-20251001",
+    max_tokens: 200,
+    messages: [
+      {
+        role: "user",
+        content:
+          `Si analytik slovenských volieb. Na základe nasledujúcich dát napíš 2-3 vety` +
+          ` neutrálnej, novinárskej analýzy aktuálneho stavu prieskumov a predikcie.` +
+          ` Buď stručný a faktický. Nepoužívaj hodnotové súdy.\n\n` +
+          `Dáta: ${JSON.stringify(data)}`,
+      },
+    ],
   });
 
-  if (!response.ok) {
-    throw new Error(`Anthropic API error: ${response.status}`);
-  }
-
-  const json = await response.json() as { content: Array<{ type: string; text: string }> };
-  const block = json.content[0];
+  const block = response.content[0];
   if (block?.type !== "text") throw new Error("Unexpected Claude response type");
   return block.text;
 }
