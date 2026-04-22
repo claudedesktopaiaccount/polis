@@ -27,7 +27,6 @@ interface DbPartyData {
     category: string;
     isPro: boolean;
     status: string;
-    sourceUrl: string | null;
   }>;
 }
 
@@ -142,7 +141,7 @@ export default function PovolebnePlanyClient({ partiesData }: Props) {
       <div className="space-y-10">
         {programs.map((program, i) => (
           <ProgramSection
-            key={program.name || i}
+            key={program.name || `db-${activeParty}-${i}`}
             program={program}
             partyColor={partyColor}
             searchQuery={searchQuery}
