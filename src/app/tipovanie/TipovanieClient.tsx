@@ -3,11 +3,12 @@
 import { useState } from "react";
 import { getCsrfToken } from "@/lib/csrf";
 import { useToggleSet } from "@/hooks/useToggleSet";
-import { PARTY_LIST, PARTIES } from "@/lib/parties";
-import ShareButtons from "@/components/ShareButtons";
+import { PARTIES } from "@/lib/parties";
 import { getFingerprint } from "@/lib/fingerprint";
 import { useAuth } from "@/components/AuthProvider";
 import Link from "next/link";
+import VotingPanel from "@/components/tipovanie/VotingPanel";
+import CommunityResults from "@/components/tipovanie/CommunityResults";
 
 export interface CrowdData {
   partyId: string;
@@ -60,11 +61,13 @@ export default function TipovanieClient({ initialCrowd, initialTotalBets, leader
           selectedWinner,
           fingerprint,
           ...(showAdvanced && Object.keys(predictedPcts).length > 0
-            ? { predictedPercentages: Object.fromEntries(
-                Object.entries(predictedPcts)
-                  .filter(([, v]) => v !== "")
-                  .map(([k, v]) => [k, parseFloat(v)])
-              ) }
+            ? {
+                predictedPercentages: Object.fromEntries(
+                  Object.entries(predictedPcts)
+                    .filter(([, v]) => v !== "")
+                    .map(([k, v]) => [k, parseFloat(v)])
+                ),
+              }
             : {}),
           ...(showAdvanced && coalitionPick.set.size > 0
             ? { coalitionPick: [...coalitionPick.set] }
@@ -72,7 +75,7 @@ export default function TipovanieClient({ initialCrowd, initialTotalBets, leader
         }),
       });
 
-      const data = await res.json() as { error?: string; partyId?: string };
+      const data = (await res.json()) as { error?: string; partyId?: string };
 
       if (res.status === 409 && data.error === "already_voted") {
         setAlreadyVotedParty(data.partyId ?? null);
@@ -80,7 +83,7 @@ export default function TipovanieClient({ initialCrowd, initialTotalBets, leader
         setSubmitted(true);
         const crowdRes = await fetch("/api/tipovanie");
         if (crowdRes.ok) {
-          const crowd = await crowdRes.json() as { aggregates: CrowdData[]; totalBets: number };
+          const crowd = (await crowdRes.json()) as { aggregates: CrowdData[]; totalBets: number };
           setCrowdData(crowd.aggregates);
           setTotalBets(crowd.totalBets);
         }
@@ -91,7 +94,7 @@ export default function TipovanieClient({ initialCrowd, initialTotalBets, leader
 
       const crowdRes = await fetch("/api/tipovanie");
       if (crowdRes.ok) {
-        const crowd = await crowdRes.json() as { aggregates: CrowdData[]; totalBets: number };
+        const crowd = (await crowdRes.json()) as { aggregates: CrowdData[]; totalBets: number };
         setCrowdData(crowd.aggregates);
         setTotalBets(crowd.totalBets);
       }
@@ -104,238 +107,29 @@ export default function TipovanieClient({ initialCrowd, initialTotalBets, leader
     }
   }
 
-  const selectedParty = selectedWinner ? PARTIES[selectedWinner] : null;
-
-  const sortedCrowd = [...crowdData].sort((a, b) => b.totalBets - a.totalBets);
-
   return (
     <>
       <div className="grid gap-6" style={{ gridTemplateColumns: "1fr 1fr" }}>
-        {/* Left: Voting panel */}
-        <div className="bg-card border border-border rounded-[12px] p-5">
-          <h2 className="text-[18px] font-bold text-ink mb-4">Kto vyhrá voľby?</h2>
-
-          {!submitted ? (
-            <>
-              <div className="space-y-2">
-                {PARTY_LIST.map((party) => {
-                  const isSelected = selectedWinner === party.id;
-                  return (
-                    <button
-                      key={party.id}
-                      onClick={() => setSelectedWinner(party.id)}
-                      aria-pressed={isSelected}
-                      aria-label={`Tipovať ${party.name}`}
-                      className="w-full flex items-center gap-3 rounded-[8px] border transition-all"
-                      style={{
-                        padding: "10px 12px",
-                        background: isSelected ? `${party.color}15` : "#fff",
-                        borderColor: isSelected ? party.color : "#e8e3db",
-                        borderWidth: isSelected ? "2px" : "1px",
-                      }}
-                    >
-                      <div className="w-2.5 h-2.5 rounded-[2px] shrink-0" style={{ background: party.color }} />
-                      <span className="text-[14px] font-medium text-ink flex-1 text-left">{party.name}</span>
-                      <span className="text-[11px] text-faint">{party.leader}</span>
-                      {isSelected && (
-                        <svg className="w-4 h-4 shrink-0" style={{ color: party.color }} fill="currentColor" viewBox="0 0 20 20">
-                          <circle cx="10" cy="10" r="9" fill="currentColor" opacity="0.15" />
-                          <path d="M6 10l3 3 5-5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-                        </svg>
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
-
-              {selectedWinner && (
-                <div className="mt-4">
-                  <button
-                    onClick={handleSubmit}
-                    disabled={submitting}
-                    className="w-full py-2.5 rounded-[8px] text-[14px] font-semibold transition-colors"
-                    style={{
-                      background: selectedParty?.color ?? "#1a1a1a",
-                      color: "#fff",
-                      opacity: submitting ? 0.7 : 1,
-                    }}
-                  >
-                    {submitting ? "Odosielam..." : "Odoslať tip"}
-                  </button>
-
-                  {/* Advanced predictions toggle */}
-                  <div className="mt-3">
-                    <button
-                      onClick={() => setShowAdvanced(!showAdvanced)}
-                      className="text-[11px] text-muted hover:text-ink underline transition-colors"
-                    >
-                      {showAdvanced ? "Skryť rozšírené tipovanie" : "Rozšírené tipovanie (percentá, koalícia)"}
-                    </button>
-
-                    {showAdvanced && (
-                      <div className="mt-4 space-y-4">
-                        {/* Percentage predictions */}
-                        <div className="border border-border rounded-lg p-4">
-                          <h4 className="text-[11px] font-semibold uppercase tracking-wider text-secondary mb-3">
-                            Tipnite percentá strán
-                          </h4>
-                          <div className="grid grid-cols-2 gap-2">
-                            {PARTY_LIST.map((party) => (
-                              <div key={party.id} className="flex items-center gap-2">
-                                <div className="w-2 h-2 rounded-[2px] shrink-0" style={{ backgroundColor: party.color }} />
-                                <span className="text-[11px] text-[#666666] truncate flex-1">{party.abbreviation}</span>
-                                <input
-                                  type="number"
-                                  min="0"
-                                  max="100"
-                                  step="0.1"
-                                  placeholder="—"
-                                  value={predictedPcts[party.id] ?? ""}
-                                  onChange={(e) =>
-                                    setPredictedPcts((prev) => ({
-                                      ...prev,
-                                      [party.id]: e.target.value,
-                                    }))
-                                  }
-                                  className="w-16 px-2 py-1 text-[11px] text-right border border-border rounded-[4px] bg-transparent tabular-nums focus:border-ink focus:outline-none"
-                                />
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-
-                        {/* Coalition prediction */}
-                        <div className="border border-border rounded-lg p-4">
-                          <h4 className="text-[11px] font-semibold uppercase tracking-wider text-secondary mb-3">
-                            Tipnite koalíciu
-                          </h4>
-                          <div className="flex flex-wrap gap-2">
-                            {PARTY_LIST.map((party) => {
-                              const isInCoalition = coalitionPick.set.has(party.id);
-                              return (
-                                <button
-                                  key={party.id}
-                                  onClick={() => coalitionPick.toggle(party.id)}
-                                  className="px-3 py-1.5 text-[11px] rounded-[6px] border transition-colors"
-                                  style={{
-                                    borderColor: isInCoalition ? party.color : "#e8e3db",
-                                    background: isInCoalition ? `${party.color}15` : "#fff",
-                                    color: isInCoalition ? party.color : "#666666",
-                                    fontWeight: isInCoalition ? 600 : 400,
-                                  }}
-                                >
-                                  {party.abbreviation}
-                                </button>
-                              );
-                            })}
-                          </div>
-                          {coalitionPick.set.size > 0 && (
-                            <p className="text-[11px] text-faint mt-2">
-                              {coalitionPick.set.size} {coalitionPick.set.size === 1 ? "strana" : coalitionPick.set.size < 5 ? "strany" : "strán"}
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
-            </>
-          ) : (
-            /* Success state */
-            <div>
-              <div className="mt-4 p-3 rounded-[8px] bg-[#f0fdf4] border border-[#bbf7d0] text-[13px] text-[#16a34a] flex items-center justify-between">
-                <span>{alreadyVotedParty ? "Už ste tipovali." : "Váš tip bol zaznamenaný."}</span>
-              </div>
-              <div className="mt-4 text-center">
-                <p className="text-[13px] text-secondary">
-                  Tipujete výhru:{" "}
-                  <strong style={{ color: selectedParty?.color }}>{selectedParty?.name}</strong>
-                </p>
-                {user ? (
-                  <p className="text-[11px] text-faint mt-2">Prihlásený ako {user.displayName}</p>
-                ) : (
-                  <p className="text-[11px] text-muted mt-3">
-                    <Link href="/prihlasenie" className="underline hover:text-ink">
-                      Prihláste sa
-                    </Link>{" "}
-                    pre uloženie tipu naprieč zariadeniami
-                  </p>
-                )}
-                <ShareButtons
-                  url={typeof window !== "undefined" ? window.location.href : "/tipovanie"}
-                  title="Tipujem voľby na Polis"
-                  description="Tipnite si víťaza slovenských parlamentných volieb."
-                />
-                <Link
-                  href="/tipovanie/rebricek"
-                  className="inline-block mt-3 text-[12px] text-muted hover:text-ink underline"
-                >
-                  Pozrite si rebríček predpovedí →
-                </Link>
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Right: Community results */}
-        <div className="bg-card border border-border rounded-[12px] p-5">
-          <div className="flex items-baseline justify-between mb-4">
-            <h2 className="text-[15px] font-semibold text-secondary">Hlas ľudu</h2>
-            {totalBets > 0 && (
-              <span className="text-[11px] text-faint tabular-nums">
-                {totalBets.toLocaleString("sk-SK")} tipov
-              </span>
-            )}
-          </div>
-
-          {totalBets === 0 ? (
-            <div className="flex flex-col items-center justify-center min-h-[200px] gap-3">
-              <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
-                <circle cx="24" cy="24" r="23" stroke="#e8e3db" strokeWidth="2" />
-                <circle cx="17" cy="21" r="3" fill="#d0cbc3" />
-                <circle cx="31" cy="21" r="3" fill="#d0cbc3" />
-                <path d="M16 32c2-3 14-3 16 0" stroke="#d0cbc3" strokeWidth="2" strokeLinecap="round" />
-              </svg>
-              <p className="text-[13px] text-muted text-center">Najprv tipnite, potom uvidíte výsledky komunity.</p>
-            </div>
-          ) : (
-            <div className="space-y-3">
-              {sortedCrowd.map((item) => {
-                const party = PARTIES[item.partyId];
-                if (!party) return null;
-                const pct = totalBets > 0 ? (item.totalBets / totalBets) * 100 : 0;
-                const isMyVote = submitted && selectedWinner === item.partyId;
-                return (
-                  <div key={item.partyId} className="flex items-center gap-3">
-                    <span className="text-[12px] text-secondary w-12 shrink-0">{party.abbreviation}</span>
-                    <div className="flex-1 h-[7px] bg-[#eeeeee] rounded-[4px] overflow-hidden">
-                      <div
-                        className="h-full rounded-[4px] transition-all duration-500"
-                        style={{
-                          width: `${pct}%`,
-                          background: party.color,
-                          opacity: isMyVote ? 1 : 0.5,
-                        }}
-                      />
-                    </div>
-                    <span className="text-[12px] font-semibold text-ink w-10 text-right tabular-nums">
-                      {pct.toFixed(1)}%
-                    </span>
-                    {isMyVote && (
-                      <span
-                        className="text-[10px] font-bold px-1.5 py-0.5 rounded-[4px] text-white shrink-0"
-                        style={{ background: party.color }}
-                      >
-                        VÁŠ TIP
-                      </span>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </div>
+        <VotingPanel
+          selectedWinner={selectedWinner}
+          setSelectedWinner={setSelectedWinner}
+          submitted={submitted}
+          submitting={submitting}
+          alreadyVotedParty={alreadyVotedParty}
+          showAdvanced={showAdvanced}
+          setShowAdvanced={setShowAdvanced}
+          predictedPcts={predictedPcts}
+          setPredictedPcts={setPredictedPcts}
+          coalitionPickSet={coalitionPick.set}
+          toggleCoalitionPick={coalitionPick.toggle}
+          onSubmit={handleSubmit}
+        />
+        <CommunityResults
+          crowdData={crowdData}
+          totalBets={totalBets}
+          submitted={submitted}
+          selectedWinner={selectedWinner}
+        />
       </div>
 
       {/* Leaderboard section — full width below grid */}
@@ -373,8 +167,8 @@ export default function TipovanieClient({ initialCrowd, initialTotalBets, leader
             <div className="mt-4 p-3 rounded-lg bg-[#faf9f7] border border-border text-[13px] text-center">
               <Link href="/registracia" className="text-accent font-medium hover:underline">
                 Zaregistruj sa
-              </Link>
-              {" "}a sleduj svoje skóre v rebríčku.
+              </Link>{" "}
+              a sleduj svoje skóre v rebríčku.
             </div>
           )}
         </section>
