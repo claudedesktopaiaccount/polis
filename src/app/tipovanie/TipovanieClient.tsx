@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { getCsrfToken } from "@/lib/csrf";
+import { useToggleSet } from "@/hooks/useToggleSet";
 import { PARTY_LIST, PARTIES } from "@/lib/parties";
 import ShareButtons from "@/components/ShareButtons";
 import { getFingerprint } from "@/lib/fingerprint";
@@ -38,7 +40,7 @@ export default function TipovanieClient({ initialCrowd, initialTotalBets, leader
   const [totalBets, setTotalBets] = useState(initialTotalBets);
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [predictedPcts, setPredictedPcts] = useState<Record<string, string>>({});
-  const [coalitionPick, setCoalitionPick] = useState<Set<string>>(new Set());
+  const coalitionPick = useToggleSet<string>();
 
   async function handleSubmit() {
     if (!selectedWinner) return;
@@ -46,10 +48,7 @@ export default function TipovanieClient({ initialCrowd, initialTotalBets, leader
 
     try {
       const fingerprint = await getFingerprint();
-      const csrfToken = document.cookie
-        .split("; ")
-        .find((c) => c.startsWith("pt_csrf="))
-        ?.split("=")[1] ?? "";
+      const csrfToken = getCsrfToken();
 
       const res = await fetch("/api/tipovanie", {
         method: "POST",
@@ -67,8 +66,8 @@ export default function TipovanieClient({ initialCrowd, initialTotalBets, leader
                   .map(([k, v]) => [k, parseFloat(v)])
               ) }
             : {}),
-          ...(showAdvanced && coalitionPick.size > 0
-            ? { coalitionPick: [...coalitionPick] }
+          ...(showAdvanced && coalitionPick.set.size > 0
+            ? { coalitionPick: [...coalitionPick.set] }
             : {}),
         }),
       });
@@ -212,18 +211,11 @@ export default function TipovanieClient({ initialCrowd, initialTotalBets, leader
                           </h4>
                           <div className="flex flex-wrap gap-2">
                             {PARTY_LIST.map((party) => {
-                              const isInCoalition = coalitionPick.has(party.id);
+                              const isInCoalition = coalitionPick.set.has(party.id);
                               return (
                                 <button
                                   key={party.id}
-                                  onClick={() => {
-                                    setCoalitionPick((prev) => {
-                                      const next = new Set(prev);
-                                      if (next.has(party.id)) next.delete(party.id);
-                                      else next.add(party.id);
-                                      return next;
-                                    });
-                                  }}
+                                  onClick={() => coalitionPick.toggle(party.id)}
                                   className="px-3 py-1.5 text-[11px] rounded-[6px] border transition-colors"
                                   style={{
                                     borderColor: isInCoalition ? party.color : "#e8e3db",
@@ -237,9 +229,9 @@ export default function TipovanieClient({ initialCrowd, initialTotalBets, leader
                               );
                             })}
                           </div>
-                          {coalitionPick.size > 0 && (
+                          {coalitionPick.set.size > 0 && (
                             <p className="text-[11px] text-faint mt-2">
-                              {coalitionPick.size} {coalitionPick.size === 1 ? "strana" : coalitionPick.size < 5 ? "strany" : "strán"}
+                              {coalitionPick.set.size} {coalitionPick.set.size === 1 ? "strana" : coalitionPick.set.size < 5 ? "strany" : "strán"}
                             </p>
                           )}
                         </div>
