@@ -8,13 +8,9 @@ import { getFingerprint } from "@/lib/fingerprint";
 import { useAuth } from "@/components/AuthProvider";
 import Link from "next/link";
 import VotingPanel from "@/components/tipovanie/VotingPanel";
-import CommunityResults from "@/components/tipovanie/CommunityResults";
+import CommunityResults, { type CrowdData } from "@/components/tipovanie/CommunityResults";
 
-export interface CrowdData {
-  partyId: string;
-  totalBets: number;
-  avgPct?: number;
-}
+export type { CrowdData };
 
 interface LeaderboardEntry {
   rank: number;

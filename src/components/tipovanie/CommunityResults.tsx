@@ -1,7 +1,10 @@
 import { PARTIES } from "@/lib/parties";
-import type { CrowdData } from "@/app/tipovanie/TipovanieClient";
 
-export type { CrowdData };
+export interface CrowdData {
+  partyId: string;
+  totalBets: number;
+  avgPct?: number;
+}
 
 interface Props {
   crowdData: CrowdData[];
