@@ -10,6 +10,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import { useToggleSet } from "@/hooks/useToggleSet";
 
 const PollTrendChart = dynamic(
   () => import("@/components/charts/PollTrendChart"),
@@ -66,25 +67,14 @@ export default function PrieskumyClient({
     [chartData]
   );
 
-  const [selectedAgencies, setSelectedAgencies] = useState<Set<string>>(
-    new Set(allAgencyNames)
-  );
+  const selectedAgencies = useToggleSet<string>(allAgencyNames);
   const [timeRange, setTimeRange] = useState(12);
   const [showTable, setShowTable] = useState(false);
   const [viewMode, setViewMode] = useState<"polls" | "model" | "crowd">("polls");
   const [expandedParty, setExpandedParty] = useState<string | null>(null);
 
-  const toggleAgency = (name: string) => {
-    setSelectedAgencies((prev) => {
-      const next = new Set(prev);
-      if (next.has(name)) next.delete(name);
-      else next.add(name);
-      return next;
-    });
-  };
-
   const filteredData = useMemo(() => {
-    let data = chartData.filter((d) => selectedAgencies.has(String(d.agency)));
+    let data = chartData.filter((d) => selectedAgencies.set.has(String(d.agency)));
     if (timeRange > 0) {
       data = data.slice(-timeRange * 3);
     }
@@ -131,8 +121,8 @@ export default function PrieskumyClient({
                 <label key={name} className="flex items-center gap-2 cursor-pointer text-sm text-text hover:text-ink">
                   <input
                     type="checkbox"
-                    checked={selectedAgencies.has(name)}
-                    onChange={() => toggleAgency(name)}
+                    checked={selectedAgencies.set.has(name)}
+                    onChange={() => selectedAgencies.toggle(name)}
                     className="accent-ink w-4 h-4"
                   />
                   {name}
