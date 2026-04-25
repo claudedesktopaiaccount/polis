@@ -373,3 +373,275 @@ export const candidates = sqliteTable(
     uniqueIndex("candidates_party_rank_unique").on(table.partyId, table.listRank),
   ]
 );
+
+// ─── Phase 0: Political Intelligence Tables ───────────────
+
+// ─── MPs — Members of Parliament / politicians ────────────
+
+export const mps = sqliteTable(
+  "mps",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    slug: text("slug").notNull(),          // e.g. "robert-fico"
+    nameFull: text("name_full").notNull(), // "Robert Fico"
+    nameDisplay: text("name_display").notNull(), // display name (short)
+    partyId: text("party_id").references(() => parties.id), // nullable — can be independent
+    // role values: 'poslanec' | 'minister' | 'predseda_vlady' | 'prezident' | 'senator' | 'iny'
+    role: text("role").notNull(),
+    constituency: text("constituency"),
+    birthYear: integer("birth_year"),
+    photoUrl: text("photo_url"),
+    activeFrom: text("active_from"),       // ISO date
+    activeTo: text("active_to"),           // ISO date, null = currently active
+    nrsrPersonId: text("nrsr_person_id"),  // NRSR internal ID for scraping
+  },
+  (table) => [
+    uniqueIndex("mps_slug_unique").on(table.slug),
+    index("mps_party_id_idx").on(table.partyId),
+    index("mps_role_idx").on(table.role),
+  ]
+);
+
+// ─── Votes — Parliamentary vote sessions ──────────────────
+
+export const votes = sqliteTable(
+  "votes",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    nrsrVoteId: text("nrsr_vote_id").notNull(), // NRSR internal vote ID
+    date: text("date").notNull(),               // ISO date
+    titleSk: text("title_sk").notNull(),
+    // topicCategory values: 'rozpočet' | 'zákon' | 'personálne' | 'procedurálne' | 'zahranično-politické' | 'iné'
+    topicCategory: text("topic_category").notNull(),
+    // result values: 'schválené' | 'zamietnuté' | 'odročené'
+    result: text("result").notNull(),
+    votesFor: integer("votes_for").notNull().default(0),
+    votesAgainst: integer("votes_against").notNull().default(0),
+    votesAbstain: integer("votes_abstain").notNull().default(0),
+    votesAbsent: integer("votes_absent").notNull().default(0),
+    sourceUrl: text("source_url"),
+  },
+  (table) => [
+    index("votes_date_idx").on(table.date),
+    index("votes_topic_category_idx").on(table.topicCategory),
+    uniqueIndex("votes_nrsr_vote_id_unique").on(table.nrsrVoteId),
+  ]
+);
+
+// ─── Vote Records — How each MP voted in each vote ────────
+
+export const voteRecords = sqliteTable(
+  "vote_records",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    voteId: integer("vote_id").notNull().references(() => votes.id),
+    mpId: integer("mp_id").notNull().references(() => mps.id),
+    // choice values: 'za' | 'proti' | 'zdržal_sa' | 'neprítomný' | 'nehlasoval'
+    choice: text("choice").notNull(),
+  },
+  (table) => [
+    index("vote_records_vote_id_idx").on(table.voteId),
+    index("vote_records_mp_id_idx").on(table.mpId),
+    uniqueIndex("vote_records_vote_mp_unique").on(table.voteId, table.mpId),
+  ]
+);
+
+// ─── Speeches — Parliamentary speeches ───────────────────
+
+export const speeches = sqliteTable(
+  "speeches",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    mpId: integer("mp_id").notNull().references(() => mps.id),
+    date: text("date").notNull(),           // ISO date
+    titleSk: text("title_sk"),
+    textSk: text("text_sk").notNull(),
+    sourceUrl: text("source_url").notNull(),
+    nrsrSpeechId: text("nrsr_speech_id"),  // nullable unique
+  },
+  (table) => [
+    index("speeches_mp_id_idx").on(table.mpId),
+    index("speeches_date_idx").on(table.date),
+    uniqueIndex("speeches_nrsr_speech_id_unique").on(table.nrsrSpeechId),
+  ]
+);
+
+// ─── Promises — Extracted political promises (AI-assisted) ─
+
+export const promises = sqliteTable(
+  "promises",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    // sourceType values: 'program' | 'prejav' | 'rozhovor' | 'socialne_siete'
+    sourceType: text("source_type").notNull(),
+    sourceUrl: text("source_url").notNull(),
+    sourceDate: text("source_date").notNull(), // ISO date
+    partyId: text("party_id").references(() => parties.id),
+    mpId: integer("mp_id").references(() => mps.id),
+    textSk: text("text_sk").notNull(),
+    // status values: 'nesplnený' | 'čiastočne' | 'splnený' | 'v_procese' | 'nezhodnotiteľný'
+    status: text("status").notNull().default("nesplnený"),
+    evidenceVoteId: integer("evidence_vote_id").references(() => votes.id),
+    evidenceUrl: text("evidence_url"),
+    aiConfidence: real("ai_confidence"), // 0.0–1.0
+  },
+  (table) => [
+    index("promises_party_id_idx").on(table.partyId),
+    index("promises_mp_id_idx").on(table.mpId),
+    index("promises_source_type_idx").on(table.sourceType),
+    index("promises_status_idx").on(table.status),
+  ]
+);
+
+// ─── Scandals — Documented scandals (per politician career) ─
+
+export const scandals = sqliteTable(
+  "scandals",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    slug: text("slug").notNull(),
+    titleSk: text("title_sk").notNull(),
+    summarySk: text("summary_sk").notNull(), // 150-300 words, neutral language
+    startDate: text("start_date").notNull(), // ISO date
+    endDate: text("end_date"),               // ISO date, null = ongoing
+    // status values: 'prebieha' | 'uzavretá_bez_výsledku' | 'odsúdený' | 'oslobodený' | 'disciplinárne_potrestaný' | 'vyšetruje_sa' | 'zastavené'
+    status: text("status").notNull().default("vyšetruje_sa"),
+    // category values: 'korupcia' | 'klientelizmus' | 'plagiátorstvo' | 'zneužitie_moci' | 'konflikt_záujmov' | 'hanlivý_výrok' | 'nepotizmus' | 'podvod' | 'porušenie_ústavy' | 'iné'
+    category: text("category").notNull(),
+    // institutionInvestigating values: 'NAKA' | 'ÚVO' | 'NKÚ' | 'OLAF' | 'súd' | 'iné' | 'žiadne'
+    institutionInvestigating: text("institution_investigating"),
+    verdictUrl: text("verdict_url"),
+    // severity: 1=kontroverzný výrok, 2=trestné oznámenie, 3=právoplatný rozsudok
+    severity: integer("severity").notNull().default(1),
+    isEditorialOpinion: integer("is_editorial_opinion", { mode: "boolean" }).notNull().default(true),
+  },
+  (table) => [
+    uniqueIndex("scandals_slug_unique").on(table.slug),
+    index("scandals_status_idx").on(table.status),
+    index("scandals_category_idx").on(table.category),
+    index("scandals_severity_idx").on(table.severity),
+    index("scandals_start_date_idx").on(table.startDate),
+  ]
+);
+
+// ─── Scandal Politician Links — Many-to-many: scandal ↔ MP ──
+
+export const scandalPoliticianLinks = sqliteTable(
+  "scandal_politician_links",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    scandalId: integer("scandal_id").notNull().references(() => scandals.id),
+    mpId: integer("mp_id").notNull().references(() => mps.id),
+    // roleInScandal values: 'hlavný_aktér' | 'spoluobvinený' | 'svedok' | 'podpisovateľ'
+    roleInScandal: text("role_in_scandal").notNull(),
+  },
+  (table) => [
+    index("scandal_pol_links_scandal_id_idx").on(table.scandalId),
+    index("scandal_pol_links_mp_id_idx").on(table.mpId),
+    uniqueIndex("scandal_pol_links_unique").on(table.scandalId, table.mpId),
+  ]
+);
+
+// ─── Scandal Sources — Min 2 sources required per scandal ───
+
+export const scandalSources = sqliteTable(
+  "scandal_sources",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    scandalId: integer("scandal_id").notNull().references(() => scandals.id),
+    url: text("url").notNull(),
+    outletName: text("outlet_name").notNull(),
+    publishedDate: text("published_date"), // ISO date
+    isPrimary: integer("is_primary", { mode: "boolean" }).notNull().default(false),
+    archiveUrl: text("archive_url"),       // wayback machine
+  },
+  (table) => [
+    index("scandal_sources_scandal_id_idx").on(table.scandalId),
+  ]
+);
+
+// ─── Companies — Companies from RPVS, FinStat ────────────
+
+export const companies = sqliteTable(
+  "companies",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    ico: text("ico").notNull(),            // Slovak company registration number
+    name: text("name").notNull(),
+    legalForm: text("legal_form"),         // 's.r.o.' | 'a.s.' | etc.
+    rpvsUboUrl: text("rpvs_ubo_url"),      // RPVS beneficial owner URL
+    finstatUrl: text("finstat_url"),
+    foundedDate: text("founded_date"),     // ISO date
+    sector: text("sector"),
+    addressSk: text("address_sk"),
+  },
+  (table) => [
+    uniqueIndex("companies_ico_unique").on(table.ico),
+    index("companies_name_idx").on(table.name),
+  ]
+);
+
+// ─── Politician Company Links — MP ↔ Company relationships ──
+
+export const politicianCompanyLinks = sqliteTable(
+  "politician_company_links",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    mpId: integer("mp_id").notNull().references(() => mps.id),
+    companyId: integer("company_id").notNull().references(() => companies.id),
+    // relationship values: 'štatutár' | 'spoločník' | 'prokurista' | 'beneficiár' | 'akcionár'
+    relationship: text("relationship").notNull(),
+    startDate: text("start_date"),         // ISO date
+    endDate: text("end_date"),             // ISO date, null = current
+    sourceUrl: text("source_url").notNull(),
+  },
+  (table) => [
+    index("pol_company_links_mp_id_idx").on(table.mpId),
+    index("pol_company_links_company_id_idx").on(table.companyId),
+  ]
+);
+
+// ─── Donations — Party donations (from RPPOZ register) ───
+
+export const donations = sqliteTable(
+  "donations",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    partyId: text("party_id").notNull().references(() => parties.id),
+    donorName: text("donor_name").notNull(),
+    donorIco: text("donor_ico"),
+    amountEur: real("amount_eur").notNull(),
+    donationDate: text("donation_date").notNull(), // ISO date
+    sourceUrl: text("source_url").notNull(),
+  },
+  (table) => [
+    index("donations_party_id_idx").on(table.partyId),
+    index("donations_donor_ico_idx").on(table.donorIco),
+    index("donations_donation_date_idx").on(table.donationDate),
+  ]
+);
+
+// ─── Contracts — Public procurement contracts (UVO/EKS/CRZ) ─
+
+export const contracts = sqliteTable(
+  "contracts",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    contractNumber: text("contract_number"), // nullable unique
+    titleSk: text("title_sk").notNull(),
+    contractingAuthority: text("contracting_authority").notNull(),
+    supplierIco: text("supplier_ico").notNull(),
+    supplierName: text("supplier_name").notNull(),
+    amountEur: real("amount_eur").notNull(),
+    signedDate: text("signed_date").notNull(),  // ISO date
+    cpvCode: text("cpv_code"),
+    sourceUrl: text("source_url").notNull(),
+    linkedPoliticianId: integer("linked_politician_id").references(() => mps.id),
+  },
+  (table) => [
+    index("contracts_supplier_ico_idx").on(table.supplierIco),
+    index("contracts_signed_date_idx").on(table.signedDate),
+    index("contracts_linked_politician_id_idx").on(table.linkedPoliticianId),
+    uniqueIndex("contracts_contract_number_unique").on(table.contractNumber),
+  ]
+);
