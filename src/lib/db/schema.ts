@@ -1,4 +1,4 @@
-import { sqliteTable, text, integer, real, uniqueIndex, index, unique } from "drizzle-orm/sqlite-core";
+import { sqliteTable, text, integer, real, uniqueIndex, index } from "drizzle-orm/sqlite-core";
 
 // ─── Rate Limits ────────────────────────────────────────
 
@@ -457,12 +457,11 @@ export const speeches = sqliteTable(
     titleSk: text("title_sk"),
     textSk: text("text_sk").notNull(),
     sourceUrl: text("source_url").notNull(),
-    nrsrSpeechId: text("nrsr_speech_id"),  // nullable unique
+    nrsrSpeechId: text("nrsr_speech_id"),  // nullable; uniqueness enforced in app logic when non-null
   },
   (table) => [
     index("speeches_mp_id_idx").on(table.mpId),
     index("speeches_date_idx").on(table.date),
-    uniqueIndex("speeches_nrsr_speech_id_unique").on(table.nrsrSpeechId),
   ]
 );
 
@@ -598,6 +597,7 @@ export const politicianCompanyLinks = sqliteTable(
   (table) => [
     index("pol_company_links_mp_id_idx").on(table.mpId),
     index("pol_company_links_company_id_idx").on(table.companyId),
+    uniqueIndex("pol_company_links_unique").on(table.mpId, table.companyId, table.relationship),
   ]
 );
 
@@ -627,7 +627,7 @@ export const contracts = sqliteTable(
   "contracts",
   {
     id: integer("id").primaryKey({ autoIncrement: true }),
-    contractNumber: text("contract_number"), // nullable unique
+    contractNumber: text("contract_number"), // nullable; uniqueness enforced in app logic when non-null
     titleSk: text("title_sk").notNull(),
     contractingAuthority: text("contracting_authority").notNull(),
     supplierIco: text("supplier_ico").notNull(),
@@ -642,6 +642,5 @@ export const contracts = sqliteTable(
     index("contracts_supplier_ico_idx").on(table.supplierIco),
     index("contracts_signed_date_idx").on(table.signedDate),
     index("contracts_linked_politician_id_idx").on(table.linkedPoliticianId),
-    uniqueIndex("contracts_contract_number_unique").on(table.contractNumber),
   ]
 );
