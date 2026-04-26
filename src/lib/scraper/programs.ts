@@ -43,8 +43,11 @@ async function defaultFetcher(url: string): Promise<string> {
   }
 }
 
-function extractSections(html: string): { sections: ProgramSection[]; fullText: string } {
+function extractSections(html: string): { sections: ProgramSection[]; fullText: string; title: string } {
   const $ = cheerio.load(html);
+
+  // Extract title from h1
+  const title = $("h1").first().text().trim();
 
   // Strip nav/chrome
   $("nav, header, footer, script, style, .menu, .nav").remove();
@@ -93,7 +96,7 @@ function extractSections(html: string): { sections: ProgramSection[]; fullText: 
   }
 
   const fullText = sections.map((s) => s.text).join("\n\n");
-  return { sections, fullText };
+  return { sections, fullText, title };
 }
 
 export async function scrapePartyPrograms(fetcher?: Fetcher): Promise<ScrapedProgram[]> {
@@ -103,22 +106,21 @@ export async function scrapePartyPrograms(fetcher?: Fetcher): Promise<ScrapedPro
   for (const party of PARTY_PROGRAMS) {
     try {
       const html = await fetch_(party.url);
-      const { sections, fullText } = extractSections(html);
+      const { sections, fullText, title } = extractSections(html);
 
       if (fullText.length < 200) {
         console.warn(`[programs] ${party.partyId}: content too short (${fullText.length} chars), skipping`);
         continue;
       }
 
-      // Use first h1 as title, fallback to partyId
-      const $ = cheerio.load(html);
-      const title = $("h1").first().text().trim() || `Program strany ${party.partyId.toUpperCase()}`;
+      // Use extracted title, fallback to partyId
+      const finalTitle = title || `Program strany ${party.partyId.toUpperCase()}`;
 
       results.push({
         partyId: party.partyId,
         sourceUrl: party.url,
         sourceDate: party.date,
-        title,
+        title: finalTitle,
         fullText,
         sections,
       });

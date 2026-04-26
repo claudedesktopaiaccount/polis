@@ -61,17 +61,15 @@ describe("scrapePartyPrograms", () => {
     expect(results.length).toBe(0);
   });
 
-  it("skips failed fetches gracefully and returns rest", async () => {
-    let callCount = 0;
-    const mockFetcher = vi.fn().mockImplementation(async () => {
-      callCount++;
-      if (callCount === 1) throw new Error("Network error");
+  it("skips failed fetches gracefully and continues with rest", async () => {
+    const mockFetcher = vi.fn().mockImplementation(async (url: string) => {
+      if (url.includes("strana-smer") || url.includes("smer")) throw new Error("Network error");
       return MOCK_HTML_FULL;
     });
 
     const results = await scrapePartyPrograms(mockFetcher);
-    // First party fails, rest succeed
     expect(results.length).toBe(5);
+    expect(results.every(r => r.partyId !== "smer")).toBe(true);
     expect(results[0].partyId).toBe("ps");
   });
 
