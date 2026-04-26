@@ -6,14 +6,17 @@ export type Fetcher = (url: string) => Promise<string>;
 const USER_AGENT = "Mozilla/5.0 (compatible; Polis/1.0; +https://polis.sk)";
 const TIMEOUT_MS = 20_000;
 
-function defaultFetcher(url: string): Promise<string> {
-  return fetch(url, {
+async function defaultFetcher(url: string): Promise<string> {
+  const r = await fetch(url, {
     signal: AbortSignal.timeout(TIMEOUT_MS),
     headers: { "User-Agent": USER_AGENT },
-  }).then((r) => {
-    if (!r.ok) throw new Error(`HTTP ${r.status} for ${url}`);
-    return r.text();
   });
+  if (!r.ok) {
+    const retryable = [429, 503, 504].includes(r.status);
+    console.warn(`[scraper/opendata] HTTP ${r.status} from ${url} (${retryable ? "retryable" : "permanent"})`);
+    throw new Error(`HTTP ${r.status}`);
+  }
+  return r.text();
 }
 
 // ─── Types ────────────────────────────────────────────────
@@ -139,7 +142,11 @@ export async function scrapeRpvsCompanies(
     const name: string =
       String(item.ObchodneMeno ?? item.obchodneMeno ?? item.name ?? "").trim();
 
-    if (!ico || !name) continue;
+    if (!ico) {
+      console.warn("[scraper/opendata] RPVS record missing ICO, skipping:", JSON.stringify(item).slice(0, 100));
+      continue;
+    }
+    if (!name) continue;
 
     const addressRaw =
       item.Sidlo ?? item.sidlo ?? item.address ?? item.Address ?? null;
@@ -201,7 +208,7 @@ export async function scrapePublicContracts(
   // Build column index map
   const col = (names: string[]): number => {
     for (const n of names) {
-      const idx = headers.findIndex((h) => h.includes(n.toLowerCase()));
+      const idx = headers.findIndex((h) => h.toLowerCase() === n.toLowerCase());
       if (idx >= 0) return idx;
     }
     return -1;
@@ -209,13 +216,18 @@ export async function scrapePublicContracts(
 
   const iContractNumber = col(["zmluvacislo", "cislo"]);
   const iTitle = col(["predmet"]);
-  const iAuthority = col(["objednavatel", "contracting"]);
+  const iAuthority = col(["objednavatelNazov", "objednavatel", "contracting"]);
   const iAuthIco = col(["objednavatelico"]);
-  const iSupplierName = col(["dodavatel", "supplier"]);
+  const iSupplierName = col(["dodavatelNazov", "dodavatel", "supplier"]);
   const iSupplierIco = col(["dodavatelico", "dodavateličo"]);
   const iAmount = col(["cenasdph", "cenasedph", "cena"]);
   const iDate = col(["datumzverejnenia", "datum"]);
   const iUrl = col(["url"]);
+
+  if (iTitle < 0 || iSupplierIco < 0 || iDate < 0) {
+    console.warn("[scraper/opendata] CRZ CSV missing required columns, skipping parse");
+    return [];
+  }
 
   const results: ScrapedContract[] = [];
 
@@ -237,10 +249,15 @@ export async function scrapePublicContracts(
     if (!titleSk || !supplierIco || !signedDateRaw) continue;
 
     // Normalise date: DD.MM.YYYY → YYYY-MM-DD
-    let signedDate = signedDateRaw;
+    let signedDate: string;
     const dateMatch = signedDateRaw.match(/^(\d{2})\.(\d{2})\.(\d{4})$/);
     if (dateMatch) {
       signedDate = `${dateMatch[3]}-${dateMatch[2]}-${dateMatch[1]}`;
+    } else if (/^\d{4}-\d{2}-\d{2}$/.test(signedDateRaw)) {
+      signedDate = signedDateRaw; // already ISO
+    } else {
+      console.warn(`[scraper/opendata] unexpected date format: ${signedDateRaw}, skipping row`);
+      continue;
     }
 
     const amountRaw =
