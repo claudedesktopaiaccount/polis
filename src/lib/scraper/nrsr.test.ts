@@ -68,8 +68,8 @@ describe("mapResult", () => {
     expect(mapResult("Odročené")).toBe("odročené");
   });
 
-  it("defaults to odročené for unknown", () => {
-    expect(mapResult("")).toBe("odročené");
+  it("defaults to neznámy for unknown", () => {
+    expect(mapResult("")).toBe("neznámy");
   });
 });
 

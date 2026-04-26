@@ -25,6 +25,16 @@ export async function GET(req: NextRequest) {
 
     // MPs
     const mpItems = await scrapeMps();
+
+    const unknownParties = [...new Set(
+      mpItems
+        .filter(m => m.partyAbbr && !partySlugToId[m.partyAbbr.toLowerCase()])
+        .map(m => m.partyAbbr)
+    )];
+    if (unknownParties.length) {
+      console.warn("[cron/scrape-nrsr] unknown party abbreviations:", unknownParties);
+    }
+
     const mpCount = await upsertMps(db, mpItems, partySlugToId);
 
     // Votes (last 100)

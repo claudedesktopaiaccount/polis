@@ -101,17 +101,11 @@ export function mapTopicCategory(title: string): string {
 
 export function mapResult(raw: string): string {
   const r = raw.toLowerCase().trim();
-  // Check negative/rejection first to avoid "neprijatý" matching "prijat"
-  if (
-    r.includes("zamietnut") ||
-    r.includes("zamietnút") ||
-    r.includes("neprijat") ||
-    r.includes("odmiet")
-  )
-    return "zamietnuté";
-  if (r.includes("odročen") || r.includes("odložen")) return "odročené";
-  if (r.includes("schválen") || r.includes("prijat")) return "schválené";
-  return "odročené";
+  if (r.includes("zamietnut") || r.includes("neprijat")) return "zamietnuté";
+  if (r.includes("prijat") || r.includes("schválen")) return "schválené";
+  if (r.includes("odroč")) return "odročené";
+  console.warn("[nrsr] mapResult: unmatched outcome:", raw);
+  return "neznámy";
 }
 
 export function mapChoice(raw: string): string {
@@ -175,8 +169,8 @@ export function parseMpList(html: string): ScrapedMp[] {
     const nameParts = nameFull.replace(",", "").split(/\s+/);
     const nameDisplay =
       nameParts.length >= 2
-        ? `${nameParts[nameParts.length - 1]} ${nameParts.slice(0, -1).join(" ")}`
-        : nameFull;
+        ? `${nameParts[nameParts.length - 1]} ${nameParts.slice(0, -1).join(" ")}`.trim()
+        : nameFull.trim();
 
     const slug = makeSlug(nameDisplay);
 
@@ -336,12 +330,12 @@ export function parseVoteDetail(
   const forMatch = bodyText.match(/[Zz]a[:\s]+(\d+)/);
   const againstMatch = bodyText.match(/[Pp]roti[:\s]+(\d+)/);
   const abstainMatch = bodyText.match(/[Zz]držal[:\s]+(\d+)/);
-  const absentMatch = bodyText.match(/[Nn]eprítomnı|[Nn]eprítomn[íi][:\s]+(\d+)/);
+  const absentMatch = bodyText.match(/[Nn]eprítomn[íi][:\s]+(\d+)/);
 
   if (forMatch) votesFor = parseInt(forMatch[1], 10);
   if (againstMatch) votesAgainst = parseInt(againstMatch[1], 10);
   if (abstainMatch) votesAbstain = parseInt(abstainMatch[1], 10);
-  if (absentMatch && absentMatch[1]) votesAbsent = parseInt(absentMatch[1], 10);
+  if (absentMatch?.[1]) votesAbsent = parseInt(absentMatch[1], 10);
 
   // Result
   let rawResult = "";
@@ -435,12 +429,14 @@ export function parseSpeechesList(html: string, limit: number): ScrapedSpeech[] 
     const $anyLink = $personLink.length ? $personLink : $speechLink;
     if (!$anyLink.length) return;
 
-    // Extract speech ID from speech link or generate from row
+    // Extract speech ID from speech link — skip if not parseable
     const speechHref = $speechLink.attr("href") ?? "";
     const speechIdMatch = speechHref.match(/[?&]ID=(\d+)/i);
-    const nrsrSpeechId = speechIdMatch
-      ? speechIdMatch[1]
-      : `row-${speeches.length}`;
+    if (!speechIdMatch?.[1]) {
+      console.warn("[nrsr] speech without parseable ID, skipping");
+      return;
+    }
+    const nrsrSpeechId = speechIdMatch[1];
 
     if (seen.has(nrsrSpeechId)) return;
     seen.add(nrsrSpeechId);
