@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getDb } from "@/lib/db";
-import { eq, gte } from "drizzle-orm";
+import { and, eq, gte } from "drizzle-orm";
 import { polls, userNotificationPrefs, notificationLog, users } from "@/lib/db/schema";
 import { sendEmail } from "@/lib/email/resend";
 
@@ -31,9 +31,17 @@ export async function GET(req: NextRequest) {
   const siteUrl = "https://polis.sk";
 
   for (const { userId } of optedIn) {
-    const recentLog = await db.select().from(notificationLog).where(eq(notificationLog.userId, userId));
-    const sentToday = recentLog.some((l) => l.sentAt >= oneDayAgo && l.type === "new_poll");
-    if (sentToday) continue;
+    const recentLog = await db
+      .select()
+      .from(notificationLog)
+      .where(
+        and(
+          eq(notificationLog.userId, userId),
+          eq(notificationLog.type, "new_poll"),
+          gte(notificationLog.sentAt, oneDayAgo)
+        )
+      );
+    if (recentLog.length > 0) continue;
 
     const [user] = await db
       .select({ email: users.email, displayName: users.displayName })

@@ -61,7 +61,7 @@ export function parseSlovakNumber(raw: string): number {
   // Remove spaces (thousands separator in SK format)
   const stripped = raw.trim().replace(/\s/g, "");
   // Replace comma decimal separator with dot
-  const normalized = stripped.replace(",", ".");
+  const normalized = stripped.replace(/,/g, ".");
   const n = parseFloat(normalized);
   return isNaN(n) ? 0 : n;
 }

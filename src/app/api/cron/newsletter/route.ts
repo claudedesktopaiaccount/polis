@@ -63,8 +63,8 @@ export async function GET(req: NextRequest) {
     try {
       const unsubToken = await generateUnsubToken(subscriber.email, process.env.CRON_SECRET!);
       const unsubUrl = `${siteUrl}/api/newsletter/unsubscribe?email=${encodeURIComponent(subscriber.email)}&token=${unsubToken}`;
-      const html = buildDigestHtml(pollSummaries, siteUrl).replace("{{UNSUB_URL}}", unsubUrl);
-      const text = buildDigestText(pollSummaries, siteUrl).replace("{{UNSUB_URL}}", unsubUrl);
+      const html = buildDigestHtml(pollSummaries, siteUrl).replaceAll("{{UNSUB_URL}}", unsubUrl);
+      const text = buildDigestText(pollSummaries, siteUrl).replaceAll("{{UNSUB_URL}}", unsubUrl);
       await sendEmail(
         { to: subscriber.email, subject: `Polis Tyzdenny — ${new Date().toLocaleDateString("sk-SK")}`, html, text },
         { RESEND_API_KEY: process.env.RESEND_API_KEY! }

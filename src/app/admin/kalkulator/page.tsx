@@ -2,6 +2,7 @@ import { getDb } from "@/lib/db";
 import { getKalkulatorWeights, upsertKalkulatorWeight } from "@/lib/db/kalkulator";
 import { QUESTIONS } from "@/lib/kalkulator/questions";
 import { redirect } from "next/navigation";
+import { isAdminAuthedFromCookies } from "@/lib/admin-auth";
 
 export default async function AdminKalkulatorPage({
   searchParams,
@@ -21,6 +22,7 @@ export default async function AdminKalkulatorPage({
 
   async function saveWeights(formData: FormData) {
     "use server";
+    if (!(await isAdminAuthedFromCookies())) throw new Error("Unauthorized");
     const serverDb = getDb();
     const entries = Array.from(formData.entries());
     for (const [key, value] of entries) {
