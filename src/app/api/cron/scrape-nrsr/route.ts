@@ -3,10 +3,10 @@ import { getDb } from "@/lib/db";
 import { scrapeMps, scrapeRecentVotes, scrapeRecentSpeeches } from "@/lib/scraper/nrsr";
 import { upsertMps, upsertVotes, upsertSpeeches } from "@/lib/db/nrsr";
 import { parties } from "@/lib/db/schema";
+import { isCronAuthed } from "@/lib/cron-auth";
 
 export async function GET(req: NextRequest) {
-  const secret = req.headers.get("x-cron-secret");
-  if (secret !== process.env.CRON_SECRET) {
+  if (!(await isCronAuthed(req))) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

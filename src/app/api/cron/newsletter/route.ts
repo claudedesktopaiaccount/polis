@@ -5,15 +5,10 @@ import { newsletterSubscribers, polls, pollResults } from "@/lib/db/schema";
 import { sendEmail } from "@/lib/email/resend";
 import { buildDigestHtml, buildDigestText, type PollSummary } from "@/lib/email/digest";
 import { generateUnsubToken } from "@/lib/email/tokens";
+import { isCronAuthed } from "@/lib/cron-auth";
 
 export async function GET(req: NextRequest) {
-  const cronSecret = process.env.CRON_SECRET;
-  const xSecret = req.headers.get("x-cron-secret");
-  const authHeader = req.headers.get("authorization");
-  const authorized =
-    (xSecret && xSecret === cronSecret) ||
-    (authHeader && authHeader === `Bearer ${cronSecret}`);
-  if (!authorized) {
+  if (!(await isCronAuthed(req))) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

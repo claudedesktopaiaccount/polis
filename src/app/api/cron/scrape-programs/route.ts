@@ -3,10 +3,10 @@ import { getDb } from "@/lib/db";
 import { scrapePartyPrograms } from "@/lib/scraper/programs";
 import { extractPromisesFromProgram } from "@/lib/scraper/promise-extractor";
 import { upsertPromises } from "@/lib/db/programs";
+import { isCronAuthed } from "@/lib/cron-auth";
 
 export async function GET(req: NextRequest) {
-  const secret = req.headers.get("x-cron-secret");
-  if (secret !== process.env.CRON_SECRET) {
+  if (!(await isCronAuthed(req))) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

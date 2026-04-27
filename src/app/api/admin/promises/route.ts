@@ -17,6 +17,9 @@ export async function POST(req: NextRequest) {
   if (!body?.partyId || !body?.promiseText || !body?.category) {
     return NextResponse.json({ error: "missing_fields" }, { status: 400 });
   }
+  if (body.sourceUrl != null && !/^https?:\/\//i.test(body.sourceUrl)) {
+    return NextResponse.json({ error: "invalid_source_url" }, { status: 400 });
+  }
   const db = getDb();
   await db.insert(partyPromises).values({
     partyId: body.partyId,

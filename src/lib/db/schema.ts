@@ -457,11 +457,12 @@ export const speeches = sqliteTable(
     titleSk: text("title_sk"),
     textSk: text("text_sk").notNull(),
     sourceUrl: text("source_url").notNull(),
-    nrsrSpeechId: text("nrsr_speech_id"),  // nullable; uniqueness enforced in app logic when non-null
+    nrsrSpeechId: text("nrsr_speech_id"),
   },
   (table) => [
     index("speeches_mp_id_idx").on(table.mpId),
     index("speeches_date_idx").on(table.date),
+    uniqueIndex("speeches_nrsr_speech_id_unique").on(table.nrsrSpeechId),
   ]
 );
 
