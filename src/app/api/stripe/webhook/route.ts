@@ -15,6 +15,10 @@ async function verifyStripeSignature(
   const v1 = parts["v1"];
   if (!timestamp || !v1) return false;
 
+  // Reject events older than 5 minutes to prevent replay attacks
+  const ts = parseInt(timestamp, 10);
+  if (isNaN(ts) || Math.abs(Date.now() / 1000 - ts) > 300) return false;
+
   const signedPayload = `${timestamp}.${body}`;
   const key = await crypto.subtle.importKey(
     "raw",
@@ -24,11 +28,14 @@ async function verifyStripeSignature(
     ["sign"]
   );
   const sig = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(signedPayload));
-  const expected = Array.from(new Uint8Array(sig))
-    .map((b) => b.toString(16).padStart(2, "0"))
-    .join("");
+  const expected = new Uint8Array(sig);
 
-  return expected === v1;
+  // Decode v1 hex to bytes for timing-safe comparison
+  const v1Bytes = new Uint8Array(v1.match(/.{2}/g)?.map((b) => parseInt(b, 16)) ?? []);
+  if (expected.length !== v1Bytes.length) return false;
+  let diff = 0;
+  for (let i = 0; i < expected.length; i++) diff |= expected[i] ^ v1Bytes[i];
+  return diff === 0;
 }
 
 export async function POST(req: NextRequest) {

@@ -3,12 +3,13 @@ import { getDb } from "@/lib/db";
 import { userPredictions } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { validateSession, SESSION_COOKIE } from "@/lib/auth/session";
+import { timingSafeEqual } from "@/lib/hash";
 
 export async function POST(req: NextRequest) {
-  // CSRF validation — double-submit cookie pattern
+  // CSRF validation — double-submit cookie pattern (timing-safe)
   const csrfCookie = req.cookies.get("pt_csrf")?.value;
   const csrfHeader = req.headers.get("x-csrf-token");
-  if (!csrfCookie || !csrfHeader || csrfCookie !== csrfHeader) {
+  if (!csrfCookie || !csrfHeader || !(await timingSafeEqual(csrfCookie, csrfHeader))) {
     return NextResponse.json({ error: "CSRF validation failed" }, { status: 403 });
   }
 

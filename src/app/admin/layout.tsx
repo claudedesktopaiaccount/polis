@@ -1,26 +1,11 @@
-import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import type { ReactNode } from "react";
+import { isAdminAuthedFromCookies } from "@/lib/admin-auth";
 
 interface Props { children: ReactNode }
 
-async function isAuthenticated(): Promise<boolean> {
-  const cookieStore = await cookies();
-  const sessionToken = cookieStore.get("admin_session")?.value;
-  const sigHex = cookieStore.get("admin_sig")?.value;
-  if (!sessionToken || !sigHex || !process.env.ADMIN_SECRET) return false;
-
-  const encoder = new TextEncoder();
-  const key = await crypto.subtle.importKey(
-    "raw", encoder.encode(process.env.ADMIN_SECRET),
-    { name: "HMAC", hash: "SHA-256" }, false, ["verify"]
-  );
-  const sigBytes = new Uint8Array(sigHex.match(/.{2}/g)!.map(b => parseInt(b, 16)));
-  return crypto.subtle.verify("HMAC", key, sigBytes, encoder.encode(sessionToken));
-}
-
 export default async function AdminLayout({ children }: Props) {
-  const authed = await isAuthenticated();
+  const authed = await isAdminAuthedFromCookies();
   if (!authed) redirect("/admin-login");
   return (
     <div className="max-w-5xl mx-auto px-4 py-8">

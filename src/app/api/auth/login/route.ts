@@ -4,17 +4,17 @@ import { users, rateLimits } from "@/lib/db/schema";
 import { eq, count, and, gte, lt } from "drizzle-orm";
 import { verifyPassword } from "@/lib/auth/password";
 import { createSession, sessionCookieOptions, SESSION_COOKIE } from "@/lib/auth/session";
-import { hashString } from "@/lib/hash";
+import { hashString, timingSafeEqual } from "@/lib/hash";
 
 const RATE_LIMIT = 10;
 const RATE_WINDOW_S = 15 * 60; // 15 minutes
 
 export async function POST(request: NextRequest) {
   try {
-    // CSRF validation — double-submit cookie pattern
+    // CSRF validation — double-submit cookie pattern (timing-safe)
     const csrfCookie = request.cookies.get("pt_csrf")?.value;
     const csrfHeader = request.headers.get("x-csrf-token");
-    if (!csrfCookie || !csrfHeader || csrfCookie !== csrfHeader) {
+    if (!csrfCookie || !csrfHeader || !(await timingSafeEqual(csrfCookie, csrfHeader))) {
       return NextResponse.json({ error: "CSRF validation failed" }, { status: 403 });
     }
 
@@ -38,18 +38,18 @@ export async function POST(request: NextRequest) {
     const now = Math.floor(Date.now() / 1000);
     const cutoff = now - RATE_WINDOW_S;
 
-    await db.insert(rateLimits).values({ ipHash, createdAt: now });
-
+    // Check count before inserting — don't record rate-limited attempts
     const rateResult = await db
       .select({ c: count() })
       .from(rateLimits)
       .where(and(eq(rateLimits.ipHash, ipHash), gte(rateLimits.createdAt, cutoff)));
 
-    await db.delete(rateLimits).where(lt(rateLimits.createdAt, cutoff));
-
-    if (rateResult[0].c > RATE_LIMIT) {
+    if (rateResult[0].c >= RATE_LIMIT) {
       return NextResponse.json({ error: "Príliš veľa pokusov, skúste neskôr" }, { status: 429 });
     }
+
+    await db.insert(rateLimits).values({ ipHash, createdAt: now });
+    await db.delete(rateLimits).where(lt(rateLimits.createdAt, cutoff));
 
     const email = body.email.trim().toLowerCase();
 

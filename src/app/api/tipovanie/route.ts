@@ -4,7 +4,7 @@ import { parties, userPredictions, crowdAggregates, rateLimits } from "@/lib/db/
 import { eq, or, count, sql, lt, and, gte } from "drizzle-orm";
 import { seedParties } from "@/lib/db/seed";
 import { PARTY_LIST } from "@/lib/parties";
-import { hashString } from "@/lib/hash";
+import { hashString, timingSafeEqual } from "@/lib/hash";
 import { createSentry, captureException } from "@/lib/sentry";
 import { validateSession, SESSION_COOKIE } from "@/lib/auth/session";
 
@@ -18,19 +18,21 @@ async function isRateLimited(db: Database, ip: string): Promise<boolean> {
   const cutoff = now - RATE_WINDOW_S;
   const ipHash = await hashString(ip);
 
-  // Insert first to avoid race where concurrent requests all pass the count
-  await db.insert(rateLimits).values({ ipHash, createdAt: now });
-
-  // Count recent requests (includes the row we just inserted)
+  // Check count before inserting — don't record rate-limited requests
   const result = await db
     .select({ c: count() })
     .from(rateLimits)
     .where(and(eq(rateLimits.ipHash, ipHash), gte(rateLimits.createdAt, cutoff)));
 
-  // Clean up old entries (best-effort, non-critical)
+  if (result[0].c >= RATE_LIMIT) return true;
+
+  // Under limit — record this request
+  await db.insert(rateLimits).values({ ipHash, createdAt: now });
+
+  // Clean up old entries (best-effort)
   await db.delete(rateLimits).where(lt(rateLimits.createdAt, cutoff));
 
-  return result[0].c > RATE_LIMIT;
+  return false;
 }
 
 async function ensureSeeded(db: Database) {
@@ -42,10 +44,10 @@ async function ensureSeeded(db: Database) {
 
 export async function POST(request: NextRequest) {
   try {
-    // CSRF validation: double-submit cookie pattern
+    // CSRF validation: double-submit cookie pattern (timing-safe)
     const csrfCookie = request.cookies.get("pt_csrf")?.value;
     const csrfHeader = request.headers.get("x-csrf-token");
-    if (!csrfCookie || !csrfHeader || csrfCookie !== csrfHeader) {
+    if (!csrfCookie || !csrfHeader || !(await timingSafeEqual(csrfCookie, csrfHeader))) {
       return NextResponse.json({ error: "CSRF validation failed" }, { status: 403 });
     }
 

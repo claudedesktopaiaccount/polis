@@ -8,6 +8,9 @@ import {
   scoreCoalition,
   computeTotalScore,
 } from "@/lib/prediction/scoring";
+import { asc } from "drizzle-orm";
+
+const PAGE_SIZE = 100;
 
 export async function POST(req: NextRequest) {
   if (!(await isAdminAuthed(req))) {
@@ -27,14 +30,20 @@ export async function POST(req: NextRequest) {
   const { electionId, winnerId, results, coalition } = body;
 
   const db = getDb();
-
-  const allPredictions = await db.select().from(userPredictions);
   const now = new Date().toISOString();
   let scored = 0;
+  let offset = 0;
 
-  // Process in batches of 100
-  for (let i = 0; i < allPredictions.length; i += 100) {
-    const batch = allPredictions.slice(i, i + 100);
+  // Paginate to avoid loading all rows into memory at once
+  while (true) {
+    const batch = await db
+      .select()
+      .from(userPredictions)
+      .orderBy(asc(userPredictions.id))
+      .limit(PAGE_SIZE)
+      .offset(offset);
+
+    if (batch.length === 0) break;
 
     for (const pred of batch) {
       const winner = scoreWinnerPick(pred.partyId, winnerId);
@@ -62,6 +71,9 @@ export async function POST(req: NextRequest) {
       });
       scored++;
     }
+
+    if (batch.length < PAGE_SIZE) break;
+    offset += PAGE_SIZE;
   }
 
   return NextResponse.json({ scored });

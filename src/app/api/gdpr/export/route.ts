@@ -2,16 +2,16 @@ import { NextRequest, NextResponse } from "next/server";
 import { getDb } from "@/lib/db";
 import { userPredictions, gdprAuditLog, users } from "@/lib/db/schema";
 import { eq, or } from "drizzle-orm";
-import { hashString } from "@/lib/hash";
+import { hashString, timingSafeEqual } from "@/lib/hash";
 import { createSentry, captureException } from "@/lib/sentry";
 import { validateSession, SESSION_COOKIE } from "@/lib/auth/session";
 
 export async function POST(request: NextRequest) {
   try {
-    // CSRF validation
+    // CSRF validation (timing-safe)
     const csrfCookie = request.cookies.get("pt_csrf")?.value;
     const csrfHeader = request.headers.get("x-csrf-token");
-    if (!csrfCookie || !csrfHeader || csrfCookie !== csrfHeader) {
+    if (!csrfCookie || !csrfHeader || !(await timingSafeEqual(csrfCookie, csrfHeader))) {
       return NextResponse.json({ error: "CSRF validation failed" }, { status: 403 });
     }
 

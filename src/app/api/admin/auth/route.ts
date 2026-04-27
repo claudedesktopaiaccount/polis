@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
+import { timingSafeEqual } from "@/lib/hash";
 
 export async function POST(req: NextRequest) {
   const body = await req.json().catch(() => ({})) as { secret?: string };
   const { secret } = body;
-  if (!secret || secret !== process.env.ADMIN_SECRET) {
+  if (!secret || !process.env.ADMIN_SECRET || !(await timingSafeEqual(secret, process.env.ADMIN_SECRET))) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
   // Generate opaque session token instead of storing raw secret in cookie
