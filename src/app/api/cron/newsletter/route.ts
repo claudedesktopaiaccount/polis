@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getDb } from "@/lib/db";
-import { isNull, eq } from "drizzle-orm";
+import { and, isNull, isNotNull, eq, desc } from "drizzle-orm";
 import { newsletterSubscribers, polls, pollResults } from "@/lib/db/schema";
 import { sendEmail } from "@/lib/email/resend";
 import { buildDigestHtml, buildDigestText, type PollSummary } from "@/lib/email/digest";
@@ -22,7 +22,13 @@ export async function GET(req: NextRequest) {
   const subscribers = await db
     .select()
     .from(newsletterSubscribers)
-    .where(isNull(newsletterSubscribers.unsubscribedAt))
+    .where(
+      // GDPR: only confirmed double-opt-in, non-unsubscribed addresses
+      and(
+        isNotNull(newsletterSubscribers.confirmedAt),
+        isNull(newsletterSubscribers.unsubscribedAt)
+      )
+    )
     .all();
 
   if (subscribers.length === 0) {
@@ -32,7 +38,7 @@ export async function GET(req: NextRequest) {
   const recentPolls = await db
     .select()
     .from(polls)
-    .orderBy(polls.publishedDate)
+    .orderBy(desc(polls.publishedDate))
     .limit(5)
     .all();
 
@@ -55,7 +61,7 @@ export async function GET(req: NextRequest) {
 
   for (const subscriber of subscribers) {
     try {
-      const unsubToken = await generateUnsubToken(subscriber.email, process.env.RESEND_API_KEY!);
+      const unsubToken = await generateUnsubToken(subscriber.email, process.env.CRON_SECRET!);
       const unsubUrl = `${siteUrl}/api/newsletter/unsubscribe?email=${encodeURIComponent(subscriber.email)}&token=${unsubToken}`;
       const html = buildDigestHtml(pollSummaries, siteUrl).replace("{{UNSUB_URL}}", unsubUrl);
       const text = buildDigestText(pollSummaries, siteUrl).replace("{{UNSUB_URL}}", unsubUrl);

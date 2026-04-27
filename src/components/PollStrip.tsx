@@ -30,10 +30,10 @@ export default function PollStrip({ parties, agency, date }: PollStripProps) {
         {visible.map((p) => (
           <div
             key={p.partyId}
-            className="flex items-center gap-3.5 border border-border rounded-lg px-3 py-2"
+            className="flex items-center gap-3.5 border border-border px-3 py-2"
           >
             <div
-              className="w-9 h-9 rounded-[7px] shrink-0 flex items-center justify-center"
+              className="w-9 h-9 shrink-0 flex items-center justify-center"
               style={{ background: p.color }}
             >
               <span

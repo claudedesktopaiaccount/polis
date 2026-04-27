@@ -67,9 +67,14 @@ export async function safeFetch(
 
   let response: Response;
   try {
-    response = await fetch(url, { signal: controller.signal, redirect: "follow" });
-  } catch {
+    response = await fetch(url, { signal: controller.signal, redirect: "error" });
+  } catch (e) {
     clearTimeout(timer);
+    if (e instanceof SafeFetchError) throw e;
+    // redirect: "error" throws a TypeError on redirect — surface it clearly
+    if (e instanceof TypeError && String(e.message).includes("redirect")) {
+      throw new SafeFetchError("REDIRECT_BLOCKED", "Presmerovania nie sú povolené");
+    }
     throw new SafeFetchError("FETCH_FAILED", "Fetch zlyhal");
   }
   clearTimeout(timer);

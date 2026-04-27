@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.82.0",
+    "@opennextjs/cloudflare": "^1.19.4",
     "cheerio": "^1.2.0",
     "drizzle-orm": "^0.45.1",
     "mammoth": "^1.12.0",

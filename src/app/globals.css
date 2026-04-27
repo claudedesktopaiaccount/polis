@@ -21,10 +21,10 @@
   --color-btn-primary: var(--btn-primary-bg);
   --color-btn-primary-text: var(--btn-primary-text);
   --color-footer: var(--footer-bg);
-  --color-hover: var(--hover);
-  --color-surface: var(--surface);
-  --color-text: var(--text);
-  --color-divider: var(--divider);
+  --color-surface: var(--bg-card);
+  --color-text: var(--text-secondary);
+  --color-divider: var(--border-color);
+  --color-hover: var(--bg-subtle);
 
   /* Party colours */
   --color-party-ps: #1a6eb5;
@@ -45,9 +45,9 @@
   /* Spacing */
   --max-width-content: 1100px;
   --nav-height: 52px;
-  --radius-card: 12px;
-  --radius-btn: 6px;
-  --radius-pill: 20px;
+  --radius-card: 0px;
+  --radius-btn: 0px;
+  --radius-pill: 0px;
 }
 
 :root {
@@ -68,13 +68,6 @@
   --btn-primary-text: #ffffff;
   --footer-bg: #1a1a1a;
 
-  /* Legacy aliases (keep for components not yet migrated) */
-  --ink: #1a1a1a;
-  --paper: #f8f5f0;
-  --surface: #ffffff;
-  --text: #444444;
-  --divider: #e8e3db;
-  --hover: #f0ede6;
 }
 
 .dark {
@@ -94,14 +87,6 @@
   --btn-primary-text: #0f0f0f;
   --footer-bg: #0a0a0a;
 
-  /* Legacy aliases */
-  --ink: #f0ede6;
-  --paper: #0f0f0f;
-  --surface: #1a1a1a;
-  --text: #b0a898;
-  --divider: #2a2a2a;
-  --hover: #242424;
-
   color-scheme: dark;
 }
 
@@ -120,7 +105,7 @@ h1, h2, h3 {
 
 /* Focus indicators — WCAG 2.1 AA */
 :focus-visible {
-  outline: 2px solid var(--ink);
+  outline: 2px solid var(--text-primary);
   outline-offset: 2px;
 }
 
@@ -131,8 +116,8 @@ h1, h2, h3 {
   left: 1rem;
   z-index: 100;
   padding: 0.5rem 1rem;
-  background: var(--ink);
-  color: var(--paper);
+  background: var(--text-primary);
+  color: var(--bg-page);
   font-size: 0.875rem;
   font-weight: 600;
 }
@@ -151,6 +136,14 @@ h1, h2, h3 {
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.02em;
 }
+
+/* Navbar logo cross-fade */
+.logo-swap { display: inline-grid; }
+.logo-swap > * { grid-area: 1 / 1; transition: opacity 150ms ease; }
+.logo-swap .logo-en { opacity: 1; transition-delay: 150ms; }
+.logo-swap .logo-gr { opacity: 0; transition-delay: 0ms; }
+.logo-swap:hover .logo-en { opacity: 0; transition-delay: 0ms; }
+.logo-swap:hover .logo-gr { opacity: 1; transition-delay: 150ms; }
 
 /* Micro-labels — uppercase section headers */
 .micro-label {
@@ -255,7 +248,7 @@ h1, h2, h3 {
   font-family: var(--font-serif), Georgia, serif;
   font-style: italic;
   font-size: 0.8rem;
-  color: var(--text);
+  color: var(--text-secondary);
   opacity: 0.4;
   letter-spacing: 0.05em;
   pointer-events: none;
@@ -269,3 +262,4 @@ h1, h2, h3 {
     font-size: 0.7rem;
   }
 }
+

@@ -7,10 +7,6 @@ import { useTheme } from "@/components/ThemeProvider";
 import { useAuth } from "@/components/AuthProvider";
 import { ELECTION_DATE_ESTIMATE } from "@/lib/site-config";
 
-const DAYS_UNTIL_ELECTION = Math.ceil(
-  (ELECTION_DATE_ESTIMATE.getTime() - Date.now()) / 86_400_000
-);
-
 const NAV_LINKS = [
   { href: "/", label: "Domov" },
   { href: "/prieskumy", label: "Prieskumy" },
@@ -21,6 +17,10 @@ const NAV_LINKS = [
   { href: "/volebny-kalkulator", label: "Koho voliť?" },
 ];
 
+
+function daysUntilElection(): number {
+  return Math.ceil((ELECTION_DATE_ESTIMATE.getTime() - Date.now()) / 86_400_000);
+}
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
@@ -47,21 +47,21 @@ export default function Navbar() {
 
   return (
     <>
-      <header className="sticky top-0 z-50 bg-surface/95 backdrop-blur-sm border-b-3 border-ink" style={{viewTransitionName:"navbar"}}>
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-[52px]">
-          <Link href="/" className="group text-xl font-bold text-ink tracking-tight font-serif relative">
-            <span className="transition-opacity duration-300 group-hover:opacity-0">Polis</span>
-            <span className="absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100">πόλις</span>
+      <header className="sticky top-0 z-50 bg-surface border-b-3 border-ink" style={{viewTransitionName:"navbar"}}>
+        <div className="relative max-w-content mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-[52px]">
+          <Link href="/" className="logo-swap font-serif font-bold text-xl text-ink tracking-tight">
+            <span className="logo-en">Polis</span>
+            <span aria-hidden className="logo-gr whitespace-nowrap pointer-events-none">πόλις</span>
           </Link>
 
           {/* Election countdown badge — desktop only, hidden after election */}
-          {DAYS_UNTIL_ELECTION > 0 && (
+          {daysUntilElection() > 0 && (
             <div
               suppressHydrationWarning
-              aria-label={`~${DAYS_UNTIL_ELECTION} dní do volieb`}
+              aria-label={`~${daysUntilElection()} dní do volieb`}
               className="hidden lg:flex absolute left-1/2 -translate-x-1/2 flex-col items-center justify-center bg-ink text-surface w-[60px] h-[44px]"
             >
-              <span className="text-[20px] font-bold leading-none">~{DAYS_UNTIL_ELECTION}</span>
+              <span className="text-[20px] font-bold leading-none">~{daysUntilElection()}</span>
               <span className="text-[7px] font-medium tracking-[0.12em] uppercase opacity-60 mt-[2px]">DNÍ</span>
             </div>
           )}
@@ -116,7 +116,7 @@ export default function Navbar() {
                 ) : (
                   <Link
                     href="/prihlasenie"
-                    className="text-[14px] text-ink border border-border-strong rounded-md px-3 py-[5px] hover:bg-hover transition-colors"
+                    className="text-[14px] text-ink border border-border-strong px-3 py-[5px] hover:bg-hover transition-colors"
                   >
                     Prihlásiť sa
                   </Link>

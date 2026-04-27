@@ -1,10 +1,14 @@
+No file path provided — compressing the pasted text directly following the skill rules.
+
+---
+
 # Polis
 
-Slovak political tracker web app — polls, predictions, coalition simulations, crowd predictions (tipovanie), and political news aggregation.
+Slovak political tracker — polls, predictions, coalition simulations, crowd predictions (tipovanie), news aggregation.
 
 ## Session Start
 
-When the user says "continue with HANDOFF.md" or similar, read `HANDOFF.md` at the project root. It contains the current project status, completed work, pending tasks (Phase 1-4), key files, technical notes, and design rules. Pick up from the next incomplete task unless the user specifies otherwise.
+User says "continue with HANDOFF.md" or similar → read `HANDOFF.md` at project root. Contains status, completed work, pending tasks (Phase 1-4), key files, technical notes, design rules. Pick up next incomplete task unless user specifies otherwise.
 
 ## Tech Stack
 
@@ -72,16 +76,16 @@ See `.env.example`:
 
 ## Conventions
 
-- UI language is **Slovak** — all user-facing text is in Slovak
-- App Router patterns — server components by default, `"use client"` only when needed
+- UI language **Slovak** — all user-facing text in Slovak
+- App Router patterns — server components default, `"use client"` only when needed
 - Political data domain — parties, polls, predictions, coalitions
-- D1 database accessed via Drizzle ORM with type-safe queries
+- D1 via Drizzle ORM, type-safe queries
 
 ## Context7 — ALWAYS Use for Documentation
 
-Before writing or modifying code that uses any of these libraries, ALWAYS use context7 MCP (`resolve-library-id` → `get-library-docs`) to fetch current documentation. Do NOT rely on training data for API usage.
+Before writing/modifying code using any library below, ALWAYS use context7 MCP (`resolve-library-id` → `get-library-docs`). Do NOT rely on training data.
 
-**Libraries in this project that require context7 lookup:**
+**Libraries requiring context7 lookup:**
 - **Next.js 16** (App Router) — routing, server components, metadata, caching
 - **React 19** — hooks, server actions, use() API
 - **Drizzle ORM** — queries, schema, migrations, D1 adapter
@@ -90,7 +94,7 @@ Before writing or modifying code that uses any of these libraries, ALWAYS use co
 - **TailwindCSS 4** — utility classes, config, new v4 syntax
 - **Cheerio** — selectors, parsing, extraction
 
-If you are about to write code involving any of these and you haven't looked up the docs in this session, stop and use context7 first.
+Haven't looked up docs this session → stop, use context7 first.
 
 ## Claude Code Automations
 
@@ -101,6 +105,7 @@ If you are about to write code involving any of these and you haven't looked up 
 ### Skills
 - `/deploy` — Build and deploy to Cloudflare Workers
 - `/db-migrate` — Generate and apply Drizzle database migrations
+- `/caveman` — ALWAYS invoke at session start to activate caveman compression mode (saves tokens)
 
 ### Subagents
 - `security-reviewer` — Audits credential handling, scraping safety, input sanitization

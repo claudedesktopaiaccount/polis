@@ -21,7 +21,7 @@ export async function GET(req: NextRequest) {
     return new NextResponse("Neplatn\u00fd odkaz.", { status: 400 });
   }
 
-  const valid = await verifyUnsubToken(token, email, process.env.RESEND_API_KEY ?? "");
+  const valid = await verifyUnsubToken(token, email, process.env.CRON_SECRET ?? "");
   if (!valid) {
     return new NextResponse("Neplatn\u00fd alebo expirovan\u00fd odkaz.", { status: 400 });
   }
