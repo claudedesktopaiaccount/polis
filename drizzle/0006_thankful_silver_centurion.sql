@@ -1,0 +1,1 @@
+ALTER TABLE `newsletter_subscribers` ADD `last_digest_sent_at` text;
