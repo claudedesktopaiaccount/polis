@@ -11,6 +11,7 @@ const NAV_LINKS = [
   { href: "/", label: "Domov" },
   { href: "/prieskumy", label: "Prieskumy" },
   { href: "/predikcia", label: "Predikcia" },
+  { href: "/poslanci", label: "Poslanci" },
   { href: "/povolebne-plany", label: "Povolebné plány" },
   { href: "/koalicny-simulator", label: "Koaličný simulátor" },
   { href: "/tipovanie", label: "Tipovanie" },
