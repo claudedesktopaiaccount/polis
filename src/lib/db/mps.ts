@@ -10,7 +10,7 @@ import {
   contracts,
   partyPromises,
 } from "@/lib/db/schema";
-import { eq, like, desc, count, sum, sql, and, asc } from "drizzle-orm";
+import { eq, desc, count, sum, sql, and, asc } from "drizzle-orm";
 
 // ─── Row Types ───────────────────────────────────────────────────────────────
 
@@ -102,7 +102,8 @@ export async function getMps(
     conditions.push(eq(parties.abbreviation, party));
   }
   if (search) {
-    conditions.push(like(mps.nameDisplay, `%${search}%`));
+    const safeSearch = search.replace(/[%_\\]/g, "\\$&");
+    conditions.push(sql`${mps.nameDisplay} LIKE ${"%" + safeSearch + "%"} ESCAPE '\\'`);
   }
 
   const whereClause = conditions.length > 0 ? and(...conditions) : undefined;

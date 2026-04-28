@@ -94,7 +94,7 @@ export default async function MpDetailPage({
       <div className="border border-border bg-card p-4 mb-6 flex flex-col sm:flex-row gap-4">
         {/* Portrait */}
         <div className="shrink-0">
-          {mp.photoUrl ? (
+          {mp.photoUrl?.startsWith("https://") ? (
             <img
               src={mp.photoUrl}
               alt={mp.nameDisplay}

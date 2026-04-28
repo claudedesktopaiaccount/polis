@@ -1,6 +1,6 @@
 "use client";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useRef } from "react";
+import { useCallback, useRef, useState } from "react";
 
 interface Party {
   id: string;
@@ -41,9 +41,14 @@ export default function MpFilters({ parties }: MpFiltersProps) {
     [pushParams]
   );
 
+  const currentParty = searchParams.get("party") ?? "";
+  const currentSearch = searchParams.get("search") ?? "";
+  const [inputValue, setInputValue] = useState(currentSearch);
+
   const handleSearchChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value;
+      setInputValue(value);
       if (debounceRef.current) clearTimeout(debounceRef.current);
       debounceRef.current = setTimeout(() => {
         pushParams({ search: value || null });
@@ -52,13 +57,10 @@ export default function MpFilters({ parties }: MpFiltersProps) {
     [pushParams]
   );
 
-  const currentParty = searchParams.get("party") ?? "";
-  const currentSearch = searchParams.get("search") ?? "";
-
   return (
     <div className="flex flex-wrap gap-2 mb-6">
       <select
-        defaultValue={currentParty}
+        value={currentParty}
         onChange={handlePartyChange}
         className="border border-border bg-surface text-sm px-3 py-2 text-ink"
       >
@@ -73,7 +75,7 @@ export default function MpFilters({ parties }: MpFiltersProps) {
       <input
         type="text"
         placeholder="Hľadať poslanca..."
-        defaultValue={currentSearch}
+        value={inputValue}
         onChange={handleSearchChange}
         className="border border-border bg-surface text-sm px-3 py-2 text-ink placeholder:text-muted min-w-[200px]"
       />
