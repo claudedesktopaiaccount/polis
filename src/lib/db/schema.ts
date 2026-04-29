@@ -233,7 +233,7 @@ export const users = sqliteTable("users", {
 // ─── User Sessions ──────────────────────────────────────
 
 export const userSessions = sqliteTable("user_sessions", {
-  id: text("id").primaryKey(), // session token (UUID)
+  id: text("id").primaryKey(), // SHA-256 hash of session token
   userId: text("user_id").notNull().references(() => users.id),
   createdAt: text("created_at").notNull(),
   expiresAt: text("expires_at").notNull(),
