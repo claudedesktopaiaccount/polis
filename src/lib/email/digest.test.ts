@@ -7,24 +7,24 @@ const mockPolls = [
 
 describe("buildDigestHtml", () => {
   it("contains agency name", () => {
-    const html = buildDigestHtml(mockPolls, "https://polis.sk");
+    const html = buildDigestHtml(mockPolls, "https://volimto.sk");
     expect(html).toContain("Focus");
   });
 
   it("contains poll percentage", () => {
-    const html = buildDigestHtml(mockPolls, "https://polis.sk");
+    const html = buildDigestHtml(mockPolls, "https://volimto.sk");
     expect(html).toContain("24.8");
   });
 
   it("contains unsubscribe link placeholder", () => {
-    const html = buildDigestHtml(mockPolls, "https://polis.sk");
+    const html = buildDigestHtml(mockPolls, "https://volimto.sk");
     expect(html).toContain("UNSUB_URL");
   });
 });
 
 describe("buildDigestText", () => {
   it("returns plain text with agency", () => {
-    const text = buildDigestText(mockPolls, "https://polis.sk");
+    const text = buildDigestText(mockPolls, "https://volimto.sk");
     expect(text).toContain("Focus");
   });
 });

@@ -15,7 +15,7 @@ export default function Footer() {
         {/* Bottom row */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pt-6 border-t border-white/20">
           <div>
-            <p className="text-[14px] text-white/80">© {new Date().getFullYear()} Polis</p>
+            <p className="text-[14px] text-white/80">© {new Date().getFullYear()} VolímTo</p>
             <p className="text-[12px] text-white/40 mt-1">
               Dáta z verejne dostupných prieskumov. Nezodpovedáme za presnosť predikcií.
             </p>

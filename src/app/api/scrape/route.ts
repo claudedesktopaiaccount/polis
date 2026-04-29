@@ -17,7 +17,7 @@ export async function GET(req: NextRequest) {
       parties: polls.length > 0 ? Object.keys(polls[0].results) : [],
     });
   } catch (error) {
-    const sentry = createSentry(new Request("https://polis.sk/api/scrape"), {
+    const sentry = createSentry(new Request("https://volimto.sk/api/scrape"), {
       SENTRY_DSN: process.env.SENTRY_DSN,
     });
     captureException(sentry, error);

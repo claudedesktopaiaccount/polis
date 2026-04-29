@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import ProfilClient from "./ProfilClient";
 
 export const metadata: Metadata = {
-  title: "Profil — Polis",
-  description: "Váš profil na Polis.",
+  title: "Profil — VolímTo",
+  description: "Váš profil na VolímTo.",
 };
 
 export default function ProfilPage() {

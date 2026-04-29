@@ -3,7 +3,7 @@ import SectionHeading from "@/components/ui/SectionHeading";
 
 export const metadata: Metadata = {
   title: "Impressum",
-  description: "Informácie o prevádzkovateľovi stránky Polis podľa §5 zákona o elektronickom obchode.",
+  description: "Informácie o prevádzkovateľovi stránky VolímTo podľa §5 zákona o elektronickom obchode.",
 };
 
 export default function ImpressumPage() {
@@ -15,7 +15,7 @@ export default function ImpressumPage() {
         <section>
           <h2 className="font-serif text-xl font-bold text-ink mb-3">Prevádzkovateľ</h2>
           <p className="text-sm">
-            Polis — nezávislý agregátor volebných prieskumov a predikcií
+            VolímTo — nezávislý agregátor volebných prieskumov a predikcií
           </p>
         </section>
 
@@ -23,8 +23,8 @@ export default function ImpressumPage() {
           <h2 className="font-serif text-xl font-bold text-ink mb-3">Kontakt</h2>
           <p className="text-sm mb-2">
             E-mail:{" "}
-            <a href="mailto:redakcia@polis.sk" className="text-ink underline underline-offset-2 hover:text-text transition-colors">
-              redakcia@polis.sk
+            <a href="mailto:redakcia@volimto.sk" className="text-ink underline underline-offset-2 hover:text-text transition-colors">
+              redakcia@volimto.sk
             </a>
           </p>
         </section>
@@ -32,7 +32,7 @@ export default function ImpressumPage() {
         <section className="border-t border-divider pt-6">
           <h2 className="font-serif text-xl font-bold text-ink mb-3">O projekte</h2>
           <p className="text-sm mb-3">
-            Polis je nezávislý agregátor volebných prieskumov a predikcií na Slovensku. Projekt nie je napojený
+            VolímTo je nezávislý agregátor volebných prieskumov a predikcií na Slovensku. Projekt nie je napojený
             na žiadnu politickú stranu ani iné záujmové skupiny.
           </p>
           <p className="text-sm">

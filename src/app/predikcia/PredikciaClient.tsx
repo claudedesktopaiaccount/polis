@@ -143,7 +143,7 @@ export default function PredikciaClient({
 
           <ShareButtons
             url={typeof window !== "undefined" ? window.location.href : "/predikcia"}
-            title="Predikcia volieb | Polis"
+            title="Predikcia volieb | VolímTo"
             description="Monte Carlo predikcia výsledkov slovenských parlamentných volieb."
           />
         </div>

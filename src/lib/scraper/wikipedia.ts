@@ -204,7 +204,7 @@ export async function scrapeWikipediaPolls(): Promise<RawPollRow[]> {
     signal: AbortSignal.timeout(10_000),
     headers: {
       "User-Agent":
-        "Polis/1.0 (Slovak poll aggregator; educational project)",
+        "VolimTo/1.0 (Slovak poll aggregator; educational project)",
     },
   });
 

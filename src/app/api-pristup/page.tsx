@@ -9,7 +9,7 @@ import ApiPristupClient from "./ApiPristupClient";
 export const metadata: Metadata = {
   title: "API pr\u00EDstup",
   description:
-    "Z\u00EDskajte pr\u00EDstup k Polis API pre v\u00FDvoj\u00E1rov, novin\u00E1rov a v\u00FDskumn\u00EDkov.",
+    "Z\u00EDskajte pr\u00EDstup k VolímTo API pre v\u00FDvoj\u00E1rov, novin\u00E1rov a v\u00FDskumn\u00EDkov.",
 };
 
 export default async function ApiPristupPage({
@@ -23,7 +23,7 @@ export default async function ApiPristupPage({
   try {
     const db = getDb();
     const cookieStore = await cookies();
-    const sessionToken = cookieStore.get("polis_session")?.value;
+    const sessionToken = cookieStore.get("volimto_session")?.value;
     if (sessionToken) {
       const session = await validateSession(sessionToken, db);
       if (session) {

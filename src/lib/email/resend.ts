@@ -23,7 +23,7 @@ export async function sendEmail(params: SendEmailParams, env: Env): Promise<void
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      from: params.from ?? "Polis <newsletter@polis.sk>",
+      from: params.from ?? "VolímTo <newsletter@volimto.sk>",
       to: params.to,
       subject: params.subject,
       html: params.html,

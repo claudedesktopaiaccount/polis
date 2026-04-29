@@ -1,6 +1,6 @@
 {
-  "name": "Polis — Slovenské prieskumy a predikcie",
-  "short_name": "Polis",
+  "name": "VolímTo — Slovenské prieskumy a predikcie",
+  "short_name": "VolímTo",
   "description": "Agregátor prieskumov, predikcie volieb, koaličný simulátor a tipovanie.",
   "start_url": "/",
   "display": "standalone",

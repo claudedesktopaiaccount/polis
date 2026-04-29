@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   title: "Koaličný simulátor",
   description: "Simulácia koaličných scenárov pre slovenské parlamentné voľby. Metóda D'Hondt, 150 mandátov, 5% kvórum.",
   openGraph: {
-    title: "Koaličný simulátor | Polis",
+    title: "Koaličný simulátor | VolímTo",
     description: "Simulácia koaličných scenárov pre slovenské parlamentné voľby.",
   },
 };

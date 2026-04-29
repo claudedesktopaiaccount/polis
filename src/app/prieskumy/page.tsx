@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   title: "Prieskumy",
   description: "Aktuálne volebné prieskumy a trendy pre slovenské parlamentné voľby. Agregátor dát od Focus, AKO, Median a ďalších agentúr.",
   openGraph: {
-    title: "Prieskumy | Polis",
+    title: "Prieskumy | VolímTo",
     description: "Aktuálne volebné prieskumy a trendy pre slovenské parlamentné voľby.",
   },
 };

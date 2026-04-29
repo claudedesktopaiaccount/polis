@@ -1,7 +1,7 @@
 (function () {
   "use strict";
 
-  var BASE_URL = "https://polis.sk";
+  var BASE_URL = "https://volimto.sk";
 
   function init() {
     var scripts = document.querySelectorAll("script[data-chart]");
@@ -27,7 +27,7 @@
       iframe.style.height = parseInt(height, 10) + 32 + "px"; // +32 for attribution bar
       iframe.style.display = "block";
       iframe.setAttribute("loading", "lazy");
-      iframe.setAttribute("title", "Polis — volebné prieskumy");
+      iframe.setAttribute("title", "VolímTo — volebné prieskumy");
       iframe.setAttribute("allowfullscreen", "false");
 
       script.parentNode.insertBefore(iframe, script.nextSibling);

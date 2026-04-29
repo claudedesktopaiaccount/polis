@@ -3,7 +3,7 @@ import SectionHeading from "@/components/ui/SectionHeading";
 
 export const metadata: Metadata = {
   title: "Zásady cookies",
-  description: "Prehľad cookies používaných na stránke Polis.",
+  description: "Prehľad cookies používaných na stránke VolímTo.",
 };
 
 export default function CookiesPage() {
@@ -13,7 +13,7 @@ export default function CookiesPage() {
 
       <div className="text-sm text-text space-y-6">
         <p>
-          Polis používa nasledujúce cookies. Funkčné cookies sú nevyhnutné na prevádzku stránky
+          VolímTo používa nasledujúce cookies. Funkčné cookies sú nevyhnutné na prevádzku stránky
           a nemožno ich vypnúť. Analytické cookies sú voliteľné a aktivujú sa len s vaším súhlasom.
         </p>
 
@@ -28,7 +28,7 @@ export default function CookiesPage() {
           </thead>
           <tbody className="divide-y divide-divider">
             <tr>
-              <td className="py-2 pr-4 font-mono">polis_session</td>
+              <td className="py-2 pr-4 font-mono">volimto_session</td>
               <td className="py-2 pr-4 text-text/70">Prihlásenie — identifikácia prihláseného používateľa</td>
               <td className="py-2 pr-4 text-text/70">7 dní</td>
               <td className="py-2 text-text/70">Funkčné</td>
@@ -46,19 +46,19 @@ export default function CookiesPage() {
               <td className="py-2 text-text/70">Funkčné</td>
             </tr>
             <tr>
-              <td className="py-2 pr-4 font-mono">polis_engaged</td>
+              <td className="py-2 pr-4 font-mono">volimto_engaged</td>
               <td className="py-2 pr-4 text-text/70">UI — pamätá si, či ste prešli úvodnou obrazovkou</td>
               <td className="py-2 pr-4 text-text/70">1 rok</td>
               <td className="py-2 text-text/70">Funkčné</td>
             </tr>
             <tr>
-              <td className="py-2 pr-4 font-mono">polis_score</td>
+              <td className="py-2 pr-4 font-mono">volimto_score</td>
               <td className="py-2 pr-4 text-text/70">Tipovanie — cachuje vaše skóre pre zobrazenie v navigácii</td>
               <td className="py-2 pr-4 text-text/70">7 dní</td>
               <td className="py-2 text-text/70">Funkčné</td>
             </tr>
             <tr>
-              <td className="py-2 pr-4 font-mono">polis_theme</td>
+              <td className="py-2 pr-4 font-mono">volimto_theme</td>
               <td className="py-2 pr-4 text-text/70">UI — pamätá si vašu voľbu svetlého/tmavého režimu</td>
               <td className="py-2 pr-4 text-text/70">1 rok</td>
               <td className="py-2 text-text/70">Funkčné</td>

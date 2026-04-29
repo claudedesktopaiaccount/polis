@@ -29,7 +29,7 @@ const dmSerifDisplay = DM_Serif_Display({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Polis — Slovenské prieskumy a predikcie",
+    default: "VolímTo — Slovenské prieskumy a predikcie",
     template: `%s | ${SITE_NAME}`,
   },
   description: SITE_DESCRIPTION,
@@ -37,12 +37,12 @@ export const metadata: Metadata = {
     type: "website",
     locale: SITE_LOCALE,
     siteName: SITE_NAME,
-    title: "Polis — Slovenské prieskumy a predikcie",
+    title: "VolímTo — Slovenské prieskumy a predikcie",
     description: SITE_DESCRIPTION,
   },
   twitter: {
     card: "summary_large_image",
-    title: "Polis — Slovenské prieskumy a predikcie",
+    title: "VolímTo — Slovenské prieskumy a predikcie",
     description: SITE_DESCRIPTION,
   },
 };

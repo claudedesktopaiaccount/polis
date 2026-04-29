@@ -20,7 +20,7 @@ const AGENCY_WEIGHTS: Record<string, number> = {
   IPSOS: 0.9,
   MVK: 0.85,
   NMS: 0.8,
-  Polis: 0.8,
+  VolímTo: 0.8,
 };
 
 /** Time decay: polls lose 50% weight after this many days */

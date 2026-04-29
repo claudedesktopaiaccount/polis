@@ -26,9 +26,9 @@ export async function generateMetadata({
   const { slug } = await params;
   const db = getDb();
   const mp = await getMpBySlug(db, slug);
-  if (!mp) return { title: "Poslanec — Polis" };
+  if (!mp) return { title: "Poslanec — VolímTo" };
   return {
-    title: `${mp.nameDisplay} — Polis`,
+    title: `${mp.nameDisplay} — VolímTo`,
     description: `Hlasovanie, reči, sľuby a firmy: kompletný záznam poslanca ${mp.nameFull}${mp.partyAbbr ? ` (${mp.partyAbbr})` : ""}.`,
   };
 }

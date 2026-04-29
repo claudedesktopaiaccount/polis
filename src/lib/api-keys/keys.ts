@@ -19,7 +19,7 @@ export async function createApiKey(
   userId: string,
   db: Database
 ): Promise<{ rawKey: string; record: ApiKeyRecord }> {
-  const rawKey = `polis_${crypto.randomUUID().replace(/-/g, "")}`;
+  const rawKey = `volimto_${crypto.randomUUID().replace(/-/g, "")}`;
   const keyHash = await sha256Hex(rawKey);
   const id = crypto.randomUUID();
   const now = new Date().toISOString();

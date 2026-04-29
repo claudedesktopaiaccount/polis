@@ -36,8 +36,8 @@ export async function GET(req: NextRequest) {
   return new NextResponse(
     `<!DOCTYPE html><html lang="sk"><body style="font-family:Georgia,serif;padding:40px;max-width:600px;margin:auto">
       <h1>Odhl\u00e1senie \u00faspe\u0161n\u00e9</h1>
-      <p>Va\u0161a adresa <strong>${escapeHtml(email)}</strong> bola odhl\u00e1sen\u00e1 z odberu newslettera Polis.</p>
-      <p><a href="https://polis.sk">Sp\u00e4\u0165 na Polis</a></p>
+      <p>Va\u0161a adresa <strong>${escapeHtml(email)}</strong> bola odhl\u00e1sen\u00e1 z odberu newslettera VolímTo.</p>
+      <p><a href="https://volimto.sk">Sp\u00e4\u0165 na VolímTo</a></p>
     </body></html>`,
     { headers: { "Content-Type": "text/html;charset=utf-8" } }
   );

@@ -7,7 +7,7 @@ import Link from "next/link";
 import MpFilters from "./MpFilters";
 
 export const metadata: Metadata = {
-  title: "Poslanci — Polis",
+  title: "Poslanci — VolímTo",
   description:
     "Kompletný prehľad slovenských poslancov NR SR — hlasovanie, reči, sľuby a firmy.",
 };

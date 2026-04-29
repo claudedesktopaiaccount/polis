@@ -47,7 +47,7 @@ export default function PrihlasenieClient() {
     <div className="min-h-[70vh] flex items-start justify-center pt-16 px-4">
       <div className="w-full max-w-sm">
         <h1 className="font-serif text-2xl font-semibold text-ink mb-1">Prihlásenie</h1>
-        <p className="text-sm text-text mb-8">Vitajte späť na Polis.</p>
+        <p className="text-sm text-text mb-8">Vitajte späť na VolímTo.</p>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-5">
           <div>
