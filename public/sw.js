@@ -1,5 +1,5 @@
-const CACHE_NAME = "polis-v1";
-const STATIC_CACHE = "polis-static-v1";
+const CACHE_NAME = "volimto-v1";
+const STATIC_CACHE = "volimto-static-v1";
 
 const STATIC_PATTERNS = [
   /^\/_next\/static\//,
@@ -101,10 +101,10 @@ self.addEventListener("fetch", (event) => {
             new Response(
               `<!DOCTYPE html>
 <html lang="sk">
-<head><meta charset="utf-8"><title>Offline — Polis</title>
+<head><meta charset="utf-8"><title>Offline — VolímTo</title>
 <style>body{font-family:serif;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;background:#F4F3EE;color:#111110;}
 .box{text-align:center;padding:2rem;}h1{font-size:2rem;margin-bottom:1rem;}p{color:#555;}</style></head>
-<body><div class="box"><h1>Polis</h1><p>Ste offline. Skontrolujte pripojenie na internet a skúste to znova.</p></div></body>
+<body><div class="box"><h1>VolímTo</h1><p>Ste offline. Skontrolujte pripojenie na internet a skúste to znova.</p></div></body>
 </html>`,
               { headers: { "Content-Type": "text/html; charset=utf-8" } }
             )

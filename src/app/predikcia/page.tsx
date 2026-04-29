@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   title: "Predikcia",
   description: "Monte Carlo predikcia výsledkov slovenských parlamentných volieb. Simulácia rozdelenia mandátov metódou D'Hondt.",
   openGraph: {
-    title: "Predikcia | Polis",
+    title: "Predikcia | VolímTo",
     description: "Monte Carlo predikcia výsledkov slovenských parlamentných volieb.",
   },
 };

@@ -49,7 +49,7 @@ async function fetchPageText(url: string): Promise<string> {
   const res = await fetch(url, {
     redirect: "error",
     signal: AbortSignal.timeout(10_000),
-    headers: { "User-Agent": "Mozilla/5.0 (compatible; Polis/1.0)" },
+    headers: { "User-Agent": "Mozilla/5.0 (compatible; VolimTo/1.0)" },
   });
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   const html = await res.text();

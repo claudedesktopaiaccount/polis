@@ -1,6 +1,6 @@
 export const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL || "https://polis.sk";
-export const SITE_NAME = "Polis";
+  process.env.NEXT_PUBLIC_SITE_URL || "https://volimto.sk";
+export const SITE_NAME = "VolímTo";
 export const SITE_DESCRIPTION =
   "Agregátor prieskumov, predikcie volieb, koaličný simulátor a tipovanie pre slovenské parlamentné voľby.";
 export const SITE_LOCALE = "sk_SK";

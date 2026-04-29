@@ -6,7 +6,7 @@ import ConsentManager from "./ConsentManager";
 
 export const metadata: Metadata = {
   title: "Ochrana súkromia",
-  description: "Informácie o spracovaní osobných údajov na stránke Polis.",
+  description: "Informácie o spracovaní osobných údajov na stránke VolímTo.",
 };
 
 export default function SukromiePage() {

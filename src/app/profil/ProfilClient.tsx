@@ -77,7 +77,7 @@ export default function ProfilClient() {
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = "polis-data-export.json";
+      a.download = "volimto-data-export.json";
       a.click();
       URL.revokeObjectURL(url);
     }

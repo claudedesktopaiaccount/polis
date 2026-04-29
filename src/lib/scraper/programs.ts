@@ -26,7 +26,7 @@ const PARTY_PROGRAMS = [
 ];
 
 const DEFAULT_USER_AGENT =
-  "Mozilla/5.0 (compatible; Polis/1.0; +https://polis.sk)";
+  "Mozilla/5.0 (compatible; VolimTo/1.0; +https://volimto.sk)";
 
 async function defaultFetcher(url: string): Promise<string> {
   const controller = new AbortController();

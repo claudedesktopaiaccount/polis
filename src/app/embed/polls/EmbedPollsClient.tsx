@@ -66,12 +66,12 @@ export default function EmbedPollsClient({ chartData, partyMeta }: EmbedPollsCli
       >
         <span className="text-[10px] text-text/50">Vývoj volebných preferencií</span>
         <a
-          href="https://polis.sk"
+          href="https://volimto.sk"
           target="_blank"
           rel="noopener noreferrer"
           className="text-[10px] text-text/50 hover:text-ink transition-colors"
         >
-          Zdroj: Polis | polis.sk
+          Zdroj: VolímTo | volimto.sk
         </a>
       </div>
     </div>

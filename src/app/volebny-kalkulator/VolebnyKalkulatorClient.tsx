@@ -22,7 +22,7 @@ export default function VolebnyKalkulatorClient({ questions: questionsProp }: Pr
 
   useEffect(() => {
     if (showResults) {
-      document.cookie = "polis_engaged=1; path=/; max-age=31536000; SameSite=Lax";
+      document.cookie = "volimto_engaged=1; path=/; max-age=31536000; SameSite=Lax";
     }
   }, [showResults]);
 
@@ -86,12 +86,12 @@ export default function VolebnyKalkulatorClient({ questions: questionsProp }: Pr
         <div className="flex justify-center mb-6">
           <button
             onClick={() => {
-              const shareText = `Môj výsledok volebnej kalkulačky: ${top.score}% zhoda s ${top.party?.name ?? ""} — polis.sk`;
+              const shareText = `Môj výsledok volebnej kalkulačky: ${top.score}% zhoda s ${top.party?.name ?? ""} — volimto.sk`;
               if (typeof navigator !== "undefined" && navigator.share) {
                 navigator.share({
-                  title: "Volebný kalkulátor · Polis",
+                  title: "Volebný kalkulátor · VolímTo",
                   text: shareText,
-                  url: "https://polis.sk/volebny-kalkulator",
+                  url: "https://volimto.sk/volebny-kalkulator",
                 }).catch(() => {/* user cancelled */});
               } else {
                 const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;

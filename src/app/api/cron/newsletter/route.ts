@@ -50,7 +50,7 @@ export async function GET(req: NextRequest) {
     })
   );
 
-  const siteUrl = "https://polis.sk";
+  const siteUrl = "https://volimto.sk";
   let sent = 0;
   let errors = 0;
 
@@ -61,7 +61,7 @@ export async function GET(req: NextRequest) {
       const html = buildDigestHtml(pollSummaries, siteUrl).replaceAll("{{UNSUB_URL}}", unsubUrl);
       const text = buildDigestText(pollSummaries, siteUrl).replaceAll("{{UNSUB_URL}}", unsubUrl);
       await sendEmail(
-        { to: subscriber.email, subject: `Polis Tyzdenny — ${new Date().toLocaleDateString("sk-SK")}`, html, text },
+        { to: subscriber.email, subject: `VolímTo Tyzdenny — ${new Date().toLocaleDateString("sk-SK")}`, html, text },
         { RESEND_API_KEY: process.env.RESEND_API_KEY! }
       );
       sent++;

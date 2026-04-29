@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   title: "Tipovanie",
   description: "Tipnite si víťaza slovenských parlamentných volieb a porovnajte sa s ostatnými.",
   openGraph: {
-    title: "Tipovanie | Polis",
+    title: "Tipovanie | VolímTo",
     description: "Tipnite si víťaza slovenských parlamentných volieb.",
   },
 };

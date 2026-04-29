@@ -3,7 +3,7 @@
 
 export type Fetcher = (url: string) => Promise<string>;
 
-const USER_AGENT = "Mozilla/5.0 (compatible; Polis/1.0; +https://polis.sk)";
+const USER_AGENT = "Mozilla/5.0 (compatible; VolimTo/1.0; +https://volimto.sk)";
 const TIMEOUT_MS = 20_000;
 
 async function defaultFetcher(url: string): Promise<string> {

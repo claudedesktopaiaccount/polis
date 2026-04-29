@@ -65,7 +65,7 @@ export class D1HttpStatement {
 
   async raw<T = unknown[]>(): Promise<T[]> {
     const r = await this.exec();
-    return r.results as unknown as T[];
+    return r.results.map((row) => Object.values(row)) as unknown as T[];
   }
 }
 

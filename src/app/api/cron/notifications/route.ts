@@ -23,7 +23,7 @@ export async function GET(req: NextRequest) {
     .where(eq(userNotificationPrefs.onNewPoll, 1));
 
   let sent = 0;
-  const siteUrl = "https://polis.sk";
+  const siteUrl = "https://volimto.sk";
 
   for (const { userId } of optedIn) {
     const recentLog = await db

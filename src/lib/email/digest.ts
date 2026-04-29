@@ -38,10 +38,10 @@ export function buildDigestHtml(polls: PollSummary[], siteUrl: string): string {
 
   return `<!DOCTYPE html>
 <html lang="sk">
-<head><meta charset="utf-8"><title>Polis Týždenník</title></head>
+<head><meta charset="utf-8"><title>VolímTo Týždenník</title></head>
 <body style="font-family:Georgia,serif;background:#F4F3EE;color:#111110;margin:0;padding:0">
   <div style="max-width:600px;margin:40px auto;background:#fff;border:1px solid #D6D5CF;padding:40px">
-    <h1 style="font-size:24px;margin:0 0 8px">Polis Týždenník</h1>
+    <h1 style="font-size:24px;margin:0 0 8px">VolímTo Týždenník</h1>
     <p style="color:#666;margin:0 0 32px;font-size:13px">Prehľad politického diania za uplynulý týždeň</p>
 
     <h2 style="font-size:16px;border-bottom:3px solid #111;padding-bottom:8px">Najnovšie prieskumy</h2>
@@ -62,7 +62,7 @@ export function buildDigestHtml(polls: PollSummary[], siteUrl: string): string {
 
     <hr style="border:none;border-top:1px solid #D6D5CF;margin:32px 0">
     <p style="font-size:11px;color:#999">
-      Dostávate tento email, pretože ste sa prihlásili na odber na <a href="${siteUrl}" style="color:#999">polis.sk</a>.<br>
+      Dostávate tento email, pretože ste sa prihlásili na odber na <a href="${siteUrl}" style="color:#999">volimto.sk</a>.<br>
       <a href="{{UNSUB_URL}}" style="color:#999">Odhlásiť sa z odberu</a>
     </p>
   </div>
@@ -72,7 +72,7 @@ export function buildDigestHtml(polls: PollSummary[], siteUrl: string): string {
 
 export function buildDigestText(polls: PollSummary[], siteUrl: string): string {
   const lines = [
-    "POLIS TÝŽDENNÍK",
+    "VOLÍMTO TÝŽDENNÍK",
     "================",
     "",
     "Najnovšie prieskumy:",

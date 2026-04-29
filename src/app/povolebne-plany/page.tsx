@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   title: "Povolebné plány",
   description: "Prehľad sľubov a programových bodov slovenských politických strán pred parlamentnými voľbami.",
   openGraph: {
-    title: "Povolebné plány | Polis",
+    title: "Povolebné plány | VolímTo",
     description: "Čo sľubujú politické strany pred voľbami.",
   },
 };

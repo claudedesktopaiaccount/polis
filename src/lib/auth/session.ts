@@ -2,7 +2,7 @@ import { type Database } from "@/lib/db";
 import { userSessions } from "@/lib/db/schema";
 import { eq, lt } from "drizzle-orm";
 
-export const SESSION_COOKIE = "polis_session";
+export const SESSION_COOKIE = "volimto_session";
 const SESSION_DURATION_DAYS = 30;
 
 export async function createSession(

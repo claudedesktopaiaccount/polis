@@ -36,7 +36,7 @@ export async function GET(request: NextRequest) {
 
     if (!rawKey) {
       return NextResponse.json(
-        { error: "API kľúč je povinný. Získajte ho na polis.sk/api-pristup" },
+        { error: "API kľúč je povinný. Získajte ho na volimto.sk/api-pristup" },
         { status: 401 }
       );
     }

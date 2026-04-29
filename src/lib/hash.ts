@@ -18,7 +18,7 @@ export async function timingSafeEqual(a: string, b: string): Promise<boolean> {
   const enc = new TextEncoder();
   const key = await crypto.subtle.importKey(
     "raw",
-    enc.encode("polis-timing-safe-eq"),
+    enc.encode("volimto-timing-safe-eq"),
     { name: "HMAC", hash: "SHA-256" },
     false,
     ["sign"]

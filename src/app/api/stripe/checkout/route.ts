@@ -7,7 +7,7 @@ import { users } from "@/lib/db/schema";
 export async function POST(req: NextRequest) {
   const db = getDb();
 
-  const sessionToken = req.cookies.get("polis_session")?.value;
+  const sessionToken = req.cookies.get("volimto_session")?.value;
   if (!sessionToken) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const session = await validateSession(sessionToken, db);
@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
     .from(users)
     .where(eq(users.id, session.userId));
 
-  const siteUrl = "https://polis.sk";
+  const siteUrl = "https://volimto.sk";
 
   // Create Stripe Checkout session via REST (no SDK — Workers compatible)
   const params = new URLSearchParams({

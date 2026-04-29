@@ -159,13 +159,13 @@ export default function ApiPristupClient({ userKeys, isLoggedIn, justUpgraded }:
           <div>
             <p className="font-sans font-semibold mb-1">GET /api/v1/polls</p>
             <code className="block bg-ink text-surface p-3 text-xs">
-              curl https://polis.sk/api/v1/polls?key=YOUR_KEY
+              curl https://volimto.sk/api/v1/polls?key=YOUR_KEY
             </code>
           </div>
           <div>
             <p className="font-sans font-semibold mb-1">{"Hlavi\u010Dka Authorization (alternat\u00EDva)"}</p>
             <code className="block bg-ink text-surface p-3 text-xs">
-              curl -H &quot;Authorization: Bearer YOUR_KEY&quot; https://polis.sk/api/v1/polls
+              curl -H &quot;Authorization: Bearer YOUR_KEY&quot; https://volimto.sk/api/v1/polls
             </code>
           </div>
         </div>

@@ -1,36 +1,36 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Vložiť widget | Polis",
+  title: "Vložiť widget | VolímTo",
   description: "Vložte interaktívny graf volebných prieskumov na vašu stránku.",
   robots: { index: false, follow: false },
 };
 
 const SNIPPET_BASIC = `<script
-  src="https://polis.sk/embed.js"
+  src="https://volimto.sk/embed.js"
   data-chart="polls"
   data-theme="light"
 ></script>`;
 
 const SNIPPET_DARK = `<script
-  src="https://polis.sk/embed.js"
+  src="https://volimto.sk/embed.js"
   data-chart="polls"
   data-theme="dark"
   data-height="500"
 ></script>`;
 
 const SNIPPET_FILTERED = `<script
-  src="https://polis.sk/embed.js"
+  src="https://volimto.sk/embed.js"
   data-chart="polls"
   data-theme="light"
   data-parties="ps,smer-sd,hlas-sd"
 ></script>`;
 
 const SNIPPET_IFRAME = `<iframe
-  src="https://polis.sk/embed/polls?theme=light&height=400"
+  src="https://volimto.sk/embed/polls?theme=light&height=400"
   style="border:none;width:100%;height:432px;display:block;"
   loading="lazy"
-  title="Polis — volebné prieskumy"
+  title="VolímTo — volebné prieskumy"
 ></iframe>`;
 
 function CodeBlock({ code }: { code: string }) {
@@ -45,7 +45,7 @@ export default function EmbedDocsPage() {
   return (
     <div className="max-w-3xl mx-auto px-4 py-12">
       <h1 className="font-serif text-3xl font-bold text-ink mb-2">
-        Vložiť widget Polis
+        Vložiť widget VolímTo
       </h1>
       <p className="text-text/70 mb-10 text-sm leading-relaxed">
         Pridajte interaktívny graf volebných prieskumov na vašu webovú stránku
@@ -121,7 +121,7 @@ export default function EmbedDocsPage() {
         <p className="text-sm text-text/60 mb-3">
           Dáta sú dostupné aj cez JSON API:
         </p>
-        <CodeBlock code="GET https://polis.sk/api/v1/polls?limit=10" />
+        <CodeBlock code="GET https://volimto.sk/api/v1/polls?limit=10" />
         <p className="text-xs text-text/40 mt-2">
           Odpoveď: <code className="font-mono">{"{ polls, parties, generatedAt }"}</code>.
           Voliteľné parametre: <code className="font-mono">limit</code> (max 50),{" "}

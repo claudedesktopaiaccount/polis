@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "polis",
+  "name": "volimto",
   "main": ".open-next/worker.js",
   "compatibility_date": "2025-03-15",
   "compatibility_flags": ["nodejs_compat_v2"],
@@ -24,7 +24,7 @@
   "d1_databases": [
     {
       "binding": "DB",
-      "database_name": "polis",
+      "database_name": "volimto",
       "database_id": "e8f96076-c25f-42a6-a98e-7d927136783e",
       "migrations_dir": "drizzle"
     }

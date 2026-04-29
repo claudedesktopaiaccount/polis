@@ -272,7 +272,7 @@ export default function TipovanieClient({ initialCrowd, initialTotalBets, leader
                 )}
                 <ShareButtons
                   url={typeof window !== "undefined" ? window.location.href : "/tipovanie"}
-                  title="Tipujem voľby na Polis"
+                  title="Tipujem voľby na VolímTo"
                   description="Tipnite si víťaza slovenských parlamentných volieb."
                 />
                 <Link

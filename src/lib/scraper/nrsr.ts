@@ -48,7 +48,7 @@ export type Fetcher = (url: string) => Promise<string>;
 
 const BASE_URL = "https://www.nrsr.sk";
 const USER_AGENT =
-  "Mozilla/5.0 (compatible; Polis/1.0; +https://polis.sk)";
+  "Mozilla/5.0 (compatible; VolimTo/1.0; +https://volimto.sk)";
 
 function defaultFetcher(url: string): Promise<string> {
   return fetch(url, {

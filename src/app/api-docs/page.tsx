@@ -3,7 +3,7 @@ import SectionHeading from "@/components/ui/SectionHeading";
 
 export const metadata: Metadata = {
   title: "API Dokumentácia",
-  description: "Dokumentácia verejného Polis API pre novinárov a výskumníkov.",
+  description: "Dokumentácia verejného VolímTo API pre novinárov a výskumníkov.",
 };
 
 export default function ApiDocsPage() {
@@ -15,7 +15,7 @@ export default function ApiDocsPage() {
         <section>
           <h2 className="font-serif text-xl font-bold text-ink mb-3">Základná URL</h2>
           <div className="bg-zinc-100 dark:bg-zinc-800 p-4 border border-divider font-mono text-sm">
-            https://polis.sk/api/v1
+            https://volimto.sk/api/v1
           </div>
         </section>
 
@@ -58,9 +58,9 @@ export default function ApiDocsPage() {
           <h2 className="font-serif text-xl font-bold text-ink mb-3">Podmienky použitia</h2>
           <p className="text-sm">
             API je bezplatné pre novinárov, výskumníkov a vývojárov. Prosíme o uvedenie zdroja{" "}
-            <strong>polis.sk</strong> pri publikovaní. Pre komerčné použitie nás kontaktujte na{" "}
-            <a href="mailto:redakcia@polis.sk" className="text-ink underline underline-offset-2">
-              redakcia@polis.sk
+            <strong>volimto.sk</strong> pri publikovaní. Pre komerčné použitie nás kontaktujte na{" "}
+            <a href="mailto:redakcia@volimto.sk" className="text-ink underline underline-offset-2">
+              redakcia@volimto.sk
             </a>
             .
           </p>

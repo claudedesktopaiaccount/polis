@@ -7,8 +7,8 @@
  */
 
 describe("ShareButtons — share URL construction", () => {
-  const url = "https://polis.sk/prieskumy";
-  const title = "Prieskumy | Polis";
+  const url = "https://volimto.sk/prieskumy";
+  const title = "Prieskumy | VolímTo";
 
   it("builds a valid Facebook share URL", () => {
     const fbUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
@@ -30,7 +30,7 @@ describe("ShareButtons — share URL construction", () => {
   });
 
   it("encodes URLs with special characters correctly", () => {
-    const specialUrl = "https://polis.sk/prieskumy?filter=all&agency=Focus";
+    const specialUrl = "https://volimto.sk/prieskumy?filter=all&agency=Focus";
     const encoded = encodeURIComponent(specialUrl);
     expect(encoded).not.toContain("?");
     expect(encoded).not.toContain("&");
@@ -41,7 +41,7 @@ describe("ShareButtons — share URL construction", () => {
 
 describe("ShareButtons — copy link behavior", () => {
   it("calls navigator.clipboard.writeText with the given URL", async () => {
-    const url = "https://polis.sk/prieskumy";
+    const url = "https://volimto.sk/prieskumy";
     const writeText = vi.fn().mockResolvedValue(undefined);
     Object.defineProperty(globalThis, "navigator", {
       value: { clipboard: { writeText } },
@@ -63,7 +63,7 @@ describe("ShareButtons — copy link behavior", () => {
 
     // Should not throw
     await expect(
-      navigator.clipboard.writeText("https://polis.sk").catch(() => {})
+      navigator.clipboard.writeText("https://volimto.sk").catch(() => {})
     ).resolves.toBeUndefined();
   });
 });
@@ -83,8 +83,8 @@ describe("ShareButtons — native share detection", () => {
 
   it("calls navigator.share with correct params", async () => {
     const share = vi.fn().mockResolvedValue(undefined);
-    const url = "https://polis.sk/prieskumy";
-    const title = "Prieskumy | Polis";
+    const url = "https://volimto.sk/prieskumy";
+    const title = "Prieskumy | VolímTo";
     const description = "Aktuálne volebné prieskumy";
 
     await share({ title, text: description, url });

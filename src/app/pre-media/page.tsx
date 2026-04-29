@@ -3,19 +3,19 @@ import SectionHeading from "@/components/ui/SectionHeading";
 
 export const metadata: Metadata = {
   title: "Pre médiá",
-  description: "Polis pre médiá — vložiteľné widgety, verejné API a dátové partnerstvá pre novinárov a výskumníkov.",
+  description: "VolímTo pre médiá — vložiteľné widgety, verejné API a dátové partnerstvá pre novinárov a výskumníkov.",
 };
 
 export default function PreMediaPage() {
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <SectionHeading title="Pre médiá a novinárov" subtitle="Polis pre novinárov a výskumníkov" />
+      <SectionHeading title="Pre médiá a novinárov" subtitle="VolímTo pre novinárov a výskumníkov" />
 
       <div className="space-y-8 text-text">
         <section>
           <h2 className="font-serif text-xl font-bold text-ink mb-3">Vložiteľné widgety</h2>
           <p className="text-sm mb-4">
-            Polis ponúka vložiteľné widgety s trendami volebných prieskumov pre mediálne webové stránky. Môžete jednoducho
+            VolímTo ponúka vložiteľné widgety s trendami volebných prieskumov pre mediálne webové stránky. Môžete jednoducho
             vložiť interaktívne grafy priamo do svojich článkov bez potreby údržby dát.
           </p>
           <p className="text-sm mb-4">
@@ -41,7 +41,7 @@ export default function PreMediaPage() {
             Všetky údaje o volebných prieskumoch sú dostupné cez REST API bez potreby autentifikácie:
           </p>
           <div className="bg-zinc-100 dark:bg-zinc-800 p-4 border border-divider mb-4 font-mono text-xs">
-            <code>https://polis.sk/api/v1/polls</code>
+            <code>https://volimto.sk/api/v1/polls</code>
           </div>
           <p className="text-sm mb-3">
             Dáta sú vrátené vo formáte <strong>JSON</strong>. CORS je povolený pre novinárov a výskumníkov. API je
@@ -79,8 +79,8 @@ export default function PreMediaPage() {
           </p>
           <p className="text-sm">
             <strong>E-mail:</strong>{" "}
-            <a href="mailto:redakcia@polis.sk" className="text-ink underline underline-offset-2 hover:text-text transition-colors">
-              redakcia@polis.sk
+            <a href="mailto:redakcia@volimto.sk" className="text-ink underline underline-offset-2 hover:text-text transition-colors">
+              redakcia@volimto.sk
             </a>
           </p>
           <p className="text-sm mt-4 text-zinc-600">
