@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { createSession, validateSession, deleteSession } from "../session";
+import { createSession, validateSession, deleteSession, hashToken } from "../session";
 
 // Mock Database
 function makeMockDb() {
@@ -51,6 +51,26 @@ describe("createSession", () => {
     const db = makeMockDb();
     await createSession("user-456", db as never);
     expect(db.insert).toHaveBeenCalled();
+  });
+
+  it("stores SHA-256 hash of token in DB, not plaintext", async () => {
+    const db = makeMockDb();
+    const { token } = await createSession("user-hash", db as never);
+    const stored = [...db._sessions.values()][0];
+    expect(stored.id).not.toBe(token);
+    expect(stored.id).toHaveLength(64);
+    expect(stored.id).toBe(await hashToken(token));
+  });
+});
+
+describe("hashToken", () => {
+  it("produces deterministic 64-char hex SHA-256", async () => {
+    const a = await hashToken("foo");
+    const b = await hashToken("foo");
+    const c = await hashToken("bar");
+    expect(a).toBe(b);
+    expect(a).not.toBe(c);
+    expect(a).toMatch(/^[0-9a-f]{64}$/);
   });
 });
 

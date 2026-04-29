@@ -5,16 +5,24 @@ import { eq, lt } from "drizzle-orm";
 export const SESSION_COOKIE = "volimto_session";
 const SESSION_DURATION_DAYS = 30;
 
+export async function hashToken(token: string): Promise<string> {
+  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(token));
+  return Array.from(new Uint8Array(buf))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+}
+
 export async function createSession(
   userId: string,
   db: Database
 ): Promise<{ token: string; expiresAt: string }> {
   const token = crypto.randomUUID();
+  const tokenHash = await hashToken(token);
   const now = new Date();
   const expiresAt = new Date(now.getTime() + SESSION_DURATION_DAYS * 24 * 60 * 60 * 1000);
 
   await db.insert(userSessions).values({
-    id: token,
+    id: tokenHash,
     userId,
     createdAt: now.toISOString(),
     expiresAt: expiresAt.toISOString(),
@@ -29,10 +37,11 @@ export async function validateSession(
 ): Promise<{ userId: string } | null> {
   if (!token) return null;
 
+  const tokenHash = await hashToken(token);
   const rows = await db
     .select()
     .from(userSessions)
-    .where(eq(userSessions.id, token))
+    .where(eq(userSessions.id, tokenHash))
     .limit(1);
 
   const session = rows[0];
@@ -41,8 +50,7 @@ export async function validateSession(
   const now = new Date();
   const expiresAt = new Date(session.expiresAt);
   if (expiresAt <= now) {
-    // Clean up expired session
-    await db.delete(userSessions).where(eq(userSessions.id, token));
+    await db.delete(userSessions).where(eq(userSessions.id, tokenHash));
     return null;
   }
 
@@ -50,7 +58,8 @@ export async function validateSession(
 }
 
 export async function deleteSession(token: string, db: Database): Promise<void> {
-  await db.delete(userSessions).where(eq(userSessions.id, token));
+  const tokenHash = await hashToken(token);
+  await db.delete(userSessions).where(eq(userSessions.id, tokenHash));
 }
 
 export async function deleteExpiredSessions(db: Database): Promise<void> {
